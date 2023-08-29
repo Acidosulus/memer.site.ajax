@@ -1,0 +1,407 @@
+
+input,
+textarea,
+[contenteditable] {
+  caret-color:rgb(255,0,255);
+}
+
+
+body{
+    font-family: Verdana;
+    }
+
+table{
+    border: 0px;
+    padding: 0px;
+    border-color:DarkGreen;
+    color:green;
+}
+
+.td_input_new_word{
+    border-color:transparent ;
+    }
+
+.my_class_table_of_words{
+     width:100%}
+
+.image_little_button {
+-webkit-transition: all 0.7s ease;
+transition: all 0.7s ease;
+}
+.image_little_button:hover {
+-webkit-filter: brightness(2);
+}
+
+.div_float_left {        float: left; /*Задаем обтекание*/    ;
+                    margin-top: 10px;
+                    margin-right: 10px;
+                    text-align: center; /*Центрируем текст по горизонтали*/
+                       }
+
+.div_float_right {  float: left; /*Задаем обтекание*/    ;
+                    margin-top: 10px;
+                    margin-right: 10px;
+                 }
+
+
+
+.my_div {
+    position: relative;
+    width: 100%;
+    margin: 2 auto;
+    border-color:Green;
+    padding: 0;
+    text-align: left;
+    display: inline-block;
+}
+.my_div_left, .my_div_right{
+	margin: 2px;
+	padding: 2px 2px;
+	width: calc(45% - 10px);
+	color:green;
+	display: inline-block;
+}
+.my_div_left { text-align:left; }
+.my_div_right { text-align:right;
+                color:green;}
+
+
+
+
+td{
+    border: 2px solid;
+    padding: 10px;
+    border-color:Green;
+    font-weight: bold;
+    font-size:200%;
+    text-shadow: 1px 1px 2px black, 0 0 1em black;
+}
+
+
+a {
+    text-decoration: none;
+    background-image: linear-gradient(currentColor, currentColor);
+    background-position: 0% 100%;
+    background-repeat: no-repeat;
+    background-size: 0% 2px;
+    transition: background-size .3s;
+    color: Green;
+}
+a:hover {
+    background-size: 100% 2px;
+    color: Lime;
+}
+a:visited {
+  color: Green;
+}
+a:visited:hover {
+background-size: 100% 2px;
+  color: Lime;
+}
+
+h1{
+    color:Grey;
+    font-weight: bold;
+    font-size:200%;
+    text-shadow: 1px 1px 2px black, 0 0 1em black;
+    }
+h1:hover {
+    color: Lime;
+}
+h3{
+    color:Green;
+    font-weight: bold;
+    font-size:200%;
+    text-shadow: 1px 1px 2px black, 0 0 1em black;
+    }
+h3:hover {
+    color: Lime;
+}
+
+label{color: GREEN;
+    font-weight: bold;
+    font-size:200%;
+    text-shadow: 1px 1px 2px black, 0 0 1em black;
+    }
+
+label{
+font-size:200%;}
+
+label:hover {
+    color: Lime;
+    font-size:200%;
+}
+
+.my_class_input_word{
+    background: linear-gradient(to top right, #000000, #000066);
+    width:100%;
+    color:LightBlue;
+    font-size:200%;
+    border-radius: 12px;
+    border: solid Blue;
+    }
+.my_class_input_word:hover {
+    border: solid Lime;
+    }
+
+.my_class_input_transcription{
+    background: linear-gradient(to top right, #000000, #000066);
+    width:100%;
+    color:DarkRed;
+    font-size:200%;
+    border-radius: 12px;
+    border: solid Blue;
+    }
+.my_class_input_transcription:hover {
+    border: solid Lime;
+    }
+
+.my_class_input_translations{
+    background: linear-gradient(to top right, #000000, #000066);
+    width:100%;
+    color:gray;
+    font-size:150%;
+    border-radius: 12px;
+    border: solid Blue;
+    }
+.my_class_input_translations:hover {
+    border: solid Lime;
+    }
+
+.my_class_input_examples{
+    background: linear-gradient(to top right, #000000, #000066);
+    width:98%;
+    color:green;
+    font-size:150%;
+    font-weight: bolder;
+    border-radius: 12px;
+    border: solid Blue;
+    }
+.my_class_input_examples:hover {
+    border: solid Lime;
+    }
+
+
+.button {
+    background-color: Green;
+    border: none;
+    color: white;
+    height:32px;
+    text-align: center;
+    margin: 1px 25px 1px 25px;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 200%;
+    color:Black;
+    box-shadow: 2px 2px 3px 4px rgba(0,0,0,0.5);
+    text-shadow: 1px 1px 2px black, 0 0 1em black;
+    font-weight: bold;
+    border-radius: 12px;
+    -webkit-transition: all 0.7s ease;
+    transition: all 0.7s ease;
+}
+
+
+.button_add {
+    background-color: Green;
+    border: none;
+    color: white;
+    height:90px;
+    width:90%;
+    text-align: center;
+    margin: 1px 25px 1px 25px;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 150%;
+    color:Black;
+    box-shadow: 2px 2px 3px 4px rgba(0,0,0,0.5);
+    text-shadow: 1px 1px 2px black, 0 0 1em black;
+    font-weight: bold;
+    border-radius: 12px;
+}
+
+
+
+.button_trained {
+    background-color: Green;
+    border: none;
+    color: white;
+    height:90px;
+    width:90%;
+    text-align: center;
+    margin: 1px 25px 1px 25px;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 150%;
+    color:Black;
+    box-shadow: 2px 2px 3px 4px rgba(0,0,0,0.5);
+    text-shadow: 1px 1px 2px black, 0 0 1em black;
+    font-weight: bold;
+    border-radius: 12px;
+}
+
+
+.button_save {
+    background-color: Green;
+    border: none;
+    color: white;
+    height:48px;
+    width:60%;
+    text-align: center;
+    margin: 1px 25px 1px 25px;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 200%;
+    color:Black;
+    box-shadow: 2px 2px 3px 4px rgba(0,0,0,0.5);
+    text-shadow: 1px 1px 2px black, 0 0 1em black;
+    font-weight: bold;
+    border-radius: 12px;
+    display: inline-block;
+}
+
+.button_save:hover {
+    background-color: Green;
+    color: Lime;
+}
+
+.button_trained:hover {
+    background-color: Green;
+    color: Lime;
+}
+
+.button_add:hover {
+    background-color: Green;
+    color: Lime;
+}
+
+
+
+
+
+my_div_save{
+	margin: 10px;
+	padding: 20px 10px;
+	width: 100%;
+	color:red;
+	display: inline-block;
+}
+
+.pagination{
+    font-size:350%;
+    text-shadow: 1px 1px 2px black, 0 0 1em black;}
+
+
+
+.my_class_p_word{
+    text-shadow: 1px 1px 2px black, 0 0 1em black;
+    color:cornflowerblue;
+    font-size:350%;
+    }
+.my_class_p_word:hover {
+    color:lightblue;
+    }
+.my_class_p_transcription{
+    text-shadow: 1px 1px 2px black, 0 0 1em black;
+    color:firebrick;
+    font-size:350%;
+    }
+.my_class_p_transcription:hover {
+    color:crimson;
+    }
+
+.my_class_p_my_class_p_translations{
+    text-shadow: 1px 1px 2px black, 0 0 1em black;
+    color:Gray;
+    font-size:350%;
+    }
+.my_class_p_my_class_p_translations:hover {
+    color:Silver;
+    }
+.my_class_p_my_class_p_translations_russian{
+    color:darkgrey;
+    }
+.my_class_p_my_class_p_hint_translations_russian{
+        color:green;
+        }
+.my_class_p_my_class_p_translations_russian:hover {
+    color:Silver;
+    }
+
+
+
+
+.my_class_p_my_class_p_examples{
+    text-shadow: 1px 1px 2px black, 0 0 1em black;
+    color:deepskyblue;
+    font-size:350%;
+    }
+.my_class_p_my_class_p_examples:hover {
+    color:cyan;
+    }
+.my_class_p_my_class_p_examples_russian{
+    text-shadow: 1px 1px 2px black, 0 0 1em black;
+    color:steelblue;
+    font-size:350%;
+    opacity:0;
+    }
+.my_class_p_my_class_p_examples_russian:hover {
+    color:catedblue;
+    opacity:1;
+    }
+
+
+.my_class_p_my_class_p_books{
+    text-shadow: 1px 1px 2px black, 0 0 1em black;
+    color:deepskyblue;
+    }
+.my_class_p_my_class_p_books:hover {
+    color:seagreen;
+    }
+.my_class_p_my_class_p_books_even{
+    text-shadow: 1px 1px 2px black, 0 0 1em black;
+    color:steelblue;
+    }
+.my_class_p_my_class_p_books_even:hover {
+    color:cadetblue;
+    }
+
+
+
+
+    .center_parent {
+        width: 95%;
+        height: 95%;
+        position: fixed;
+        top: 20;
+        left: 20;
+        overflow: auto;
+    }
+    
+    .center_block {
+        width: 95%;
+        height: 95%;
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        margin: auto;
+        background: #0c1408;
+        
+    }
+
+
+    
+    #hintbox{
+        display:block;
+        position: fixed;
+        pointer-events: none;
+        top:10px;
+        z-index: 1;
+        width:98%;
+        padding:0.7em 1em;
+        font-size:80%;
+        background:black;
+        border:1px solid #99c;
+     }

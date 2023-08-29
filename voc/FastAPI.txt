@@ -1,0 +1,49 @@
+http://127.0.0.1:8000/docs
+
+http://127.0.0.1:8000/redoc
+
+http://127.0.0.1:8000/openapi.json
+
+
+restish get http://192.168.0.35:9001/media/admin/user_root_/Certificate.gif/
+restish post "http://192.168.0.35:9001/media/admin/user_root_/Certificate.gif/Изменённый первый коммент/"
+
+restish get "http://192.168.0.35:9001/media/admin/321|/tumblromcucxbosS1tnvq90o11280.jpg/"
+restish post "http://192.168.0.35:9001/media/admin/321|/tumblromcucxbosS1tnvq90o11280.jpg/третий коммент/"
+
+
+
+restish get "http://192.168.0.35:9001/media/admin/test2|thirdTestGallery|FourthTestGallery|/flash.png/"
+
+
+/api/v1/media_cross_request/media/test2|thirdTestGallery|FourthTestGallery|/flash.png/
+uvicorn APIServer:app --reload
+uvicorn APIServer:app --reload --host 0.0.0.0 --port 9001
+
+/home/kazakovtsevnm@hakatom.local/go/bin/restish GET http://127.0.0.1:9001/
+
+в URL https://example.com/items/foo значение пути будет — /items/foo
+
+Также можно использовать другие операции:
+
+@app.post()
+@app.put()
+@app.delete()
+И более редкие:
+
+@app.options()
+@app.head()
+@app.patch()
+@app.trace()
+
+
+При создании API обычно эти методы выполняют определенное действие:
+
+POST — создает данные
+GET — читает данные
+PUT — обновляет данные
+DELETE — удаляет данные
+
+
+
+https://docs.sqlalchemy.org/en/13/orm/extensions/automap.html

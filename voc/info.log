@@ -1,0 +1,27 @@
+INFO:root:b'"{ username=\\"admin\\",}"'
+INFO:root:b'{"detail":[{"loc":["body"],"msg":"value is not a valid dict","type":"type_error.dict"}]}'
+INFO:root:http://localhost:9001/media_rename_media/
+INFO:root:b''
+INFO:root:b'{"username":"admin","folder":"user_root_","filename":"fractal_background_37_.jpg","status":"Ok","filepath":"/run/user/1640202393/media/by-uuid-A8C0-6A35/memer.site/Storage/admin/media/fractal_background_37_.jpg","userfilepath":"fractal_background_37_.jpg","comment":"\xd0\x92\xd1\x82\xd0\xbe\xd1\x80\xd0\xbe\xd0\xb9 \xd0\xba\xd0\xbe\xd0\xbc\xd0\xbc\xd0\xb5\xd0\xbd\xd1\x82\xd0\xb0\xd1\x80\xd0\xb8\xd0\xb9"}'
+INFO:root:http://localhost:9001/media/admin/user_root_/fractal_background_37_.jpg/
+INFO:root:b''
+INFO:root:b'{"username":"admin","folder":"user_root_","filename":"8295601c1053e3ca2079fa15607553f6.jpeg","status":"Ok","filepath":"/run/user/1640202393/media/by-uuid-A8C0-6A35/memer.site/Storage/admin/media/8295601c1053e3ca2079fa15607553f6.jpeg","userfilepath":"8295601c1053e3ca2079fa15607553f6.jpeg","comment":""}'
+INFO:root:http://localhost:9001/media/admin/user_root_/8295601c1053e3ca2079fa15607553f6.jpeg/
+INFO:root:b'"{ username=\\"admin\\",}"'
+INFO:root:b'{"detail":[{"loc":["body"],"msg":"value is not a valid dict","type":"type_error.dict"}]}'
+INFO:root:http://localhost:9001/media_rename_media/
+INFO:root:b''
+INFO:root:b'{"username":"admin","folder":"user_root_","filename":"fractal_background_37_.jpg","status":"Ok","filepath":"/run/user/1640202393/media/by-uuid-A8C0-6A35/memer.site/Storage/admin/media/fractal_background_37_.jpg","userfilepath":"fractal_background_37_.jpg","comment":"\xd0\x92\xd1\x82\xd0\xbe\xd1\x80\xd0\xbe\xd0\xb9 \xd0\xba\xd0\xbe\xd0\xbc\xd0\xbc\xd0\xb5\xd0\xbd\xd1\x82\xd0\xb0\xd1\x80\xd0\xb8\xd0\xb9"}'
+INFO:root:http://localhost:9001/media/admin/user_root_/fractal_background_37_.jpg/
+INFO:root:b''
+INFO:root:b'{"username":"admin","folder":"user_root_","filename":"8295601c1053e3ca2079fa15607553f6.jpeg","status":"Ok","filepath":"/run/user/1640202393/media/by-uuid-A8C0-6A35/memer.site/Storage/admin/media/8295601c1053e3ca2079fa15607553f6.jpeg","userfilepath":"8295601c1053e3ca2079fa15607553f6.jpeg","comment":""}'
+INFO:root:http://localhost:9001/media/admin/user_root_/8295601c1053e3ca2079fa15607553f6.jpeg/
+INFO:root:b'"{ username=\\"admin\\",}"'
+INFO:root:b'{"detail":[{"loc":["body"],"msg":"value is not a valid dict","type":"type_error.dict"}]}'
+INFO:root:http://localhost:9001/media_rename_media/
+INFO:root:b'"{ username=\\"admin\\",}"'
+INFO:root:b'{"detail":[{"loc":["body"],"msg":"value is not a valid dict","type":"type_error.dict"}]}'
+INFO:root:http://localhost:9001/media_rename_media/
+INFO:root:b'"{ username=\\"admin\\"}"'
+INFO:root:b'{"detail":[{"loc":["body"],"msg":"value is not a valid dict","type":"type_error.dict"}]}'
+INFO:root:http://localhost:9001/media_rename_media/

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+
+{% load static %}
+<html>
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+    <link rel="shortcut icon" type="image/png" href="{% static '/images/favicon.png' %}"/>
+    <title>{{ book_name }}</title>
+    <script src="{% static 'js/voca.js' %}"></script>
+
+</head>
+
+
+<body background="{% static 'images/background_bb.jpg' %}"  id="id_body_book" data-idbook="{{ id_book }}" data-paragraphscount="5">
+
+<!--<div  id="floatMenu" style="position:absolute;top:10px;left:10px;margin-left:0px;width:64px;">-->
+<div  id="floatMenu" style="position:fixed;bottom:0;height:64px">
+    <img width="64" height="64" src="{% static '/images/angle_text_bright.png' %}" onclick="clickAutoSelectEvent(this);">
+    <img width="64" height="64" src="{% static '/images/info.png' %}" onclick="clickDictionaryelectEvent(this);">
+</div>
+
+
+<table   width = "100%" style="font-size:75%;">
+    <tr>
+                <td style="border: 0px;" width="29%" align="center"><p align="left" style="color:rgb(50,125,50);"><span style="font-weight: bold;" id="id_book_name" class = 'book_name'></span></p></td>
+                <td style="border: 0px;" width="29%" align="center"><p align="right" style="color:rgb(50,125,50);"><span style="font-weight: bold; color:lime;" id="id_book_position" class = 'book_position'></span></p></td>
+    </tr>
+</table>
+    
+               
+   
+
+<p></p>
+<hr>
+<p></p><p></p>
+    <table width = '100%' style="border: 0px;">
+        <tr>
+        <th><div class ='div_float_left'><IMG WIDTH="48" HEIGHT="48" src="{% static 'images/empty_32x32.png' %}"></div></th>
+        <th><div class ='div_float_left'><a onclick="javascript:history.back(); return false;"><IMG class ="image_little_button"  WIDTH="48" HEIGHT="48"  title = "Назад" src="{% static 'images/back.png' %}"></a></div></th>
+        <th><div class ='div_float_left'><IMG  WIDTH="48" HEIGHT="48" src="{% static 'images/empty_32x32.png' %}"></div></th>
+        <th><div class ='div_float_left'><a href="/"><IMG  class ="image_little_button"  WIDTH="48" HEIGHT="48"  title = "На главную" src="{% static 'images/home.png' %}"></a></div></th>
+        <th><div class ='div_float_left'><IMG  WIDTH="48" HEIGHT="48" src="{% static 'images/empty_32x32.png' %}"></div></th>
+        <th><div class ='div_float_right'><a id= 'id_link_on_wooordhunt' href="https://wooordhunt.ru/word/{{ word }}" target="_blank"><IMG  class ="image_little_button"  WIDTH="48" HEIGHT="48"  title = "wooordhunt.ru" src="{% static 'images/wh.ico' %}"></a></div></th>
+        <th><div class ='div_float_right'><IMG  WIDTH="48" HEIGHT="48" src="{% static 'images/empty_32x32.png' %}"></div></th>
+        <th><div class ='div_float_right'><a id= 'id_link_on_glosbe' href="https://ru.glosbe.com/en/ru/{{ word }}" target="_blank"><IMG  class ="image_little_button"  WIDTH="48" HEIGHT="48"  title = "wooordhunt.ru" src="https://ru.glosbe.com/assets/favicon/favicon-32x32.png"></a></div></th>
+        <th><div class ='div_float_right'><IMG  WIDTH="48" HEIGHT="48" src="{% static 'images/empty_32x32.png' %}"></div></th>
+        </tr>
+        </table>
+<p></p><p></p>
+<hr>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+<div id="id_div_book_body">
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<hr>
+
+
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<div id="hintbox" style="display:'none'"></div>
+</body>
+</html>
+
+

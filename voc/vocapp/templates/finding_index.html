@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<body>
+{% load static %}
+    <table class="my_class_table_of_words" width = "100%">
+{% for word in words %}
+    <tr>
+        <td width="7%" style="background:{{ word.word_background_color }}">{{ forloop.counter }}</td>
+        <td with = "55%" style="color:Blue"><a href="./word_in_progress/{{ word.word }}/">{{ word.word }}</a></td>
+        <td width="24%" align = "center" style="color:DarkRed"  onclick="new Audio( document.getElementById('invisible_link_for_link_path_{{ word.word }}').getAttribute('href') ).play(); return false;" >{{ word.transcription }}</td>
+        <td width="7%" align = "center">{{ word.show_count }}</td>
+        <td width="7%" align = "center"><a href="./add_new/{{ word.word }}/"><IMG class ="image_little_button" WIDTH="32" HEIGHT="32"  title = "Редактировать слово {{ word.word }}" src="{% static 'images/redo.png' %}"></a></td>
+       <!-- <td width="7%" align = "center"><a href="/ready/{{ word.word }}/"><IMG  class ="image_little_button" WIDTH="32" HEIGHT="32"  title = "Слово выученно" src="{% static 'images/ok.png' %}"></a></td> -->
+    </tr>
+{% endfor %}
+    </table>
+</body>
+</html>

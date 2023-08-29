@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+
+{% load static %}
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+    <link rel="shortcut icon" type="image/png" href="{% static '/images/favicon.png' %}"/>
+    <title>Memorier</title>
+</head>
+
+<script src="{% static 'js/voca.js' %}"></script>
+
+
+<body background="{% static 'images/background_bb.jpg' %}" data-apiserver="{{ global_api_server_adress }}">
+    <table   width = "100%" style="font-size:100%;">
+        <tr>
+            <td style="border: 0px;" width="19%" align="center"><p align="left"  style="color:rgb(50,125,50);">Количество слов на изучении: <span style="font-weight: bold; color:lime;" data-simplecommand="get_user_count_of_words_inprocess"></span></p></td>
+            <td style="border: 0px;" width="19%" align="center"><p align="left"  style="color:rgb(50,125,50);">Сегодня проработано слов: <span style="font-weight: bold; color:lime;" data-simplecommand="get_user_count_of_words_proceed_today"></span></p></td>
+            <td style="border: 0px;" width="19%" align="center"><p align="right" style="color:rgb(50,125,50);">Изучено слов: <span style="font-weight: bold; color:lime;"  data-simplecommand="get_user_count_of_words_ready"></span></p></td>
+            <td style="border: 0px;" width="19%" align="center"><a href="./personal_page/"><p data-simplecommand="get_user_information" id="class_above_panel_user_view" align="right" style="font-weight: bold; color:rgb(76, 96, 209);"></p></a></td>
+        </tr>
+    </table>
+
+
+<hr>
+
+<table   width = "100%">
+    <tr>
+        <td style="border: 0px;" width="10%" align="left"><div class ='div_float_left'><a onclick="javascript:history.back(); return false;"><IMG class ="image_little_button"  WIDTH="64" HEIGHT="64"  title = "Назад" src="{% static 'images/back.png' %}"></a></div></td>
+        <td style="border: 0px;" width="10%" align="left"><a href="/"><IMG class ="image_little_button" WIDTH="64" HEIGHT="64"  title = "На главную" src="{% static 'images/home.png' %}"></a></td>
+        <td style="border: 0px;" width="20%" align="center"></td>
+        <td style="border: 0px;" width="30%" align="center"></td>
+        <td style="border: 0px;" width="10%" align="right"><a href = '/phrases/add_new/0/'><IMG class ="image_little_button" style="display: inline-block;box-shadow: 2px 2px 3px 4px rgba(0,0,0,0.5);text-shadow: 1px 1px 2px black, 0 0 1em black; border-radius: 12px;" WIDTH="64" HEIGHT="64"  title = "Добавить слово" src="{% static 'images/add.png' %}"></a></td>
+        <td style="border: 0px;" width="10%" align="right"><a href = '/phrases/ready_list/'><IMG class ="image_little_button" style="display: inline-block;box-shadow: 2px 2px 3px 4px rgba(0,0,0,0.5);text-shadow: 1px 1px 2px black, 0 0 1em black; border-radius: 12px;" WIDTH="64" HEIGHT="64"  title = "Выученные слова" src="{% static 'images/ready.png' %}"></a></td>
+        <td style="border: 0px;" width="10%" align="right"><a href = "/phrases/next/" style="margin:0px 0px 0px 0px"><IMG class ="image_little_button" style="display: inline-block;box-shadow: 2px 2px 3px 4px rgba(0,0,0,0.5);text-shadow: 1px 1px 2px black, 0 0 1em black; border-radius: 12px;" WIDTH="64" HEIGHT="64"  title = "Учить слова" src="{% static 'images/education.png' %}"></a></td>
+        </tr>
+</table>
+<!--
+    <div class = 'my_div'>
+        <div class = 'my_div_left'>
+        </div>
+        <div class = 'my_div_right'>
+            <button class = 'button_trained' onclick="window.location.href = '/';">Слова в процессе</button>
+        </div>
+    </div>
+    <hr>
+-->
+<!---------------------------------------------------------------------------------------------------------------------------------------------->
+<div class="pagination_auto"></div>
+<!---------------------------------------------------------------------------------------------------------------------------------------------->
+
+ <hr>
+
+
+    <table id='index_table_of_syllables' class="my_class_table_of_words" width = "100%" data-ready="{{ ready }}">
+
+    </table>
+
+    
+    <hr>
+
+<!---------------------------------------------------------------------------------------------------------------------------------------------->
+<div class="pagination_auto"></div>
+<!---------------------------------------------------------------------------------------------------------------------------------------------->
+
+</body>
+</html>

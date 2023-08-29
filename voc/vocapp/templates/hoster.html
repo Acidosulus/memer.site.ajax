@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+
+{% load static %}
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+    <link rel="shortcut icon" type="image/png" href="{% static '/images/favicon.png' %}"/>
+    <title>Hoster</title>
+</head>
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="{% static 'js/voca.js' %}"></script>
+
+<body background="{% static 'images/background_bb.jpg' %}">
+
+
+
+    <table   width = "100%" style="font-size:75%;">
+        <tr>
+            <td style="border: 0px;" width="100%" align="left"><a href="../../personal_page/"><p align="right" style="color:rgb(50,125,50);"><span style="font-weight: bold; color:rgb(76, 96, 209);" class="class_user_view"></span></p></a></td>
+        </tr>
+    </table>
+
+
+
+<!---------------------------------------------------------------------------------------------------------------------------------------------->
+<!---------------------------------------------------------------------------------------------------------------------------------------------->
+    <hr>
+
+
+    <table class="my_class_table_of_words" width = "100%">
+    {% for word in catalogs %}
+    <tr>
+        <td width="10%"><a href="./hoster/{{ word }}/"><IMG  WIDTH="32" HEIGHT="32" src="http://favicon.yandex.net/favicon/{{ word }}">  {{ word }}</a></td>
+    </tr>
+    {% endfor %}
+    </table>
+
+
+    <hr>
+<!---------------------------------------------------------------------------------------------------------------------------------------------->
+<!---------------------------------------------------------------------------------------------------------------------------------------------->
+
+
+
+<!---------------------------------------------------------------------------------------------------------------------------------------------->
+</body>
+</html>
+
+

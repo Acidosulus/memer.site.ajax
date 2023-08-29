@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+
+{% load static %}
+
+<html>
+<head>
+	<meta charset="utf-8" />
+	<link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+	<link rel="shortcut icon" type="image/png" href="{% static '/images/favicon.png' %}"/>
+	<title>Memorier</title>
+</head>
+
+<style>
+	.fullscreen:-webkit-full-screen {
+	width: auto !important;
+	height: auto !important;
+	margin:auto !important;
+}
+   .fullscreen:-moz-full-screen {
+	width: auto !important;
+	height: auto !important;
+	margin:auto !important;
+}
+   .fullscreen:-ms-fullscreen {
+	width: auto !important;
+	height: auto !important;
+	margin:auto !important;
+}     
+</style>
+
+<script type="text/javascript">
+
+	window.onload = function(event) {
+		setLocation('#');
+	}
+	function setLocation(curLoc){
+	  location.href = curLoc;
+	  location.hash = curLoc;
+	}
+	
+	function Add_Directory(){
+		var new_volume_name = prompt("Название нового раздела: ");
+		if (new_volume_name == null){
+			return
+		}
+		var req = new XMLHttpRequest();
+		console.log("/api/v1/media_list_create_new_volume/{{ current_folder_name }}/"+new_volume_name+"/");
+		req.open("GET", "/api/v1/media_list_create_new_volume/{{ current_folder_name }}/"+new_volume_name+"/", false);
+		req.send(null);
+		console.log(req.responseText);
+		console.log('location.href:'+location.href);
+		if (req.responseText == 'success') {
+			location.reload();
+		}else{
+			alert(req.responseText);
+		}
+	}
+
+	function Delete_Directory(pc_directory_name){
+		if (confirm("Удалить раздел: "+ pc_directory_name))
+			{
+				var req = new XMLHttpRequest();
+				console.log("/api/v1/media_list_delete_volume/"+pc_directory_name);
+				req.open("GET", "/api/v1/media_list_delete_volume/"+pc_directory_name+"/", false);
+				req.send(null);
+				if (req.responseText == 'success') {
+					location.reload();
+				}else{
+					alert(req.responseText);
+				}
+			}
+	}
+
+	function Rename_Directory(lc_path, lc_resource_name){
+		pc_last_resource_name = lc_resource_name
+		var new_resource_name = prompt("Переименовать раздел: ", lc_resource_name);
+		if (new_resource_name==null){
+			return
+		}
+		var req = new XMLHttpRequest();
+		console.log("/api/v1/media_list_rename_volume/"+lc_path+"/"+pc_last_resource_name+"/"+new_resource_name+"/");
+		req.open("GET", "/api/v1/media_list_rename_volume/"+lc_path+"/"+pc_last_resource_name+"/"+new_resource_name+"/", false);
+		req.send(null);
+		if (req.responseText == 'success') {
+			location.reload();
+		}else{
+			alert(req.responseText);
+		}
+	}
+
+	function Add_Media(){
+		odiv = document.getElementById('file_upload_div')
+		if (odiv.hidden==true) {
+			odiv.hidden=false
+		}else{
+			odiv.hidden=true
+		}
+	}
+
+	function strEncode(pStr){
+		//return btoa(unescape(encodeURIComponent(pStr)))
+		return (encodeURIComponent(pStr))
+	}
+
+	function strDecode(pStr){
+		//return decodeURIComponent(escape(atob(pStr)))
+		return decodeURIComponent((pStr))
+	}
+
+	function PageLoad(){
+		CreateHighLinksPath();
+		Get_Comment_For_Files();
+	}
+
+	function CreateHighLinksPath(){
+		var oh = document.getElementById('title_header')
+		var clink = '{{current_folder_name}}';
+		oh.insertAdjacentHTML('afterbegin',`
+		<a href="/"><IMG  class ="image_little_button"  WIDTH="48" HEIGHT="48"  title = "На главную" src="{% static 'images/home.png' %}"></a>
+		<IMG  WIDTH="64" HEIGHT="64" src="{% static 'images/empty_32x32.png' %}">
+		<a onclick="javascript:history.back(); return false;"><IMG class ="image_little_button"  WIDTH="48" HEIGHT="48"  title = "Назад" src="{% static 'images/back.png' %}"></a>
+		<IMG  WIDTH="64" HEIGHT="64" src="{% static 'images/empty_32x32.png' %}">
+		<a href = '/media_list/user_root_/'><IMG class ="image_little_button" style="display: inline-block;box-shadow: 2px 2px 3px 4px rgba(0,0,0,0.5);text-shadow: 1px 1px 2px black, 0 0 1em black; border-radius: 12px;" WIDTH="64" HEIGHT="64"  title = "Медиа" src="{% static 'images/images.png' %}"></a>`);
+		var SplittedList = clink.split('|');
+		var StringLinksBuffer = '';
+		SplittedList.forEach((element) => {
+			if (element.length>0 & element!='user_root_') 	{
+										StringLinksBuffer += element + `|`;
+										oh.insertAdjacentHTML(`beforeend`, `<IMG  WIDTH="12" HEIGHT="64" src="{% static 'images/empty_32x32.png' %}">
+																			<a href = '/media_list/`+StringLinksBuffer+`/'>/`+element+`/</a>`);
+									}
+		});
+	}
+
+	function Get_Comment_For_Files(){
+		var lc_path = "{{ current_folder_name }}"
+		console.log(lc_path)
+		var descriptors = document.querySelectorAll("p.pFileDescriptor");
+		descriptors.forEach(descriptor => {Get_Comment_For_File(descriptor);
+										
+										});
+
+	}
+
+	function Get_Comment_For_File(descriptor){
+											var current_folder_name = `{{ current_folder_name }}`
+											var username = `{{ user_name }}`
+											var body = `{"username":"`+username+`"`+`,`+
+														` "command":"get_media_description"`+`,`+
+														` "folder":"`+current_folder_name+`"`+`,`+
+														` "filename":"`+descriptor.id+`"` +
+														`}`
+											console.log(descriptor.id);
+											var req = new XMLHttpRequest();
+													var url = `/api/v1/media_cross_request/media_description/`
+													req.open(`POST`, url, false);
+													req.send(body);
+													descriptor.innerHTML = req.responseText;
+													console.log(url + '=>' +req.responseText);
+	}
+
+	function Edit_Comment(current_folder_name, file_name){
+		var descriptor = document.querySelector("p[id='"+file_name+"']");
+		var username = `{{ user_name }}`
+		console.log(descriptor);
+		console.log(descriptor.innerHTML);
+		var new_comment = prompt("Комментарий: ", descriptor.innerHTML);
+		console.log(new_comment);
+		if (new_comment==null){
+			return
+		}
+		var req = new XMLHttpRequest();
+		var curl = "/api/v1/media_cross_request/media_edit_comment/";
+		console.log(curl);
+		req.open("POST", curl, false);
+		req.setRequestHeader('Content-Type', 'application/json');
+		req.send(	`{"username":"`+username+`"`+`,`+
+					` "command":"edit_media_comment"`+`,`+
+					` "folder":"`+current_folder_name+`"`+`,`+
+					` "filename":"`+file_name+`"`+`,`+
+					` "comment":"`+new_comment+`"`+
+					`}`);
+		Get_Comment_For_File(descriptor)
+
+		
+	}
+
+	function makeFullScreen(divObj) {
+         
+       //Use the specification method before using prefixed versions
+      if (divObj.requestFullscreen) {
+        divObj.requestFullscreen();
+      }
+      else if (divObj.msRequestFullscreen) {
+        divObj.msRequestFullscreen();               
+      }
+      else if (divObj.mozRequestFullScreen) {
+        divObj.mozRequestFullScreen();      
+      }
+      else if (divObj.webkitRequestFullscreen) {
+        divObj.webkitRequestFullscreen();       
+      } else {
+        console.log("Fullscreen API is not supported");
+      } 
+
+    }
+
+</script>
+
+
+
+<body background="{% static 'images/background_bb.jpg' %}" onload="PageLoad();">
+
+<h1 id="title_header"></h1>
+
+	<table   width = "100%" style="font-size:50%;">
+		<tr>
+			<td style="border: 0px;" width="20%" align="center"><p align="right" style="color:rgb(50,125,50);"><span style="font-weight: bold; color:rgb(76, 96, 209);" class="class_user_view"></span></p></td>
+		</tr>
+	</table>
+	<hr>
+	<hr>
+		<a align="right" onclick="Add_Directory()"><IMG class ="image_little_button"  WIDTH="48" HEIGHT="48"  title = "Добавить раздел" src="{% static 'images/add.png' %}"></a>
+		<IMG  WIDTH="64" HEIGHT="64" src="{% static 'images/empty_32x32.png' %}">
+		<IMG  WIDTH="64" HEIGHT="64" src="{% static 'images/empty_32x32.png' %}">
+		<a align="right" onclick="Add_Media()"><IMG class ="image_little_button"  WIDTH="48" HEIGHT="48"  title = "Добавить медиа файлы" src="{% static 'images/add_media.png' %}"></a>
+	<p></p>
+	<hr>
+	<hr>
+<!---------------------------------------------------------------------------------------------------------------------------------------------->
+<hr>
+
+
+<div hidden = "true" id="file_upload_div">
+	    <!-- multipart/form-data ensures that form
+		    data is going to be encoded as MIME data -->
+    <form action="/media_upload/{{ current_folder_name }}/" method="POST" enctype="multipart/form-data"> {% csrf_token %}
+        <h2>Upload Files</h2>
+		<p>Select files to upload:
+            <!-- name of the input fields are going to
+                be used in our php script-->
+            <input type="file" name="files" multiple>
+            <br><br>
+            <input type="submit" name="submit" value="Upload" >
+        </p>
+    </form>
+</div>
+
+
+<table class="my_class_table_of_words" width = "100%">
+	{% for dir in directories %}
+	<tr>
+		<td width="85%"><a href="{{ dir.link }}">{{ dir.dir_name }}</a></td>
+		<td width="15%" align="center">
+			<a onclick='Rename_Directory("{{ current_folder_name }}", "{{ dir.dir_name }}")'><IMG  class ="image_little_button"  WIDTH="32" HEIGHT="32"  title = "Переименовать" src="{% static 'images/rename.png' %}"></a>    
+			<a onclick='Delete_Directory("{{ dir.delete_link }}")'><IMG  class ="image_little_button"  WIDTH="32" HEIGHT="32"  title = "Удалить" src="{% static 'images/delete.png' %}"></a>
+		</td>
+	</tr>
+	{% endfor %}
+	{% for media in medias %}
+	<tr>
+		<td width="100%" align="center">
+				<IMG title="{{ media.media_link }}" src="{{ media.media_link }}" style="max-height:100vh; max-width:100vw;" onclick="makeFullScreen(this);">
+				<p class ="pFileDescriptor" id ="{{ media.file_name }}"></p>
+				<a onclick='Edit_Comment("{{ current_folder_name }}", "{{ media.file_name }}")'><IMG  class ="image_little_button"  WIDTH="32" HEIGHT="32"  title = "Комментарий" src="{% static 'images/redo.png' %}"></a>
+				<a onclick='Rename_Directory("{{ current_folder_name }}", "{{ media.rename_link }}")'><IMG  class ="image_little_button"  WIDTH="32" HEIGHT="32"  title = "Переименовать" src="{% static 'images/rename.png' %}"></a>
+				<a onclick='Delete_Directory("{{ media.delete_link }}")'><IMG  class ="image_little_button"  WIDTH="32" HEIGHT="32"  title = "Удалить" src="{% static 'images/delete.png' %}"></a>
+		</td>
+	</tr>
+	{% endfor %}
+	</table>
+
+<hr>
+
+<!---------------------------------------------------------------------------------------------------------------------------------------------->     
+
+</body>
+</html>

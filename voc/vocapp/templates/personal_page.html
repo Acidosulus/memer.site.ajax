@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+
+{% load static %}
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+    <link rel="shortcut icon" type="image/png" href="{% static '/images/favicon.png' %}"/>
+    <title>Memorier</title>
+</head>
+
+
+<script type="text/javascript">
+
+    window.onload = function(event) {
+        setLocation('#');
+    }
+    function setLocation(curLoc){
+      location.href = curLoc;
+      location.hash = curLoc;
+    }
+    
+</script>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="{% static 'js/voca.js' %}"></script>
+
+
+<body background="{% static 'images/background_bb.jpg' %}">
+
+
+
+    <table   width = "100%" style="font-size:50%;">
+        <tr>
+            <td style="border: 0px;" width="20%" align="center"><p align="right" style="color:rgb(50,125,50);"><span style="font-weight: bold; color:rgb(76, 96, 209);" class="class_user_view"></span></p></td>
+        </tr>
+    </table>
+    <hr>
+    <hr>
+        <IMG  WIDTH="64" HEIGHT="64" src="{% static 'images/empty_32x32.png' %}">
+        <a onclick="javascript:history.back(); return false;"><IMG class ="image_little_button"  WIDTH="48" HEIGHT="48"  title = "Назад" src="{% static 'images/back.png' %}"></a>
+        <IMG  WIDTH="64" HEIGHT="64" src="{% static 'images/empty_32x32.png' %}">
+        <a href="/"><IMG  class ="image_little_button"  WIDTH="48" HEIGHT="48"  title = "На главную" src="{% static 'images/home.png' %}"></a>
+		<IMG  WIDTH="64" HEIGHT="64" src="{% static 'images/empty_32x32.png' %}">
+		<a href="/media_list/"><IMG  class ="image_little_button"  WIDTH="48" HEIGHT="48"  title = "Медиа" src="{% static 'images/images.png' %}"></a>
+    <p></p>
+    <hr>
+    <hr>
+
+
+    <p><span style="font-weight: bold; color:rgb(80, 180, 60);">User: </span><span style="font-weight: bold; color:rgb(76, 96, 209);" class="class_user_view"></span> </p>
+    <a href = '/logout/'><IMG class ="image_little_button" style="display: inline-block;box-shadow: 2px 2px 3px 4px rgba(0,0,0,0.5);text-shadow: 1px 1px 2px black, 0 0 1em black; border-radius: 12px;" WIDTH="64" HEIGHT="64"  title = "Logout" src="{% static 'images/logout.png' %}"></a>
+</body>
+</html>
+
+

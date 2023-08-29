@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+
+{% load static %}
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+    <link rel="shortcut icon" type="image/png" href="{% static '/images/favicon.png' %}"/>
+    <title>Hoster</title>
+</head>
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="{% static 'js/voca.js' %}"></script>
+
+<body background="{% static 'images/background_bb.jpg' %}">
+
+
+
+    <table   width = "100%" style="font-size:75%;">
+        <tr>
+            <td style="border: 0px;" width="50%" align="left"><a href="./personal_page/"><p align="right" style="color:rgb(50,125,50);"><span style="font-weight: bold; color:rgb(76, 96, 209);" class="class_user_view"></span></p></a></td>
+        </tr>
+    </table>
+
+
+<hr>
+<!---------------------------------------------------------------------------------------------------------------------------------------------->
+    <table   width = "100%" style="font-size:75%;">
+        <tr>
+            <td style="border: 0px;" width="30%" align="left"><h1>{{ sitename }}<IMG  WIDTH="32" HEIGHT="32" src="http://favicon.yandex.net/favicon/{{ sitename }}"></h1></td>
+            <td style="border: 0px;" width="30%" align="left"><p>Files count: {{ files_count }}</p></td>
+            <td style="border: 0px;" width="30%" align="left"><p>Files size: {{ total_size }}</p></td>
+            <td style="border: 0px;" width="10%" align="right"><a href="/hoster/{{ sitename }}/delete_all/"><IMG  WIDTH="32" HEIGHT="32" src="{% static 'images/cross.png' %}" title="Удалить картинки"></a></td>
+        </tr>
+    </table>
+
+<!---------------------------------------------------------------------------------------------------------------------------------------------->
+
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="file" name="myfile">
+    <button type="submit">Upload</button>
+  </form>
+
+    <hr>
+
+
+    <table class="my_class_table_of_words" width = "100%">
+    {% for file in files %}
+    <tr>
+        <td width="80%"><a target="_black" href="/static/{{ sitename }}/{{ file.name }}">{{ file.name }}</a></td>
+        <td width="20%">{{ file.size }}</td>
+    </tr>
+    {% endfor %}
+    </table>
+
+
+    <hr>
+<!---------------------------------------------------------------------------------------------------------------------------------------------->
+<!---------------------------------------------------------------------------------------------------------------------------------------------->
+
+
+
+<!---------------------------------------------------------------------------------------------------------------------------------------------->
+</body>
+</html>
+
+

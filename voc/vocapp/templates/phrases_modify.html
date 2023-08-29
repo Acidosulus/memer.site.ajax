@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+
+{% load static %}
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+    <link rel="shortcut icon" type="image/png" href="{% static '/images/favicon.png' %}"/>
+    <title>Phrases</title>
+</head>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script>
+function get_book_information(element){
+  var settings = {
+                  "url": "/api/book_position/"+element.dataset.idbook+"/",
+                  "method": "GET",
+                  "timeout": 0,
+                  };
+      $.ajax(settings).done(function (response) {
+                                                  var content = response.book_position;
+                                                      element.innerHTML = content
+            });
+        }
+
+window.onload = function(event) {
+          var books_information = document.querySelectorAll(".book_position");
+
+          for (var elem of books_information) {
+              get_book_information(elem);
+          }
+  };
+</script>
+
+
+
+<script type="text/javascript">
+</script>
+
+<body background="{% static 'images/background_bb.jpg' %}">
+<hr>
+    <div class="my_div_save">
+        <div class ='div_float_left'><IMG WIDTH="48" HEIGHT="48" src="{% static 'images/empty_32x32.png' %}"></div>
+        <div class ='div_float_left'><a onclick="javascript:history.back(); return false;"><IMG class ="image_little_button"  WIDTH="48" HEIGHT="48"  title = "Назад" src="{% static 'images/back.png' %}"></a></div>
+        <div class ='div_float_left'><IMG  WIDTH="48" HEIGHT="48" src="{% static 'images/empty_32x32.png' %}"></div>
+        <div class ='div_float_left'><a href="/"><IMG  class ="image_little_button"  WIDTH="48" HEIGHT="48"  title = "На главную" src="{% static 'images/home.png' %}"></a></div>
+        <div class ='div_float_left'><IMG  WIDTH="48" HEIGHT="48" src="{% static 'images/empty_32x32.png' %}"></div>
+        <div class ='div_float_right'><IMG  WIDTH="48" HEIGHT="48" src="{% static 'images/empty_32x32.png' %}"></div>
+        <div class ='div_float_right'><IMG  WIDTH="48" HEIGHT="48" src="{% static 'images/empty_32x32.png' %}"></div>
+    </div>
+<hr>
+
+
+    <form method="POST" target="_self">{% csrf_token %}
+
+    <table width = '100%' style="border: 0px;">
+        <tr style="display: none;"><th><label for="modify_type">Modify phrase type (edit/new):</label></th><td class = 'td_input_new_word'><textarea autocomplete="off" type="text" name="modify_type" cols="40" rows="10" class="my_class_input_examples" id="phrase_text" >{{ modify_type }}</textarea></td></th></tr>
+        <tr><th><label for="phrase_text">Phrase:</label></th><td class = 'td_input_new_word'><textarea autocomplete="off" autofocus type="text" name="phrase_text" cols="40" rows="10" class="my_class_input_examples" id="phrase_text" >{{  phrase_text }}</textarea></td></th></tr>
+        <tr><th><label for="phrase_translation">Comment:</label></th><td class = 'td_input_new_word'><textarea autocomplete="off" name="phrase_translation" cols="40" rows="10" class="my_class_input_examples" id="phrase_translation">{{ phrase_translation }}</textarea></td></th></tr>
+    </table>
+        <p align = "center"><input type="submit" value="Сохранить" class="button_save" onclick="this.submit();"></p>
+    </form>
+
+    <hr>
+</body>
+</html>
+
+
+
+
+
+
+

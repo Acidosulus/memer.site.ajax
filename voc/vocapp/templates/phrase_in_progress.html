@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+    <link rel="shortcut icon" type="image/png" href="{% static '/images/favicon.png' %}"/>
+    <title>Phrases</title>
+</head>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="{% static 'js/voca.js' %}"></script>
+
+
+<body background="{% static 'images/background_bb.jpg' %}" id="body_phrase_in_progress" data-phraseid="{{ phrase_id }}">
+
+    <table   width = "100%" style="font-size:100%;">
+        <tr>
+            <td style="border: 0px;" width="19%" align="center"><p align="left"  style="color:rgb(50,125,50);">Количество слов на изучении: <span style="font-weight: bold; color:lime;" data-simplecommand="get_user_count_of_words_inprocess"></span></p></td>
+            <td style="border: 0px;" width="19%" align="center"><p align="left"  style="color:rgb(50,125,50);">Сегодня проработано слов: <span style="font-weight: bold; color:lime;" data-simplecommand="get_user_count_of_words_proceed_today"></span></p></td>
+            <td style="border: 0px;" width="19%" align="center"><p align="right" style="color:rgb(50,125,50);">Изучено слов: <span style="font-weight: bold; color:lime;"  data-simplecommand="get_user_count_of_words_ready"></span></p></td>
+            <td style="border: 0px;" width="19%" align="center"><a href="./personal_page/"><p data-simplecommand="get_user_information" id="class_above_panel_user_view" align="right" style="font-weight: bold; color:rgb(76, 96, 209);"></p></a></td>
+        </tr>
+    </table>
+
+
+<hr>
+
+    <div class = 'my_div'>
+        <div class="my_div_left">
+                <a href="/phrases/add_new/{{ id_phrase }}/"><IMG class ="image_little_button" WIDTH="64" HEIGHT="64"  title = "Редактировать фразу" src="{% static 'images/redo.png' %}"></a>
+                    <IMG  WIDTH="64" HEIGHT="64" src="{% static 'images/empty_32x32.png' %}">
+                <a href="phrases/next_with_ready/{{ id_phrase }}/"><IMG class ="image_little_button" WIDTH="64" HEIGHT="64"  title = "Пометить фразу как выученную" src="{% static 'images/ready.png' %}"></a>
+                    <IMG  WIDTH="64" HEIGHT="64" src="{% static 'images/empty_32x32.png' %}">
+                <a onclick="javascript:history.back(); return false;"><IMG class ="image_little_button" WIDTH="64" HEIGHT="64"  title = "Назад" src="{% static 'images/back.png' %}"></a>
+                    <IMG  WIDTH="64" HEIGHT="64" src="{% static 'images/empty_32x32.png' %}">
+                <a href="/phrases/"><IMG class ="image_little_button" WIDTH="64" HEIGHT="64"  title = "На главную" src="{% static 'images/home.png' %}"></a>
+        </div>
+    </div>
+    <br>
+
+    <p class = 'my_class_p_my_class_p_examples' id="id_class_p_my_class_p_examples"></p>
+    <p class = 'my_class_p_my_class_p_examples_russian' id ="id_class_p_my_class_p_examples_russian"></p>
+
+    <button class = 'button_add' onclick='NextPhrase()'>NEXT</button>
+
+    <br>
+
+</body>
+</html>
+
+
+

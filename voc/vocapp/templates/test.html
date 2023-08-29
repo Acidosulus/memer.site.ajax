@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+
+{% load static %}
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+    <link rel="shortcut icon" type="image/png" href="{% static '/images/favicon.png' %}"/>
+    <title>Test</title>
+</head>
+
+
+<body background="{% static 'images/background_bb.jpg' %}">
+<PRE class = 'my_class_p_my_class_p_examples'>
+{% autoescape off %}
+{{ text }}
+{% endautoescape %}
+</PRE>>
+</body>
+</html>
+
+
+
+<script type="text/javascript">
+window.onload = function(event) {
+    setLocation('#');
+}
+function setLocation(curLoc){
+  location.href = curLoc;
+  location.hash = curLoc;
+}
+</script>
