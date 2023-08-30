@@ -1,27 +1,12 @@
 import base64
-from django.core.paginator import Paginator
-from django.shortcuts import render, redirect
-from django import forms
 import datetime
 from datetime import date, timedelta
-import os.path
 import os
-import shutil
-from django.http import JsonResponse
-from django.core.serializers import serialize
-from django.http import HttpResponse
-from gtts import gTTS
-from django.contrib.auth import authenticate, login, logout
 from my_library import *
 from pathlib import Path
-from django.views.decorators.csrf import csrf_exempt  
-import configparser
-import django.http.request
 import sys
-from django.conf import settings
 from click import echo, style
 from colorama import Fore, Back, Style
-import sqlalchemy
 import sqlalchemy.orm
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -39,7 +24,7 @@ printer = pprint.PrettyPrinter(indent=4)
 
 if sys.platform == 'linux':
 	dbl = LanguageDBLast(r'/run/user/1640202393/media/by-uuid-A8C0-6A35/memer.site/voc/db.sqlite3')
-	dbn = LanguageDB(r'/run/user/1640202393/media/by-uuid-A8C0-6A35/memer.site/language.db', False)
+	dbn = LanguageDB("postgresql+psycopg2://postgres:321@185.112.225.153:35432/language", autocommit=False)
 else:
 	dbl = LanguageDBLast(r'z:\memer.site\voc\db.sqlite3')
 	dbn = LanguageDB(r'z:\memer.site\language.db', False)

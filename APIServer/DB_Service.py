@@ -5,7 +5,7 @@ from sqlalchemy import Column, Integer, Table, MetaData, and_
 from sqlalchemy.orm import Session
 from sqlalchemy import Integer,  ForeignKey
 from sqlalchemy.orm import relationship
-from sqlalchemy import Column, Computed, DateTime, ForeignKey, Integer, Table, Text, desc, select
+from sqlalchemy import Column, Computed, DateTime, ForeignKey, Integer, Table, Text, desc, select, update
 from sqlalchemy.sql.sqltypes import NullType
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm import declarative_base, registry
@@ -249,7 +249,7 @@ class LanguageDB:
 							   											User.user_id==Book.user_id,
 																		Book.id_book==id_book,
 																		Sentence.id_book==Book.id_book)).order_by(desc(Sentence.id_paragraph)).first()
-		return RowsToDictList(result)[2]['id_paragraph']
+		return int(RowsToDictList(result)[2]['id_paragraph'])
 
 	# retun min paragraph number into book
 	def GetMinParagraphNumberByBook(self, user_name:str, id_book:int):
@@ -258,7 +258,7 @@ class LanguageDB:
 							   											User.user_id==Book.user_id,
 																		Book.id_book==id_book,
 																		Sentence.id_book==Book.id_book)).order_by(Sentence.id_paragraph).first()
-		return RowsToDictList(result)[2]['id_paragraph']
+		return int(RowsToDictList(result)[2]['id_paragraph'])
 
 
 	def GetListOfSyllables(self, user_name:str, ready:int, slice_size:int = 100, slice_number:int = 1):
@@ -286,6 +286,21 @@ class LanguageDB:
 							})
 		self.IfCommit()
 		print('end GetListOfSyllables:',datetime.datetime.now())
+		return result
+
+
+	def SaveBookPosition(self, user_name:str, id_book:int, new_current_paragraph:int):
+		if self.GetMinParagraphNumberByBook(user_name, id_book) <= new_current_paragraph <= self.GetMaxParagraphNumberByBook(user_name, id_book):
+
+			self.session.execute(	update(Book).
+														where(and_(	Book.user_id==self.GetUserId(user_name),
+																	Book.id_book==id_book)).
+														values(current_paragraph = new_current_paragraph))
+			
+			self.session.commit()
+			result = {'data':'Ok'}
+		else:
+			result = {'data':'ERROR: New current paragraph is outside of book paragraph range.'}
 		return result
 
 
@@ -438,6 +453,7 @@ class LanguageDB:
 																						).first()
 		return RowToDict(phrase)
 
+
 	def SaveSyllable (self, rq):
 		def get_example_by_rowid(id, listofexamples):
 			for example in listofexamples:
@@ -496,8 +512,12 @@ class LanguageDB:
 		self.session.commit()
 		return {'data':'ok'}
 		
-		
+	def GetUserId(self, user_name:str):
+		user = self.session.execute(	select(User).
+										where(	User.name==user_name)
+										).first()
 
+		return user[0].user_id
 		
 
 printer = pprint.PrettyPrinter(indent=12, width=120)
@@ -511,7 +531,8 @@ if False:
 	else:
 		dbn = LanguageDB("postgresql+psycopg2://postgres:321@127.0.0.1:35432/language", False)
 	#prnt(dbn.GetUserBooks('admin'))
-	prnt(dbn.GetUserBookParagraph('admin',1,7221))
+	#prnt(dbn.GetUserId('admin'))
+	prnt(dbn.SaveBookPosition('admin',1,7212))
 	#prnt(dbn.GetMaxParagraphNumberByBook('admin',1))
 	#prnt(dbn.GetMinParagraphNumberByBook('admin',1))
 	print('****************************************************************************')

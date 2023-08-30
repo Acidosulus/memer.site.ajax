@@ -1,31 +1,10 @@
-import base64
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
 from django import forms
-#import sqlite3 as sl
-import datetime
 from datetime import date, timedelta
-import load_syllable_from_wooordhunt
-import os.path
 import os
-#import subprocess
-#import re
-#import hashlib
-#import threading
-import shutil
-from django.http import JsonResponse
-from django.core.serializers import serialize
-from django.http import HttpResponse
-from gtts import gTTS
-from django.contrib.auth import authenticate, login, logout
 from my_library import delete_non_english_alphabet_characters, sx
 from pathlib import Path
-from django.views.decorators.csrf import csrf_exempt  
-import configparser
-import django.http.request
-#from requests_toolbelt.multipart import decoder
-#from django.utils.encoding import smart_text
-import sys
 from django.conf import settings
 from click import echo, style
 from colorama import Fore, Back, Style

@@ -1,3 +1,5 @@
+var selection_state=1;
+
 window.onload = async function(event) {
   console.log(`window.onload: start`);
   await Load_Books_List();
@@ -19,6 +21,22 @@ window.onload = async function(event) {
     }
   }
 
+function FlipPages(step){
+  if( document.body.id!=`id_body_book`){
+    return;
+  }
+  let request = new XMLHttpRequest();
+  request.open(`POST`, `/api/v1/cross_request/`, true);
+  request.send(`{"username":"","command":"Set_Book_Position","comment":"","data":"${document.body.dataset.idbook},${Number(document.body.dataset.currentparagraph)+step}"}`);
+  request.onload = function() {
+                                let jresponse =  JSON.parse(request.responseText);
+                                if (jresponse.data='Ok'){
+                                  document.body.dataset.currentparagraph = Number(document.body.dataset.currentparagraph)+step;
+                                  Load_Book_Page();
+                                }
+                              }
+}
+
 async function Load_Book_Page(){
   if( document.body.id!=`id_body_book`){
     return;
@@ -27,23 +45,66 @@ async function Load_Book_Page(){
   req.open(`POST`, `/api/v1/cross_request/`, true);
   req.send(`{"username":"","command":"Get_Book_Information","comment":"","data":"${document.body.dataset.idbook}"}`);
   req.onload = function(){
-    let answer = JSON.parse(req.responseText);
-    console.log(answer);
-    document.getElementById(`id_book_name`).innerHTML = answer.book_name
-    document.getElementById(`id_book_position`).innerHTML = ((answer.current_paragraph      - answer.Min_Paragraph_Number) * 100 / 
-                                                              (answer.Max_Paragraph_Number  - answer.Min_Paragraph_Number)).toFixed(2) + `% &nbsp;&nbsp;&nbsp;` + 
-                                                              (answer.current_paragraph     - answer.Min_Paragraph_Number) + ` / ` + (answer.Max_Paragraph_Number- answer.Min_Paragraph_Number)
-    let request = new XMLHttpRequest();
-    request.open(`POST`, `/api/v1/cross_request/`, true);
-    request.send(`{"username":"","command":"Get_Paragraphs","comment":"","data":"1,7221,5"}`);
-    request.onload = function(){
-      let jresponse = JSON.parse(request.responseText);
-      console.log(jresponse)
+                            let answer = JSON.parse(req.responseText);
+                            document.getElementById(`id_book_name`).innerHTML = answer.book_name
+                            document.getElementById(`id_book_position`).innerHTML = ((answer.current_paragraph      - answer.Min_Paragraph_Number) * 100 / 
+                                                                                      (answer.Max_Paragraph_Number  - answer.Min_Paragraph_Number)).toFixed(2) + `% &nbsp;&nbsp;&nbsp;` + 
+                                                                                      (answer.current_paragraph     - answer.Min_Paragraph_Number) + ` / ` + (answer.Max_Paragraph_Number- answer.Min_Paragraph_Number)
+                            document.body.dataset.currentparagraph = answer.current_paragraph;
+                            let sentence_number = 0;
+                            let request = new XMLHttpRequest();
+                            request.open(`POST`, `/api/v1/cross_request/`, true);
+                            request.send(`{"username":"","command":"Get_Paragraphs","comment":"","data":"${answer.id_book},${answer.current_paragraph},5"}`);
+                            request.onload = function(){
+                                                          document.getElementById(`id_div_book_body`).innerHTML=``;
+                                                          let jresponse = JSON.parse(request.responseText);
+                                                          for (let paragrath of jresponse){
+                                                                                            lc_book_paragraph = `<br><p class="my_class_p_my_class_p_examples">`;
+                                                                                            for (let sentence of paragrath){
+                                                                                                                            sentence_number += 1;
+                                                                                                                            lc_book_paragraph += `<span id ="sentence_${sentence_number}"  onclick="selectText('sentence_${sentence_number}');" class = '${sentence_number%2==0 ? 'my_class_p_my_class_p_books_even':'my_class_p_my_class_p_books'}'>`;
+                                                                                                                            lc_book_paragraph += sentence.sentence;
+                                                                                                                            lc_book_paragraph += `</span>`;
+                                                                                                                            lc_book_paragraph += `&nbsp;`
+                                                                                                                            lc_book_paragraph += `<IMG WIDTH='48' HEIGHT='48'  title = '' src='/static/images/audio.svg' onclick = 'new Audio("/sentence/${sentence.mime}").play(); return false;'>`
+                                                                                                                            lc_book_paragraph += `&nbsp;&nbsp;&nbsp;`
+                                                                                                                          }
+                                                                                            lc_book_paragraph += `</p>`
+                                                                                            document.getElementById(`id_div_book_body`).insertAdjacentHTML('beforeend',lc_book_paragraph)
+                                                          }
+                                                      }
+                            }
+}
+
+function selectText(containerid) {
+  if (selection_state==1)
+  {
+      if (document.selection) { // IE
+          var range = document.body.createTextRange();
+          range.moveToElementText(document.getElementById(containerid));
+          range.select();
+      } else if (window.getSelection) {
+          var range = document.createRange();
+          range.selectNode(document.getElementById(containerid));
+          window.getSelection().removeAllRanges();
+          window.getSelection().addRange(range);
+      }
+  }
+}
+
+function clickAutoSelectEvent(obj)
+{
+if (selection_state==1)
+    {
+        selection_state=2
+        obj.src="/static/images/angle_text.png"
+    }
+else 
+    {
+        selection_state=1
+        obj.src="/static/images/angle_text_bright.png"
     }
 }
-}
-
-
 
 async function Load_Books_List(){
     if(document.body.id!='id_body_books'){
