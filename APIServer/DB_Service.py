@@ -521,7 +521,6 @@ class LanguageDB:
 	
 	# return list of learning words from book paragraphs list
 	def GetListOfUserSyllableFromParagraphsId(self, user_name:str, id_book:int, paragraph_ids_list:list):
-		userid = self.GetUserId(user_name)
 		words_list = []
 		for paragraph_id in paragraph_ids_list:
 			for sentence in self.GetUserBookParagraph(user_name, int(id_book), int(paragraph_id)):
@@ -530,13 +529,10 @@ class LanguageDB:
 					if len(word_candidate)>2:
 						append_if_not_exists(word_candidate.lower(), words_list)
 		result = []
-		prnt('words_list:')
-		prnt(words_list)
 		for element in self.session.query(Syllable.word).filter(and_(		Syllable.user_id==self.GetUserId(user_name),
 																			Syllable.ready==0,
 																			Syllable.word.in_(words_list))).all():
 			append_if_not_exists(element[0], result)
-		prnt(result)
 		return result
 
 printer = pprint.PrettyPrinter(indent=12, width=180)

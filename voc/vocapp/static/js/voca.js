@@ -232,6 +232,23 @@ function AddExamplToNewSyllablePage(parent, example, translate, rowid, id_int){
                                                     replaceAll(`{ _random_ }`, id_int ));
 }
 
+async function LoadSyllableFromWoordhunt(word){
+  let req = new XMLHttpRequest();
+  req.open(`GET`, `/GetWoorhuntDataJSON/${word}/`, true);
+  req.send();
+  req.onload = function(){
+    let answer = JSON.parse(req.responseText);
+    console.log(answer)
+    document.body.dataset.syllable_id = answer.syllable_id;
+    document.getElementById(`id_transcription`).value = answer.transcription
+    document.getElementById(`id_translations`).value = answer.translations
+    for (var example of answer.examples) {
+                                          AddExamplToNewSyllablePage(document.getElementById(`id_examples`), example.example, example.translate, example.rowid, getRandomInt(1000000000000, 9999999999999));
+                                        }
+}
+
+}
+
   async function Load_Syllable_Into_Add_New_Word(){
     if(document.body.id!='body_add_new_word'){
       return
@@ -432,7 +449,7 @@ function AddExamplToNewSyllablePage(parent, example, translate, rowid, id_int){
         <td with = "24%" style="color:Blue"><a href="./word_in_progress/{{ word.word }}/">{{ word.word }}</a></td>
         <td width="24%" align = "center" style="color:DarkRed"  onclick="new Audio('/static/sounds/{{ word.word }}.mp3').play(); return false;" >{{ word.transcription }}</td>
         <td width="7%" align = "center">{{ word.show_count }}</td>
-        <td width="7%" align = "center"><a href="./add_new_word/{{ word.word }}/"><IMG class ="image_little_button" WIDTH="32" HEIGHT="32"  title = "Редактировать слово {{ word.word }}" src="/static/images/redo.png"></a></td>
+        <td width="7%" align = "center"><a href="/add_new_word/{{ word.word }}/"><IMG class ="image_little_button" WIDTH="32" HEIGHT="32"  title = "Редактировать слово {{ word.word }}" src="/static/images/redo.png"></a></td>
         <td width="7%" align = "center"><a onclick='SetWordStatus("{{ word.word }}", (document.getElementById("index_table_of_syllables").dataset.ready==1?0:1)); document.getElementById("tr_of_index_words__{{ word.word }}").remove(); LoadSimpleData();'><IMG  class ="image_little_button" WIDTH="32" HEIGHT="32"  title = "Слово выученно" src="/static/images/ok.png"></a></td>
         </tr>`
         
@@ -593,7 +610,7 @@ async  function get_finding(lc_value){
       <td with = "24%" style="color:Blue"><a href="./word_in_progress/{{ word.word }}/">{{ word.word }}</a></td>
       <td width="24%" align = "center" style="color:DarkRed"  onclick="new Audio('/static/sounds/{{ word.word }}.mp3').play(); return false;" >{{ word.transcription }}</td>
       <td width="7%" align = "center">{{ word.show_count }}</td>
-      <td width="7%" align = "center"><a href="./add_new/{{ word.word }}/"><IMG class ="image_little_button" WIDTH="32" HEIGHT="32"  title = "Редактировать слово {{ word.word }}" src="/static/images/redo.png"></a></td>
+      <td width="7%" align = "center"><a href="./add_new_word/{{ word.word }}/"><IMG class ="image_little_button" WIDTH="32" HEIGHT="32"  title = "Редактировать слово {{ word.word }}" src="/static/images/redo.png"></a></td>
       <td width="7%" align = "center"><a onclick='SetWordStatus("{{ word.word }}", (document.getElementById("index_table_of_syllables").dataset.ready==1?0:1)); document.getElementById("tr_of_index_words__{{ word.word }}").remove(); LoadSimpleData();'><IMG  class ="image_little_button" WIDTH="32" HEIGHT="32"  title = "Слово выученно" src="/static/images/ok.png"></a></td>
       </tr>`;
       document.getElementById("span_search_result").innerHTML='';

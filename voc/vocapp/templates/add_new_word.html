@@ -34,7 +34,8 @@
                     <div class ='div_float_right'><IMG  WIDTH="48" HEIGHT="48" src="{% static 'images/empty_32x32.png' %}"></div>
                     <div class ='div_float_right'><a id= 'id_link_on_glosbe' href="https://ru.glosbe.com/en/ru/{{ word }}" target="_blank"><IMG  class ="image_little_button"  WIDTH="48" HEIGHT="48"  title = "wooordhunt.ru" src="https://ru.glosbe.com/assets/favicon/favicon-32x32.png"></a></div>
                     <div class ='div_float_right'><IMG  WIDTH="48" HEIGHT="48" src="{% static 'images/empty_32x32.png' %}"></div>
-                    <p align = "center"><input type="submit" value="Сохранить" class="button_save" onclick="SaveSyllable()"></p>
+                    <p align = "center"><input type="submit" value="Сохранить" class="button_save" onclick="SaveSyllable(); window.location.href = '/'; "></p>
+                    <p align = "center"><input type="submit" value="woordhunt =>>" class="button_save" onclick="LoadSyllableFromWoordhunt(document.getElementById(`id_word`).value);"></p>
                 </div>
 <hr>
         <table width = '100%' style="border: 0px;">
@@ -52,7 +53,7 @@
                 <IMG  onclick="AddExamplToNewSyllablePage(document.getElementById(`id_examples`),``,``,0,getRandomInt(1000000000000, 9999999999999));" class ="image_little_button" style="display: inline-block;box-shadow: 2px 2px 3px 4px rgba(0,0,0,0.5);text-shadow: 1px 1px 2px black, 0 0 1em black; border-radius: 12px;" WIDTH="64" HEIGHT="64"  title = "Добавить слово" src="{% static 'images/add.png' %}">
         </a>
         </div>
-            <p align = "center"><input type="submit" value="Сохранить" class="button_save" onclick="SaveSyllable()"></p>
+            <p align = "center"><input type="submit" value="Сохранить" class="button_save" onclick="SaveSyllable(); window.location.href = '/';"></p>
         
 
 
