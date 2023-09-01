@@ -218,6 +218,11 @@ async def Set_Book_Position(rq:SiteRequest):
 	data = rq.data.split(',') # id_book, new_current_paragraph
 	return JSONResponse(dblang.SaveBookPosition(rq.username, int(data[0]), int(data[1]) ) )
 
+@app.post("/Get_List_Of_User_Syllable_From_Paragraphs_Id/")
+async def Get_List_Of_User_Syllable_From_Paragraphs_Id(rq:SiteRequest):
+	printSiteRequest(inspect.currentframe().f_code.co_name, rq)
+	result = dblang.GetListOfUserSyllableFromParagraphsId(rq.username, int(rq.comment), rq.data.split(','))
+	return JSONResponse({'words':result})
 
 def printSiteRequest(procedure, rq):
 	echo(	style(text=procedure, bg='bright_black', fg='bright_yellow') + ' ' +

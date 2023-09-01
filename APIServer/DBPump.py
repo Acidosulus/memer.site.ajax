@@ -27,7 +27,7 @@ if sys.platform == 'linux':
 	dbn = LanguageDB("postgresql+psycopg2://postgres:321@185.112.225.153:35432/language", autocommit=False)
 else:
 	dbl = LanguageDBLast(r'z:\memer.site\voc\db.sqlite3')
-	dbn = LanguageDB(r'z:\memer.site\language.db', False)
+	dbn = LanguageDB("postgresql+psycopg2://postgres:321@185.112.225.153:35432/language", autocommit=False)
 print('Drop database tables')
 dbn.Drop_all_tables()
 print('Create database tables')

@@ -229,6 +229,8 @@ def RowToDict(row):
 
 
 def RowsToDictList(rows):
+	if rows is None:
+		return [{}]
 	result = []
 	for row in rows:
 		dic = {}

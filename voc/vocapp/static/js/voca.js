@@ -51,6 +51,13 @@ async function Load_Book_Page(){
                                                                                       (answer.Max_Paragraph_Number  - answer.Min_Paragraph_Number)).toFixed(2) + `% &nbsp;&nbsp;&nbsp;` + 
                                                                                       (answer.current_paragraph     - answer.Min_Paragraph_Number) + ` / ` + (answer.Max_Paragraph_Number- answer.Min_Paragraph_Number)
                             document.body.dataset.currentparagraph = answer.current_paragraph;
+
+                            let wordsrequest = new XMLHttpRequest();
+                            wordsrequest.open(`POST`, `/api/v1/cross_request/`, false);
+                            wordsrequest.send(`{"username":"","command":"Get_List_Of_User_Syllable_From_Paragraphs_Id","comment":"${answer.id_book}","data":"${answer.current_paragraph},${answer.current_paragraph+1},${answer.current_paragraph+2},${answer.current_paragraph+3},${answer.current_paragraph+4}"}`);
+                            let wordlist = JSON.parse(wordsrequest.responseText)
+                            console.log(wordlist)
+
                             let sentence_number = 0;
                             let request = new XMLHttpRequest();
                             request.open(`POST`, `/api/v1/cross_request/`, true);
@@ -61,13 +68,26 @@ async function Load_Book_Page(){
                                                           for (let paragrath of jresponse){
                                                                                             lc_book_paragraph = `<br><p class="my_class_p_my_class_p_examples">`;
                                                                                             for (let sentence of paragrath){
+                                                                                                                            let modified_sentence = sentence.sentence;
+                                                                                                                            for (word of wordlist.words){
+                                                                                                                              if (~sentence.sentence.toLowerCase().indexOf(word.toLowerCase())){
+                                                                                                                                console.log(`${word}: ${sentence.sentence}`);
+                                                                                                                                let startindex = sentence.sentence.toLowerCase().indexOf(word.toLowerCase());
+                                                                                                                                let endindex = startindex + word.length;
+                                                                                                                                modified_sentence =   modified_sentence.slice(0, startindex) + 
+                                                                                                                                                      `<span style="color:#7a8500">` + 
+                                                                                                                                                      modified_sentence.slice(startindex,endindex) +
+                                                                                                                                                      `</span>` +
+                                                                                                                                                      modified_sentence.slice(endindex,modified_sentence.length);
+                                                                                                                              }
+                                                                                                                            }
                                                                                                                             sentence_number += 1;
                                                                                                                             lc_book_paragraph += `<span id ="sentence_${sentence_number}"  onclick="selectText('sentence_${sentence_number}');" class = '${sentence_number%2==0 ? 'my_class_p_my_class_p_books_even':'my_class_p_my_class_p_books'}'>`;
-                                                                                                                            lc_book_paragraph += sentence.sentence;
+                                                                                                                            lc_book_paragraph += modified_sentence;
                                                                                                                             lc_book_paragraph += `</span>`;
-                                                                                                                            lc_book_paragraph += `&nbsp;`
+                                                                                                                            lc_book_paragraph += `&nbsp; `
                                                                                                                             lc_book_paragraph += `<IMG WIDTH='48' HEIGHT='48'  title = '' src='/static/images/audio.svg' onclick = 'new Audio("/sentence/${sentence.mime}").play(); return false;'>`
-                                                                                                                            lc_book_paragraph += `&nbsp;&nbsp;&nbsp;`
+                                                                                                                            lc_book_paragraph += `&nbsp;&nbsp;&nbsp; `
                                                                                                                           }
                                                                                             lc_book_paragraph += `</p>`
                                                                                             document.getElementById(`id_div_book_body`).insertAdjacentHTML('beforeend',lc_book_paragraph)

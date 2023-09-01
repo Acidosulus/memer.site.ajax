@@ -10,7 +10,7 @@ from sqlalchemy.sql.sqltypes import NullType
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm import declarative_base, registry
 import pprint
-from my_library import RowToDict, RowsToDictList, RowsToDictList_last, append_if_not_exists
+from my_library import RowToDict, RowsToDictList, RowsToDictList_last, append_if_not_exists, delete_non_english_alphabet_characters
 import math
 import datetime
 import inspect
@@ -511,16 +511,35 @@ class LanguageDB:
 
 		self.session.commit()
 		return {'data':'ok'}
-		
+	# return user ID by user name		
 	def GetUserId(self, user_name:str):
 		user = self.session.execute(	select(User).
 										where(	User.name==user_name)
 										).first()
 
 		return user[0].user_id
-		
+	
+	# return list of learning words from book paragraphs list
+	def GetListOfUserSyllableFromParagraphsId(self, user_name:str, id_book:int, paragraph_ids_list:list):
+		userid = self.GetUserId(user_name)
+		words_list = []
+		for paragraph_id in paragraph_ids_list:
+			for sentence in self.GetUserBookParagraph(user_name, int(id_book), int(paragraph_id)):
+				for word in sentence['sentence'].strip().split(' '):
+					word_candidate = delete_non_english_alphabet_characters(word)
+					if len(word_candidate)>2:
+						append_if_not_exists(word_candidate.lower(), words_list)
+		result = []
+		prnt('words_list:')
+		prnt(words_list)
+		for element in self.session.query(Syllable.word).filter(and_(		Syllable.user_id==self.GetUserId(user_name),
+																			Syllable.ready==0,
+																			Syllable.word.in_(words_list))).all():
+			append_if_not_exists(element[0], result)
+		prnt(result)
+		return result
 
-printer = pprint.PrettyPrinter(indent=12, width=120)
+printer = pprint.PrettyPrinter(indent=12, width=180)
 prnt = printer.pprint
 
 
@@ -530,9 +549,10 @@ if False:
 		dbn = LanguageDB("postgresql+psycopg2://postgres:321@185.112.225.153:35432/language", autocommit=False)
 	else:
 		dbn = LanguageDB("postgresql+psycopg2://postgres:321@127.0.0.1:35432/language", False)
+	print(dbn.GetListOfUserSyllableFromParagraphsId('admin',1,[7430, 7431, 7432, 7433, 7434, 7435]))
 	#prnt(dbn.GetUserBooks('admin'))
 	#prnt(dbn.GetUserId('admin'))
-	prnt(dbn.SaveBookPosition('admin',1,7212))
+	#prnt(dbn.SaveBookPosition('admin',1,7212))
 	#prnt(dbn.GetMaxParagraphNumberByBook('admin',1))
 	#prnt(dbn.GetMinParagraphNumberByBook('admin',1))
 	print('****************************************************************************')
