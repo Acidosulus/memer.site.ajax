@@ -16,6 +16,7 @@ import inspect
 import base64
 import pprint
 import json
+from settings import Options
 
 printer = pprint.PrettyPrinter(indent=12, width=120)
 prnt = printer.pprint
@@ -23,12 +24,8 @@ prnt = printer.pprint
 base_storage_path = Path(os.path.abspath(os.curdir)).parent / 'Storage'
 echo(style('Base storage path: ', fg='yellow') + style(base_storage_path, fg='bright_yellow'))
 
-config = configparser.ConfigParser()
-config.read("options.ini")
-SELF_ADRESS = config[sys.platform]["webserver"]
-API_ADRESS = config[sys.platform]["apiserver"]
-print(f'SELF_ADRESS:{SELF_ADRESS}')
-print(f'API_ADRESS:{API_ADRESS}')
+options = Options("options.ini")
+
 
 
 db = FileInformationDB.VolumeDB(base_storage_path.parent)
@@ -36,7 +33,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[SELF_ADRESS, API_ADRESS],
+    allow_origins=[options.SELF_ADRESS, options.API_ADRESS],
     allow_credentials=True, 
  	allow_methods=["*"], 
  	allow_headers=["*"]
@@ -51,11 +48,11 @@ app.add_middleware(
 
 
 if sys.platform == 'linux':
-	dblang = db_path =  "postgresql+psycopg2://postgres:321@185.112.225.153:35432/language"
+	dblang = options.LANDDBURI
 else:
-	dblang = db_path =  "postgresql+psycopg2://postgres:321@127.0.0.1:35432/language"
-echo(style('datbase:', bg='bright_black', fg='bright_green')+style(db_path, fg='bright_green'))
-dblang = LanguageDB(db_path, autocommit=False )
+	dblang = options.LANDDBURI
+echo(style('datbase:', bg='bright_black', fg='bright_green')+style(dblang, fg='bright_green'))
+dblang = LanguageDB(dblang, autocommit=False )
 
 
 class SiteRequest(BaseModel):
@@ -64,7 +61,7 @@ class SiteRequest(BaseModel):
 	comment:str
 	data:str
 
-SECRETKEY='==dfffffffffffsdfe11231lklSDf234FFFFf--23====pppasdffffffffffffffffdfdfsqqwev.,.m,mzxewfffsdf=='
+SECRETKEY=options.SECRETKEY
 
 @app.get("/GetAllUsers/{key}/")
 async def Get_All_Users(key:str):
@@ -157,6 +154,7 @@ async def Get_Phrases(rq:SiteRequest):
 async def Get_Phrase(rq:SiteRequest):
 	printSiteRequest(inspect.currentframe().f_code.co_name, rq)
 	response = dblang.GetPhrase(user_name=rq.username, phrase_id = int(rq.data))
+	response['linkcode'] = base64.b64encode(bytes(response['phrase'], 'utf-8')).decode()
 	return JSONResponse(response)
 
 
@@ -245,10 +243,22 @@ class Syllable(BaseModel):
 	translations:str
 	examples:List[Examples]
 
+
+from typing import Dict, Any
 @app.post("/Save_Syllabe/")
-async def Save_Syllabe(rq:Syllable):
+async def Save_Syllabe(rq:Dict[Any, Any]):
 	response = {}
-	echo(	style(text=inspect.currentframe().f_code.co_name, bg='bright_black', fg='bright_yellow') + ' ' +
+	prnt(rq)
+	prnt(type(rq))
+	syl = Syllable(	syllable_id=int(rq['syllable_id']),
+					username=rq['username'],
+					command=rq['command'],
+					word=rq['word'],
+					transcription=rq['transcription'],
+					translations=rq['translations'],
+					examples = rq['examples']
+					)
+	'''echo(	style(text=inspect.currentframe().f_code.co_name, bg='bright_red', fg='bright_yellow') + ' ' +
 			style(text='username:', bg='bright_black', fg='bright_green')+style(text=rq.username, fg='bright_green') +  ' ' +
 			style(text='command:', bg='bright_black', fg='bright_green')+style(text=rq.command, fg='bright_green') + ' ' +
 			style(text='syllable_id', bg='bright_black', fg='bright_green')+style(text=rq.syllable_id, fg='bright_green') + ' ' +
@@ -256,7 +266,8 @@ async def Save_Syllabe(rq:Syllable):
 			style(text='transcription:', bg='bright_black', fg='bright_green')+style(text=rq.transcription, fg='bright_green') + ' ' +
 			style(text='translations:', bg='bright_black', fg='bright_green')+style(text=rq.translations, fg='bright_green') + ' ' +
 			style(text='examples:', bg='bright_black', fg='bright_green')+style(text=rq.examples, fg='bright_green')   )
-	response = dblang.SaveSyllable(rq)
+			'''
+	response = dblang.SaveSyllable(syl)
 	return JSONResponse(response)
 
 

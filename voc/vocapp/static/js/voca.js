@@ -185,7 +185,8 @@ function GetAllExamplesFromNewSyllablePage(){
         subresult.translate = element.value;
       }
     }
-    subresult.rowid = example_element.dataset.rowid;
+    subresult.rowid = ((example_element.dataset.rowid === `undefined`)? -1 : example_element.dataset.rowid);
+    console.log(subresult.rowid)
     result.push(subresult);
   }
   return result
@@ -199,7 +200,7 @@ function SaveSyllable(){
   let obody = {   username:``,
                   command:`Save_Syllabe`,
                   word:document.getElementById(`id_word`).value,
-                  syllable_id:document.body.dataset.syllable_id,
+                  syllable_id:(document.body.dataset.syllable_id==='undefined'? -1:document.body.dataset.syllable_id),
                   transcription:document.getElementById(`id_transcription`).value,
                   translations:document.getElementById(`id_translations`).value,
                   examples:GetAllExamplesFromNewSyllablePage()
@@ -213,8 +214,8 @@ function SaveSyllable(){
                                                   body: JSON.stringify(obody)
                                                   }
                       )
-  //let answer = response.json();
-  //console.log(answer);
+  let answer = response.json();
+  console.log(answer);
 }
 
 function AddExamplToNewSyllablePage(parent, example, translate, rowid, id_int){
@@ -328,7 +329,7 @@ async function LoadSyllableFromWoordhunt(word){
       req.onload = function(){
                                 console.log(req.responseText)
                                 let answer = JSON.parse(req.responseText);
-                                document.getElementById('id_class_p_my_class_p_examples').innerHTML         = answer.phrase;
+                                document.getElementById('id_class_p_my_class_p_examples').innerHTML         = answer.phrase +`&nbsp;&nbsp;&nbsp;<IMG WIDTH='48' HEIGHT='48'  title = '' src='/static/images/audio.svg' onclick = 'new Audio("/sentence/`+answer.linkcode+`" ).play(); return false;'>`;
                                 document.getElementById('id_class_p_my_class_p_examples_russian').innerHTML = answer.translation;
                               }
                             

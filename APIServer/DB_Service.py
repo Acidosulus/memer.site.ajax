@@ -14,6 +14,9 @@ from my_library import RowToDict, RowsToDictList, RowsToDictList_last, append_if
 import math
 import datetime
 import inspect
+from settings import Options
+
+options = Options('options.ini')
 
 #Base = declarative_base()
 mapper_registry = registry()
@@ -460,9 +463,19 @@ class LanguageDB:
 				if example.rowid==id:
 					return example
 			return {}
+		print(f'rq.syllable_id from request:{rq.syllable_id}')
+		qr = self.session.query(Syllable).filter(	and_(	
+													   								Syllable.user_id==self.GetUserId(rq.username),
+																					Syllable.word==rq.word
+																		)).first()
+		rq.syllable_id = (-1 if qr is None else int(RowToDict(qr)['syllable_id']))
+		print(f'rq.syllable_id from DB:{rq.syllable_id}')
 		if rq.syllable_id>0: #we have not zero id, so we must update syllable into DB
 			syllable, user = self.session.execute(	select(Syllable, User).
-										where(and_(	User.name==rq.username, Syllable.syllable_id==rq.syllable_id))
+										where(and_(	User.name==rq.username, 
+					 								User.user_id == Syllable.user_id,
+					 								Syllable.syllable_id==rq.syllable_id,
+													))
 										).first()
 			syllable.word = rq.word
 			syllable.transcription = rq.transcription
@@ -503,12 +516,15 @@ class LanguageDB:
 			self.session.refresh(syllable)
 			print(f'Идентификатор вставляемой записи Syllable: {syllable.syllable_id}','\n')
 			for example in rq.examples:
-				print(f'new example:{example}')
+				print(f'new example: {example}')
 				if len(example.example.strip())>0: # only non empty examples
 					paragraph = SyllablesParagraph(	example = example.example, 
 				   									translate = example.translate, 
 													syllable_id = syllable.syllable_id	)
-
+					self.session.add(paragraph)
+					self.session.flush()
+					self.session.refresh(paragraph)
+					print(f'new paragraph: {RowToDict(paragraph)}')
 		self.session.commit()
 		return {'data':'ok'}
 	# return user ID by user name		
@@ -542,9 +558,9 @@ prnt = printer.pprint
 
 if False:
 	if sys.platform == 'linux':
-		dbn = LanguageDB("postgresql+psycopg2://postgres:321@185.112.225.153:35432/language", autocommit=False)
+		dbn = LanguageDB(options.LANDDBURI, autocommit=False)
 	else:
-		dbn = LanguageDB("postgresql+psycopg2://postgres:321@127.0.0.1:35432/language", False)
+		dbn = LanguageDB(options.LANDDBURI, False)
 	print(dbn.GetListOfUserSyllableFromParagraphsId('admin',1,[7430, 7431, 7432, 7433, 7434, 7435]))
 	#prnt(dbn.GetUserBooks('admin'))
 	#prnt(dbn.GetUserId('admin'))
