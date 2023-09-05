@@ -192,8 +192,8 @@ function GetAllExamplesFromNewSyllablePage(){
   return result
 }
 
-
-function SaveSyllable(){
+// save syllable data into DB, if link parameter not empty goes by it link
+function SaveSyllable(link){
   if(document.body.id!='body_add_new_word'){
     return;
   }
@@ -214,8 +214,9 @@ function SaveSyllable(){
                                                   body: JSON.stringify(obody)
                                                   }
                       )
-  let answer = response.json();
-  console.log(answer);
+  if (link.length>0){
+    window.location.href = link;
+  }
 }
 
 function AddExamplToNewSyllablePage(parent, example, translate, rowid, id_int){
@@ -571,7 +572,7 @@ async function LoadSyllableFromWoordhunt(word){
   }
 
 
-  document.addEventListener('keyup', function (event) {
+document.addEventListener('keyup', function (event) {
     //alert(`Клавиша ${event.key} отпущена`)
     if (event.key == 'Escape'){
       Close_Findind();

@@ -20,6 +20,9 @@ config = configparser.ConfigParser()
 config.read("options.ini")
 SELF_ADRESS = config[sys.platform]["webserver"]
 API_ADRESS = config[sys.platform]["apiserver"]
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = config[sys.platform]["SECRET_KEY"]
+
 print(f'SELF_ADRESS:{SELF_ADRESS}')
 print(f'API_ADRESS:{API_ADRESS}')
 
@@ -32,13 +35,11 @@ print(f"BASE_DIR: {BASE_DIR}")
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-!jd2mcw17-q(p9e8p(on$%%!z==1k%@8xmg8ct253)cz19=(v_'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 #CSRF_TRUSTED_ORIGINS = ['https://localhost.com']
-ALLOWED_HOSTS = ['memer.site','www.memer.site','localhost','127.0.0.1','192.168.0.35','10.19.16.224']
+ALLOWED_HOSTS = ['memer.site','www.memer.site','localhost','127.0.0.1','192.168.0.35','10.19.16.224',"185.112.225.153"]
 
 
 # Application definition

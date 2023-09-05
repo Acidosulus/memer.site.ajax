@@ -63,23 +63,8 @@ class Wooordhunt:
         soup = BS(self.context, features='html5lib')
         original = soup.find_all('p',{'class':'ex_o'})
         translate = soup.find_all('p',{'class':'ex_t'})
-        #print(len(original),'   ',len(translate))
         for i in range(min(len(original),len(translate))):
             lc_result += original[i].text.strip() + '\n' +translate[i].text.strip() + '\n\n'
-        return lc_result
-        lc_result = ''
-        if 'Примеры, ожидающие перевода' in self.context:
-            lc_source = sx('||'+self.context,'||','Примеры, ожидающие перевода')
-        else:
-            lc_source = sx('||'+self.context,'||','<p class="snoska no_mobile">')
-        
-        for i in range(1,lc_source.count('<p class="ex_o">')+1):
-            lc_example = cleanhtml(sx(lc_source, '<p class="ex_o">', 
-                                                    '&ensp;<!-- <span onclick=', i)
-                                                    .replace('<span class="edit_icon">',chr(13))).replace('<br/>', chr(13)).replace('+7',chr(13)).replace('&ensp;', chr(13)).replace('&#8595;', chr(13)).replace('Мои примеры', '')
-            lc_result = lc_result +chr(13)+chr(13)+ lc_example.replace('   ',' ')
-            lc_result = reduce(lc_result.replace(chr(13)+' ',chr(13)))
-            lc_result = lc_result[1:] if lc_result[0] == chr(13) else lc_result
         return lc_result
 
 
@@ -111,31 +96,6 @@ def Delete_from_String_all_Characters_Unsuitable_For_FileName(pc:str):
         if ch in lc_suitable_simbols:
             lc_result = lc_result + ch
     return lc_result.strip()
-
-# print(Delete_from_String_all_Characters_Unsuitable_For_FileName('Dele!!!te_*fro     "m_Stri&?ng_all_Characters_Unsuitable_For_FileName'))
-
-
-#for part in paragraphs:
-#    lc_part = part
-#    for lc in lc_russian:
-#        lc_part = lc_part.replace(lc, '')
-#    lc_part = lc_part.replace(chr(10), '')
-#    print('ENGLISH:', lc_part)
-
-
-#for lc in paragraphs:
-#    print(lc)
-#    print()
-
-#print()
-#print('=====================================')
-#print(len(paragraphs))
-#print('=====================================')
-#print(paragraphs)
-
-
-
-
 
 
 if False:

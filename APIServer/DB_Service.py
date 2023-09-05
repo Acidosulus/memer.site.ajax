@@ -60,13 +60,6 @@ class Phrase(Base):
 	dt = Column(DateTime, nullable=True)
 
 
-#t_sqlite_sequence = Table(
-#	'sqlite_sequence', metadata,
-#	Column(Integer, 'name', NullType),
-#	Column(Integer, 'seq', NullType)
-#)
-
-
 class UserWordsLog(Base):
 	__tablename__ = 'user_syllable_log'
 
@@ -271,8 +264,8 @@ class LanguageDB:
 								       											User.user_id==Syllable.user_id, 
 																				Syllable.ready==ready
 																		)).order_by(
-																					desc(Syllable.last_view
-			  																		)).offset	(
+																					Syllable.last_view
+			  																		).offset	(
 																								slice_size*(slice_number-1
 				    																			)).limit(slice_size).all():
 			result.append({	'word':syllable.word,
@@ -376,12 +369,18 @@ class LanguageDB:
 
 
 	def SetSylalbleAsViewed(self, word:str, user_name:str):
-		syllable, user = self.session.query(Syllable, User).filter(and_(	User.name==user_name, 
-								       										User.user_id==Syllable.user_id,
+		syllable = self.session.query(Syllable).filter(and_(				Syllable.user_id == self.GetUserId(user_name),
 																			Syllable.word == word
 																			)).first()
-		syllable.last_view = datetime.datetime.now()
+		view_time = datetime.datetime.now()
+		syllable.last_view = view_time
 		syllable.show_count = syllable.show_count + 1
+
+		wordslog = UserWordsLog(	user_id=self.GetUserId(user_name),
+									syllable_id=syllable.syllable_id,
+									dt=view_time)
+		self.session.add(wordslog)
+
 		self.session.commit()
 		return {'data':'ok'}
 
@@ -397,8 +396,7 @@ class LanguageDB:
 		return {'data':syllable.word}
 
 	def SetSyllableStatus(self, word:str, user_name:str, status:int):
-		syllable, user = self.session.query(Syllable, User).filter(and_(	User.name==user_name, 
-								       										User.user_id==Syllable.user_id,
+		syllable = self.session.query(Syllable).filter(and_(				Syllable.user_id==self.GetUserId(user_name),
 																			Syllable.word == word
 																			)).first()
 		syllable.ready = status
@@ -480,6 +478,7 @@ class LanguageDB:
 			syllable.word = rq.word
 			syllable.transcription = rq.transcription
 			syllable.translations = rq.translations
+			syllable.last_view = datetime.datetime.now()
 			prnt(RowToDict(syllable))
 
 			paragraphs = self.session.query(SyllablesParagraph).filter(SyllablesParagraph.syllable_id==syllable.syllable_id).all()
@@ -510,7 +509,8 @@ class LanguageDB:
 					translations = rq.translations,
 					show_count = 0,
 					ready = 0,
-					user_id = user_id_for_request)
+					user_id = user_id_for_request,
+					last_view=datetime.datetime.now())
 			self.session.add(syllable)
 			self.session.flush()
 			self.session.refresh(syllable)

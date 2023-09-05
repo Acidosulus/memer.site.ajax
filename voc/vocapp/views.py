@@ -197,12 +197,13 @@ def index(request):
 	data = {'global_api_server_adress':settings.API_ADRESS, 'ready':0 }
 	return render(request, "index.html", context=data)
 
-
+@login_required
 def ready_list(request):
 	print(" ============== ready_list")
 	data = {'global_api_server_adress':settings.API_ADRESS, 'ready':1 }
 	print(data)
 	return render(request, "ready_list.html", context=data)
+
 
 def personal_page(request):
 	print(" ============== personal_page")
@@ -328,11 +329,11 @@ def test(request):
 	data = {"text":lc_result}
 	return render(request, "test.html", context=data)
 
-
+@login_required
 def add_new_with_parameter(request, pc_new_word):
 	return add_new( request, 	pc_new_word)
 
-
+@login_required
 def add_new(request, pc_new_word):
 	data = {'word':pc_new_word.strip()}
 	return render(request, "add_new_word.html", context=data)
@@ -383,6 +384,7 @@ def DownLoadExamples(pl_list):
 					pass
 	return lc_full_file_name
 
+@login_required
 def word_in_progress(request, pc_word=''):
 	print(f"wordinprogress     pc_word:{pc_word}")
 	data = {"global_api_server_adress":settings.API_ADRESS, 'word':pc_word.strip()}
@@ -401,12 +403,13 @@ def DownLoadmp3s (sentence):
 		except:
 			pass
 	return str(lc_full_file_name)
-
+@login_required
 def books(request):
 	lo_book = Books.objects.filter(userid=request.user.id).order_by('-dt')
 	data = { 'books':lo_book }
 	return render(request, "books.html", context=data)
 
+@login_required
 def book(request, pc_book:str):
 	data = {"id_book":pc_book}
 	return render(request, "book.html", context=data)
@@ -531,9 +534,7 @@ def get_sentence(request, pc_sentence:str):
 		os.path.getsize(lc_file_name)
 	return response
 
-
-
-
+@login_required
 def next_with_last(request, pc_last_word):
 	print(" ============== next_with_last")
 	lo_sillable = Syllable.objects.get(word = pc_last_word, userid=request.user.id)
@@ -542,6 +543,7 @@ def next_with_last(request, pc_last_word):
 	lo_sillable.save()
 	return redirect(next)
 
+@login_required
 def ready(request, pc_ready_word):
 	print(" ============== ready")
 	lo_sillable = Syllable.objects.get(word = pc_ready_word, userid=request.user.id)
@@ -552,6 +554,7 @@ def ready(request, pc_ready_word):
 	print('===================')
 	return redirect(index)
 
+@login_required
 def unready(request, pc_unready_word):
 	lo_sillable = Syllable.objects.get(word = pc_unready_word, userid=request.user.id)
 	lo_sillable.ready = 0
@@ -561,16 +564,17 @@ def unready(request, pc_unready_word):
 	print('===================')
 	return redirect(ready_list)
 
-
+@login_required
 def phrases(request):
 	data = { 'readystatus':0 }
 	return render(request, "phrases.html", context=data)
 
+@login_required
 def phrases_ready_list(request):
 	data = { 'readystatus':1 }
 	return render(request, "phrases.html", context=data)
 
-
+@login_required
 def phrases_add_new(request, pc_phrase_id):
 	print('===================')
 	print(f"phrases_add_new: {pc_phrase_id}")
@@ -600,15 +604,16 @@ def phrases_add_new(request, pc_phrase_id):
 	return render(request, "phrases_modify.html", context=data)
 
 
-
+@login_required
 def phrases_in_progress_with_id(request, pc_phrase_id):
 	data = {'phrase_id':pc_phrase_id}
 	return render(request, "phrase_in_progress.html", context=data)
 
-
+@login_required
 def phrases_in_progress(request):
 	data = {'phrase_id':0}
 	return render(request, "phrase_in_progress.html", context=data)
+
 
 # список каталогов, находящихся по переданному пути, без вложенности
 def Get_Catalogs_List(path:str) -> list:
@@ -633,7 +638,9 @@ def Get_Images_List(path:str) -> list:
 def media_list_02(request, folder_01:str, folder_02:str):
 	return media_list(request, folder_01 + "/" + folder_02)
 
+
 # список каталогов каталого media залогиненного пользователя
+@login_required
 def media_list(request, folder_01:str):
 	echo(	style(text="=================== media_list(request, '", fg="bright_yellow")+
 	  		style(text=f"{folder_01}", fg='bright_green')+
@@ -768,6 +775,7 @@ def dragTest(request, ):
 	return render(request, "dragTest.html", context=data)
 
 @csrf_exempt
+@login_required
 def Upload_User_Media(request:django.http.request.HttpRequest, user_folder:str):
 	print("=========================Upload_User_Media============================")
 	lc_path = get_user_media_path(request) / ( user_folder.replace("|","/") if user_folder.upper()!="USER_ROOT_" else "")
@@ -801,7 +809,7 @@ def Get_Uniqie_file_name(pc_file_name:str) -> str:
 	else:
 		return pc_file_name
 
-
+@login_required
 def create_user_media_folder(request:django.http.request.HttpRequest, folder:str, created_volume:str):
 	print(f'get_user_media_path: {get_user_media_path(request)}')
 	print(f'folder: {folder}')
@@ -820,6 +828,7 @@ def create_user_media_folder(request:django.http.request.HttpRequest, folder:str
 	except Exception as e:return HttpResponse(f'get_user_media_path: {get_user_media_path(request)}\nfolder: {folder}\ncreated_volume: {created_volume}\nlc_path: {lc_path}\n\n' + 'Error on line {}'.format(sys.exc_info()[-1].tb_lineno) +'\n\n' + type(e).__name__ +'\n\n' + e.__str__())
 	else:	return HttpResponse('success')
 	
+@login_required
 def delete_user_media_folder(request:django.http.request.HttpRequest, folder:str):
 	print(f'folder: {folder}')
 	try:
@@ -833,6 +842,7 @@ def delete_user_media_folder(request:django.http.request.HttpRequest, folder:str
 	except Exception as e:	return HttpResponse(f'get_user_media_path: {get_user_media_path(request)}\nfolder: {folder}\ndeleted folder: {folder}\nlc_in_dir: {lc_in_dir}\n\n' + 'Error on line {}'.format(sys.exc_info()[-1].tb_lineno) +'\n\n' + type(e).__name__ +'\n\n' + e.__str__())
 	else:	return HttpResponse('success')
 
+@login_required
 def rename_user_media_folder(request:django.http.request.HttpRequest, current_folder:str, last_folder_name:str, new_folder_name:str):
 	lc_in_dir = get_user_media_path(request) / ( current_folder.replace("|","/") if current_folder.upper()!="USER_ROOT_" else "")
 	echo(	style(text=f'current_folder:', fg='bright_yellow')+
@@ -887,17 +897,3 @@ def GetDividedExamplesWH(source:str):
 		if len(str_example)>0:
 			result.append({'example':str_example, 'translate':str_translate})
 	return result
-
-
-# def rename_user_media(request:django.http.request.HttpRequest, folder:str, new_media_name:str):
-# 	echo(style(text=f'current folder name:', fg='bright_yellow')+
-# 	  	style(text=f'{folder}', fg='bright_green')+
-# 		'	'+
-# 		style(text='new folder name: ', bg='bright_yellow')+
-# 		style(text=f'{new_media_name}', fg='bright_green'))
-# 	try:
-# 		src = get_user_media_path(request) / ( folder.replace("|","/") if folder.upper()!="USER_ROOT_" else "")
-# 		dest = (get_user_media_path(request) / ( folder.replace("|","/") if folder.upper()!="USER_ROOT_" else "")).parent / new_media_name
-# 		os.rename(src, dest)
-# 	except Exception as e:	return HttpResponse(f'get_user_media_path: {get_user_media_path(request)}\nfolder: {folder}\ndeleted folder: {folder}\nlc_in_dir: {lc_in_dir}\n\n' + 'Error on line {}'.format(sys.exc_info()[-1].tb_lineno) +'\n\n' + type(e).__name__ +'\n\n' + e.__str__())
-# 	else:	return HttpResponse('success')
