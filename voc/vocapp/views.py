@@ -2,7 +2,6 @@ import base64
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
 from django import forms
-from .models import Syllable,Books,Paragraphs,Words,Phrases
 #import sqlite3 as sl
 import datetime
 from datetime import date, timedelta

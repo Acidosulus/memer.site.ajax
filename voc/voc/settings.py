@@ -30,6 +30,33 @@ print(f'API_ADRESS:{API_ADRESS}')
 BASE_DIR = Path(__file__).resolve().parent.parent
 print(f"BASE_DIR: {BASE_DIR}")
 
+
+# Database
+# https://docs.djangoproject.com/en/4.0/ref/settings/#databases
+databasename = config[sys.platform]["databasename"]
+print(f'databasename:{databasename}')
+databaseusername = config[sys.platform]["databaseusername"]
+print(f'databaseusername:{databaseusername}')
+databasepassword = config[sys.platform]["databasepassword"]
+print(f'databasepassword:{databasepassword}')
+databasehost = config[sys.platform]["databasehost"]
+print(f'databasehost:{databasehost}')
+databaseport = config[sys.platform]["databaseport"]
+print(f'databaseport:{databaseport}')
+
+DATABASES = {
+	'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': databasename,
+        'USER': databaseusername,
+        'PASSWORD': databasepassword,
+        'HOST': databasehost,
+        'PORT': databaseport,
+	}
+}
+
+
+
 #REST_API_URL = 'http://localhost:9001'#'http://192.168.0.35:9001'
 
 # Quick-start development settings - unsuitable for production
@@ -84,16 +111,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'voc.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/4.0/ref/settings/#databases
-
-DATABASES = {
-	'default': {
-		'ENGINE': 'django.db.backends.sqlite3',
-		'NAME': BASE_DIR / 'db.sqlite3',
-	}
-}
 
 
 # Password validation
