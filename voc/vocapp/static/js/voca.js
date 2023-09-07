@@ -380,8 +380,12 @@ async function LoadSyllableFromWoordhunt(word){
       req.onload = function(){
         let answer = JSON.parse(req.responseText);
         console.log(answer)
+        document.getElementById('id_link_on_wooordhunt').href=`https://wooordhunt.ru/word/${answer.word}`;
+        document.getElementById('id_link_on_glosbe').href=`https://ru.glosbe.com/en/ru/${answer.word}`;
+        
         document.getElementById('id_my_class_p_word').innerHTML = answer.word;
         document.getElementById('id_my_class_p_transcription').innerHTML = answer.transcription;
+        document.getElementById('id_my_class_p_my_class_p_translations').innerHTML = ``;
         let st = '';
         for (element of answer.translations.split(/(?:\r?\n)+/)){
             st += element+'<br>'
@@ -516,8 +520,6 @@ async function LoadSyllableFromWoordhunt(word){
     
     
     async function LoadOneSimpleData(element){
-          //console.log('source:');
-          //console.log('simplecommand: '+elements[i].dataset.simplecommand);
           let body =      `{"username":"`+`"`+`,`+
                           ` "command":"`+element.dataset.simplecommand+`"`+`,`+
                           ` "comment":"`+`"`+`,`+
@@ -530,7 +532,6 @@ async function LoadSyllableFromWoordhunt(word){
           let answer = JSON.parse(req.responseText);
           element.innerHTML = answer.data
         }
-          //console.log("answer.data: "+answer.data);
     }
     
     
