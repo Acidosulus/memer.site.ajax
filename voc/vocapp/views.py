@@ -402,10 +402,13 @@ def DownLoadmp3s (sentence):
 		except:
 			pass
 	return str(lc_full_file_name)
+
+
 @login_required
 def books(request):
-	lo_book = Books.objects.filter(userid=request.user.id).order_by('-dt')
-	data = { 'books':lo_book }
+	#lo_book = Books.objects.filter(userid=request.user.id).order_by('-dt')
+	#data = { 'books':lo_book }
+	data = {}
 	return render(request, "books.html", context=data)
 
 @login_required
