@@ -10,29 +10,7 @@
     <title>Phrases</title>
 </head>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-<script>
-function get_book_information(element){
-  var settings = {
-                  "url": "/api/book_position/"+element.dataset.idbook+"/",
-                  "method": "GET",
-                  "timeout": 0,
-                  };
-      $.ajax(settings).done(function (response) {
-                                                  var content = response.book_position;
-                                                      element.innerHTML = content
-            });
-        }
-
-window.onload = function(event) {
-          let books_information = document.querySelectorAll(".book_position");
-
-          for (let elem of books_information) {
-              get_book_information(elem);
-          }
-  };
-</script>
-
+{% include "subpattern_onload.html" %} 
 
 
 <script type="text/javascript">

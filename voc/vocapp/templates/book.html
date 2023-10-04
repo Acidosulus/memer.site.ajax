@@ -7,7 +7,9 @@
     <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
     <link rel="shortcut icon" type="image/png" href="{% static '/images/favicon.png' %}"/>
     <title>{{ book_name }}</title>
+    {% include "subpattern_onload.html" %}
     <script src="{% static 'js/voca.js' %}"></script>
+    
 
 </head>
 

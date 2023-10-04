@@ -10,24 +10,8 @@
     <title>Books</title>
 </head>
 
+{% include "subpattern_onload.html" %}
 <script src="{% static 'js/voca.js' %}"></script>
-
-<script>
-function get_book_information(element){
-  var settings = {
-                  "url": "/api/book_position/"+element.dataset.idbook+"/",
-                  "method": "GET",
-                  "timeout": 0,
-                  };
-      $.ajax(settings).done(function (response) {
-                                                  var content = response.book_position;
-                                                      element.innerHTML = content
-            });
-        }
-
-
-	
-</script>
 
 
 

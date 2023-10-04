@@ -10,35 +10,10 @@
     <title>Phrases</title>
 </head>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-<script>
-function get_book_information(element){
-  var settings = {
-                  "url": "/api/book_position/"+element.dataset.idbook+"/",
-                  "method": "GET",
-                  "timeout": 0,
-                  };
-      $.ajax(settings).done(function (response) {
-                                                  var content = response.book_position;
-                                                      element.innerHTML = content
-            });
-        }
+{% include "subpattern_onload.html" %} 
+<script src="/static/js/voca.js"></script>
 
-window.onload = function(event) {
-          var books_information = document.querySelectorAll(".book_position");
-
-          for (var elem of books_information) {
-              get_book_information(elem);
-          }
-  };
-</script>
-
-
-
-<script type="text/javascript">
-</script>
-
-<body background="{% static 'images/background_bb.jpg' %}">
+<body background="{% static 'images/background_bb.jpg' %}" id="body_phrase_edit" data-phraseid="{{ phrase_id }}">
 <hr>
     <div class="my_div_save">
         <div class ='div_float_left'><IMG WIDTH="48" HEIGHT="48" src="{% static 'images/empty_32x32.png' %}"></div>
@@ -55,11 +30,10 @@ window.onload = function(event) {
     <form method="POST" target="_self">{% csrf_token %}
 
     <table width = '100%' style="border: 0px;">
-        <tr style="display: none;"><th><label for="modify_type">Modify phrase type (edit/new):</label></th><td class = 'td_input_new_word'><textarea autocomplete="off" type="text" name="modify_type" cols="40" rows="10" class="my_class_input_examples" id="phrase_text" >{{ modify_type }}</textarea></td></th></tr>
-        <tr><th><label for="phrase_text">Phrase:</label></th><td class = 'td_input_new_word'><textarea autocomplete="off" autofocus type="text" name="phrase_text" cols="40" rows="10" class="my_class_input_examples" id="phrase_text" >{{  phrase_text }}</textarea></td></th></tr>
-        <tr><th><label for="phrase_translation">Comment:</label></th><td class = 'td_input_new_word'><textarea autocomplete="off" name="phrase_translation" cols="40" rows="10" class="my_class_input_examples" id="phrase_translation">{{ phrase_translation }}</textarea></td></th></tr>
+        <tr><th><label for="phrase_text">Phrase:</label></th><td class = 'td_input_new_word'><textarea autocomplete="off" autofocus type="text" name="phrase_text" cols="40" rows="10" class="my_class_input_examples" id="phrase_text" ></textarea></td></th></tr>
+        <tr><th><label for="phrase_translation">Comment:</label></th><td class = 'td_input_new_word'><textarea autocomplete="off" name="phrase_translation" cols="40" rows="10" class="my_class_input_examples" id="phrase_translation"></textarea></td></th></tr>
     </table>
-        <p align = "center"><input type="submit" value="Сохранить" class="button_save" onclick="this.submit();"></p>
+        <p align = "center"><input type="submit" value="Сохранить" class="button_save" onclick="SavePhrase('/phrases/');"></p>
     </form>
 
     <hr>

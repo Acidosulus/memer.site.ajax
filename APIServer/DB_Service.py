@@ -419,10 +419,12 @@ class LanguageDB:
 	
 	def GetPhrase(self, user_name:str, phrase_id:int):
 		print(f'user_name:{user_name}       phrase_id:{phrase_id}')
-		phrase, user = self.session.execute(	select(Phrase, User).
-										where(and_(	User.name==user_name, Phrase.id_phrase==phrase_id, User.user_id==Phrase.user_id)).
-										order_by(Phrase.last_view)).first()
-		return RowToDict(phrase)
+		if phrase_id>0:
+			phrase, user = self.session.execute(	select(Phrase, User).
+													where(and_(	User.name==user_name, Phrase.id_phrase==phrase_id, User.user_id==Phrase.user_id)).
+													order_by(Phrase.last_view)).first()
+			return RowToDict(phrase)
+		else: return {'id_phrase':0, 'phrase':'', 'translation':''}
 
 
 	def SetPhraseStatus(self, phrase_id:int, user_name:str, status:int):
@@ -453,6 +455,32 @@ class LanguageDB:
 																						Phrase.last_view
 																						).first()
 		return RowToDict(phrase)
+
+
+	def SavePhrase(self, user_name, phrase_id, text, translate):
+		ln_user_id = self.GetUserId(user_name)
+		if ln_user_id>0:
+			if phrase_id>0:
+				try:
+					phrase = self.session.query(Phrase).filter(and_(	Phrase.id_phrase == phrase_id,
+																		Phrase.user_id == ln_user_id)).first()
+					prnt(RowToDict(phrase))
+					phrase.phrase = text
+					phrase.translation = translate
+					phrase.last_view = datetime.datetime.now()
+					self.session.commit()
+					return {"status":"ok"}
+				except:
+					return {"status":"error - data has not saved"}
+			else: #it's a new phrase
+				try:
+					self.session.add(Phrase(phrase=text, translation = translate, user_id = ln_user_id, last_view = datetime.datetime.now(), dt=datetime.datetime.now(), ready=0, show_count=0))
+					self.session.commit()
+					return {"status":"ok"}
+				except: return {"status":"error - data has not added"}
+		else:
+			return {"status":"error - wrong user name"}
+
 
 
 	def SaveSyllable (self, rq):
@@ -556,12 +584,12 @@ prnt = printer.pprint
 
 
 
-if False:
+if True:
 	if sys.platform == 'linux':
 		dbn = LanguageDB(options.LANDDBURI, autocommit=False)
 	else:
 		dbn = LanguageDB(options.LANDDBURI, False)
-	print(dbn.GetListOfUserSyllableFromParagraphsId('admin',1,[7430, 7431, 7432, 7433, 7434, 7435]))
+	print(dbn.SavePhrase('admin',0, 'delme', 'удали меня'))
 	#prnt(dbn.GetUserBooks('admin'))
 	#prnt(dbn.GetUserId('admin'))
 	#prnt(dbn.SaveBookPosition('admin',1,7212))

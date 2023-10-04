@@ -1,70 +1,114 @@
 var selection_state=1;
 
 window.onload = async function(event) {
-  console.log(`window.onload: start`);
-  await Load_Books_List();
-  if (!(document.body.dataset.phraseid=='0')){   await LoadSimpleData();   }
+  // global variables for connect to APIServer
+  console.log(UserName, UserUUID, APIServer);
+ 
+  Load_Books_List();
+  if (!(document.body.dataset.phraseid=='0')){   LoadSimpleData();   }
   if(document.getElementById('index_table_of_syllables')!=null){
-        await LoadPaginatorBlock();
-        await Load_words_slice(100,
+        LoadPaginatorBlock();
+        Load_words_slice(100,
                       Number(getCookie('syllables_curent_page'+document.getElementById('index_table_of_syllables').dataset.ready, 1)),
                       Number(document.getElementById('index_table_of_syllables').dataset.ready));
 
     }
 
-    await Load_Word_in_Progress_Data();
-    await Load_Phrase_in_Progress_Data();
-    await Load_Syllable_Into_Add_New_Word();
-    await Load_Book_Page();
+    Load_Word_in_Progress_Data();
+    Load_Phrase_in_Progress_Data();
+    Load_Phrase_in_Edit_Data();
+    Load_Syllable_Into_Add_New_Word();
+    Load_Book_Page();
     if (document.getElementById('index_table_of_phrases')!=null){
-        await Load_phrases(Number(document.getElementById('index_table_of_phrases').dataset.ready));
+        Load_phrases(Number(document.getElementById('index_table_of_phrases').dataset.ready));
     }
   }
 
-function FlipPages(step){
+async function asyncRequest (uri, method, data, debug=false){
+    data[`username`]=UserName;
+    data[`useruuid`]=UserUUID;
+    let uuid = create_UUID();
+    if (debug){
+              console.log(uuid, method, uri, 'SEND DATA:', data);
+    }
+    let response_promise = await fetch(uri, {method: method, headers: { 'Content-Type': 'application/json;charset=utf-8' }, body: JSON.stringify(data) } )
+    return response_promise.json();
+}
+
+/*
+function syncRequest (uri, method, data, debug=false){
+  data[`username`]=UserName;
+  data[`useruuid`]=UserUUID;
+  let uuid = create_UUID();
+  if (debug){
+            console.log(uuid, method, uri, 'SEND DATA:', data);
+  }
+  let response = fetch(uri, {method: method, headers: { 'Content-Type': 'application/json;charset=utf-8' }, body: JSON.stringify(data) } )
+  if (debug){
+    console.log(uuid, method, uri, 'RAW RESPONSE:', response);
+  }
+  let answer = response.json()
+  if (debug){
+            console.log(uuid, method, uri, 'RESPONSE DATA:', answer)
+  }
+  return answer;
+}
+*/
+
+// save phrase data into DB, if link parameter not empty goes by it link
+function SavePhrase(link){
+  asyncRequest( `${APIServer}/Save_Phrase/`,
+                `POST`,
+                {command:`${document.body.dataset.phraseid}`, comment:`${document.getElementById('phrase_text').value}`, data:`${document.getElementById('phrase_translation').value}`})
+  if (link.length>0){
+                     window.location.href = link;
+  }
+              
+}
+
+
+  async function Load_Phrase_in_Edit_Data(){
+    if(document.body.id!='body_phrase_edit'){
+      console.log('Load_Phrase_in_Edit_Data', 'no phrase edit')
+      return
+    }
+    if (!(Number(document.body.dataset.phraseid)>=0)){
+      console.log('Load_Phrase_in_Edit_Data', 'no right phrase id')
+      return
+    }
+    let answer = await asyncRequest(`${APIServer}/Get_Phrase/`, `POST`, {command:``, comment:``, data:`${document.body.dataset.phraseid}`})
+    document.getElementById('phrase_text').value = answer.phrase
+    document.getElementById('phrase_translation').value = answer.translation;
+  }
+
+
+
+async function FlipPages(step){
   if( document.body.id!=`id_body_book`){
     return;
   }
-  let request = new XMLHttpRequest();
-  request.open(`POST`, `/api/v1/cross_request/`, true);
-  request.send(`{"username":"","command":"Set_Book_Position","comment":"","data":"${document.body.dataset.idbook},${Number(document.body.dataset.currentparagraph)+step}"}`);
-  request.onload = function() {
-                                let jresponse =  JSON.parse(request.responseText);
-                                if (jresponse.data='Ok'){
-                                  document.body.dataset.currentparagraph = Number(document.body.dataset.currentparagraph)+step;
-                                  Load_Book_Page();
-                                }
-                              }
+  let jresponse =  await asyncRequest(`${APIServer}/Set_Book_Position/`, `POST`, {command:``, comment:``, data:`${document.body.dataset.idbook},${Number(document.body.dataset.currentparagraph)+step}`});
+  if (jresponse.data='Ok'){
+    document.body.dataset.currentparagraph = Number(document.body.dataset.currentparagraph)+step;
+    await Load_Book_Page();
+  }
+                              
 }
 
 async function Load_Book_Page(){
   if( document.body.id!=`id_body_book`){
     return;
   }
-  let req = new XMLHttpRequest();
-  req.open(`POST`, `/api/v1/cross_request/`, true);
-  req.send(`{"username":"","command":"Get_Book_Information","comment":"","data":"${document.body.dataset.idbook}"}`);
-  req.onload = function(){
-                            let answer = JSON.parse(req.responseText);
+  let answer = await asyncRequest(`${APIServer}/Get_Book_Information/`, `POST`, {command:``, comment:``, data:`${document.body.dataset.idbook}`});
                             document.getElementById(`id_book_name`).innerHTML = answer.book_name
                             document.getElementById(`id_book_position`).innerHTML = ((answer.current_paragraph      - answer.Min_Paragraph_Number) * 100 / 
                                                                                       (answer.Max_Paragraph_Number  - answer.Min_Paragraph_Number)).toFixed(2) + `% &nbsp;&nbsp;&nbsp;` + 
                                                                                       (answer.current_paragraph     - answer.Min_Paragraph_Number) + ` / ` + (answer.Max_Paragraph_Number- answer.Min_Paragraph_Number)
                             document.body.dataset.currentparagraph = answer.current_paragraph;
-
-                            let wordsrequest = new XMLHttpRequest();
-                            wordsrequest.open(`POST`, `/api/v1/cross_request/`, false);
-                            wordsrequest.send(`{"username":"","command":"Get_List_Of_User_Syllable_From_Paragraphs_Id","comment":"${answer.id_book}","data":"${answer.current_paragraph},${answer.current_paragraph+1},${answer.current_paragraph+2},${answer.current_paragraph+3},${answer.current_paragraph+4}"}`);
-                            let wordlist = JSON.parse(wordsrequest.responseText)
-                            console.log(wordlist)
-
+                            let wordlist = await asyncRequest(`${APIServer}/Get_List_Of_User_Syllable_From_Paragraphs_Id/`, `POST`, {command:``, comment:`${answer.id_book}`, data:`${answer.current_paragraph},${answer.current_paragraph+1},${answer.current_paragraph+2},${answer.current_paragraph+3},${answer.current_paragraph+4}`})
                             let sentence_number = 0;
-                            let request = new XMLHttpRequest();
-                            request.open(`POST`, `/api/v1/cross_request/`, true);
-                            request.send(`{"username":"","command":"Get_Paragraphs","comment":"","data":"${answer.id_book},${answer.current_paragraph},5"}`);
-                            request.onload = function(){
                                                           document.getElementById(`id_div_book_body`).innerHTML=``;
-                                                          let jresponse = JSON.parse(request.responseText);
+                                                          let jresponse = await asyncRequest(`${APIServer}/Get_Paragraphs/`,`POST`,{command:``, comment:``, data:`${answer.id_book},${answer.current_paragraph},5`});
                                                           for (let paragrath of jresponse){
                                                                                             lc_book_paragraph = `<br><p class="my_class_p_my_class_p_examples">`;
                                                                                             for (let sentence of paragrath){
@@ -92,8 +136,6 @@ async function Load_Book_Page(){
                                                                                             lc_book_paragraph += `</p>`
                                                                                             document.getElementById(`id_div_book_body`).insertAdjacentHTML('beforeend',lc_book_paragraph)
                                                           }
-                                                      }
-                            }
 }
 
 function selectText(containerid) {
@@ -130,37 +172,22 @@ async function Load_Books_List(){
     if(document.body.id!='id_body_books'){
       return;
     }
-                          let body =      `{"username":"`+`"`+`,`+
-                          ` "command":"Get_User_Books"`+`,`+
-                          ` "comment":"`+`"`+`,`+
-                          ` "data":"`+document.body.dataset.word+`"` +
-                          `}`;
-                          let req = new XMLHttpRequest();
-                          req.open(`POST`, `/api/v1/cross_request/`, true);
-                          req.send(body);
-                          req.onload = function(){
-                            let pattern = `    <tr>
-                            <td width="55%"><a href="/book/{ _id_book_ }/">{ _book_name_ }</a></td>
-                            <td with = "30%" style="color:Blue;text-align: right;" class = 'book_position'>{ _book_position_information_ }</td>
-                        </tr>`;
-                            let answer = JSON.parse(req.responseText);
-                            console.log(answer);
+    let answer = await asyncRequest( `${APIServer}/Get_User_Books/`,
+                                     `POST`,
+                                     {command:``, comment:``, data:``})
+    let pattern = `    <tr>
+    <td width="55%"><a href="/book/{ _id_book_ }/">{ _book_name_ }</a></td>
+    <td with = "30%" style="color:Blue;text-align: right;" class = 'book_position'>{ _book_position_information_ }</td>
+    </tr>`;
+    for (let book of answer) {
+                              document.getElementById(`id_table_of_books`).
+                              insertAdjacentHTML('beforeend', pattern.
+                              replaceAll(`{ _id_book_ }`, String(book.id_book)).
+                              replaceAll(`{ _book_name_ }`, book.book_name).
+                              replaceAll(`{ _book_position_information_ }`, ((book.current_paragraph - book.Min_Paragraph_Number) * 100 / (book.Max_Paragraph_Number- book.Min_Paragraph_Number)).toFixed(2) + `% &nbsp;&nbsp;&nbsp;` + (book.current_paragraph - book.Min_Paragraph_Number) + ` / ` + (book.Max_Paragraph_Number- book.Min_Paragraph_Number))
+                              )}
                             
-                            for (let book of answer) {
-                                                      console.log(book)
-                                                      document.getElementById(`id_table_of_books`).
-                                                      insertAdjacentHTML('beforeend', pattern.
-                                                      replaceAll(`{ _id_book_ }`, String(book.id_book)).
-                                                      replaceAll(`{ _book_name_ }`, book.book_name).
-                                                      replaceAll(`{ _book_position_information_ }`, ((book.current_paragraph - book.Min_Paragraph_Number) * 100 / (book.Max_Paragraph_Number- book.Min_Paragraph_Number)).toFixed(2) + `% &nbsp;&nbsp;&nbsp;` + (book.current_paragraph - book.Min_Paragraph_Number) + ` / ` + (book.Max_Paragraph_Number- book.Min_Paragraph_Number))
-                                                      )}
-                            
-                    }
     }
-
-
-
-
 
 
   function getRandomInt(min, max) {
@@ -235,7 +262,7 @@ function AddExamplToNewSyllablePage(parent, example, translate, rowid, id_int){
 }
 
 async function LoadSyllableFromWoordhunt(word){
-  let req = new XMLHttpRequest();
+  let req = new XMLHttpRequest(); // may be sync
   req.open(`GET`, `/GetWoorhuntDataJSON/${word}/`, true);
   req.send();
   req.onload = function(){
@@ -258,16 +285,7 @@ async function LoadSyllableFromWoordhunt(word){
     if (document.body.dataset.word==''){ // for empty new word case
       return
     }
-                          let body =      `{"username":"`+`"`+`,`+
-                          ` "command":"get_syllable_full_data"`+`,`+
-                          ` "comment":"`+`"`+`,`+
-                          ` "data":"`+document.body.dataset.word+`"` +
-                          `}`;
-                          let req = new XMLHttpRequest();
-                          req.open(`POST`, `/api/v1/cross_request/`, true);
-                          req.send(body);
-                          req.onload = function(){
-                            let answer = JSON.parse(req.responseText);
+                            let answer = await asyncRequest(`${APIServer}/get_syllable_full_data/`, `POST`, {command:``, comment:``, data:`${document.body.dataset.word}`});
                             console.log(answer)
                             document.body.dataset.syllable_id = answer.syllable_id;
                             document.getElementById(`id_transcription`).value = answer.transcription
@@ -275,7 +293,6 @@ async function LoadSyllableFromWoordhunt(word){
                             for (var example of answer.examples) {
                                                                   AddExamplToNewSyllablePage(document.getElementById(`id_examples`), example.example, example.translate, example.rowid, getRandomInt(1000000000000, 9999999999999));
                                                                 }
-                    }
     }
 
 
@@ -317,49 +334,26 @@ async function LoadSyllableFromWoordhunt(word){
         return
       }
       if (document.body.dataset.phraseid=='' | Number(document.body.dataset.phraseid)==0 ){
-        document.body.dataset.phraseid = LoadNextProcessingPhraseIntoBody();
+        document.body.dataset.phraseid = await LoadNextProcessingPhraseIntoBody();
       }
-      let body =      `{"username":"`+`"`+`,`+
-      ` "command":"Get_Phrase"`+`,`+
-      ` "comment":"`+`"`+`,`+
-      ` "data":"`+document.body.dataset.phraseid+`"` +
-      `}`;
-      let req = new XMLHttpRequest();
-      req.open(`POST`, `/api/v1/cross_request/`, true);
-      req.send(body);
-      req.onload = function(){
-                                console.log(req.responseText)
-                                let answer = JSON.parse(req.responseText);
-                                document.getElementById('id_class_p_my_class_p_examples').innerHTML         = answer.phrase +`&nbsp;&nbsp;&nbsp;<IMG WIDTH='48' HEIGHT='48'  title = '' src='/static/images/audio.svg' onclick = 'new Audio("/sentence/`+answer.linkcode+`" ).play(); return false;'>`;
-                                document.getElementById('id_class_p_my_class_p_examples_russian').innerHTML = answer.translation;
-                              }
-                            
-    }
+      let answer = await asyncRequest( `${APIServer}/Get_Phrase/`,`POST`,{command:``, comment:``, data:`${document.body.dataset.phraseid}`}, true)
+      document.getElementById('id_class_p_my_class_p_examples').innerHTML         = answer.phrase +`&nbsp;&nbsp;&nbsp;<IMG WIDTH='48' HEIGHT='48'  title = '' src='/static/images/audio.svg' onclick = 'new Audio("/sentence/`+answer.linkcode+`" ).play(); return false;'>`;
+      document.getElementById('id_class_p_my_class_p_examples_russian').innerHTML = answer.translation;
+     }
 
-    function LoadNextProcessingPhraseIntoBody(){
-      let req = new XMLHttpRequest();
-      let body =      `{"username":"`+`"`+`,`+` "command":"Get_Next_Phrase_For_Learning"`+`,`+` "comment":"`+`"`+`,`+` "data":"`+`"` +`}`;
-      req.open(`POST`, `/api/v1/cross_request/`, false);
-      req.send(body);
-        let answer = JSON.parse(req.responseText);
-        console.log(`LoadNextProcessingPhraseIntoBody() -> ${answer.id_phrase}`);
+    async function LoadNextProcessingPhraseIntoBody(){
+        let answer = await asyncRequest(`${APIServer}/Get_Next_Phrase_For_Learning/`, 'POST', {command:``, comment:``, data:``});
         return answer.id_phrase;
-        //window.location.href=`/phrases/in_progress/`+answer.id_phrase+`/`
     }
 
-    function UpdateCurrentPhraseAsViewed(){
-      console.log(`UpdatePhraseAsViewed => document.body.dataset.phraseid:${document.body.dataset.phraseid}`)
-      let req = new XMLHttpRequest();
-      let body =      `{"username":"`+`"`+`,`+` "command":"Update_phrase_as_viewed"`+`,`+` "comment":"`+`"`+`,`+` "data":"`+document.body.dataset.phraseid+`"` +`}`;
-      req.open(`POST`, `/api/v1/cross_request/`, false);
-      req.send(body);
-      req.responseText
+    async function UpdateCurrentPhraseAsViewed(){
+      asyncRequest(`${APIServer}/Update_phrase_as_viewed/`,'POST',{command:``, comment:``, data:`${document.body.dataset.phraseid}`})
     }
 
-    function NextPhrase(){
-      UpdateCurrentPhraseAsViewed();
-      document.body.dataset.phraseid=LoadNextProcessingPhraseIntoBody();
-      Load_Phrase_in_Progress_Data();
+    async function NextPhrase(){
+      await UpdateCurrentPhraseAsViewed();
+      document.body.dataset.phraseid= await LoadNextProcessingPhraseIntoBody();
+      await Load_Phrase_in_Progress_Data();
     }
 
     async function Load_Word_in_Progress_Data(){
@@ -367,18 +361,11 @@ async function LoadSyllableFromWoordhunt(word){
         return
       }
       if (document.body.dataset.word.replaceAll(' ','')==''){
-        LoadNextProcessingWordIntoBody();
+        await LoadNextProcessingWordIntoBody();
       }
-      let body =      `{"username":"`+`"`+`,`+
-      ` "command":"get_syllable_full_data"`+`,`+
-      ` "comment":"`+`"`+`,`+
-      ` "data":"`+document.body.dataset.word+`"` +
-      `}`;
-      let req = new XMLHttpRequest();
-      req.open(`POST`, `/api/v1/cross_request/`, true);
-      req.send(body);
-      req.onload = function(){
-        let answer = JSON.parse(req.responseText);
+
+      let answer = await asyncRequest(`${APIServer}/get_syllable_full_data/`, `POST`, {command:``, comment:``, data:`${document.body.dataset.word}`},true)
+
         console.log(answer)
         document.getElementById('id_link_on_wooordhunt').href=`https://wooordhunt.ru/word/${answer.word}`;
         document.getElementById('id_link_on_glosbe').href=`https://ru.glosbe.com/en/ru/${answer.word}`;
@@ -400,15 +387,11 @@ async function LoadSyllableFromWoordhunt(word){
                     document.getElementById('id_my_class_p_my_class_p_examples').insertAdjacentHTML('beforeend',`<p class = "my_class_p_my_class_p_examples_russian">` + sl.translate+ `</p><br>`);
           }
         }
-      }
+      
     }
 
-    function LoadNextProcessingWordIntoBody(){
-      let req = new XMLHttpRequest();
-      let body =      `{"username":"`+`"`+`,`+` "command":"Get_Next_Syllable_For_Learning"`+`,`+` "comment":"`+`"`+`,`+` "data":"`+`"` +`}`;
-      req.open(`POST`, `/api/v1/cross_request/`, false);
-      req.send(body);
-      let answer = JSON.parse(req.responseText);
+    async function LoadNextProcessingWordIntoBody(){
+      let answer = await asyncRequest(`${APIServer}/Get_Next_Syllable_For_Learning/`, `POST`, {command:``, comment:``, data:``})
       console.log(answer)
       document.body.dataset.word = answer.data;
       console.log(document.body.dataset.word);
@@ -442,12 +425,7 @@ async function LoadSyllableFromWoordhunt(word){
 
     async function Load_words_slice(slice_size, slice_number, ready){
       setCookie('syllables_curent_page'+ready, slice_number, {});
-      let body = `{"username":"","command":"syllables", "ready":"`+ready+`", "slice_number":"`+slice_number+`", "slice_size":"`+slice_size+`", "word_part":""}`;
-      let req = new XMLHttpRequest();
-      req.open(`POST`, `/api/v1/cross_request/`, true);
-      req.send(body);
-      req.onload=function(){
-        let answer = JSON.parse(req.responseText);
+        let answer = await asyncRequest(`${APIServer}/syllables/`, `POST`, {command:``, ready:`${ready}`, slice_number:`${slice_number}`, slice_size:`${slice_size}`, word_part:``});
         table = document.getElementsByClassName('my_class_table_of_words')[0];
         table_content = ''
         row_pattern =   `<tr id="tr_of_index_words__{{ word.word }}">
@@ -469,27 +447,16 @@ async function LoadSyllableFromWoordhunt(word){
                                                 .replaceAll('{{ word.word_background_color }}',GetBackGroundColorByIndex(Number(row.last_view.substring(5,7)))))
         }
     }
-      //console.log(table)
-      
-    }
     
 
   async function SetPhraseStatus(id, status){
-      let body = `{"username":"`+`"`+`,`+` "command":"Set_Phrase_Status"`+`,`+` "comment":"`+id+`"`+`,`+` "data":"`+status+`"` +`}`;
-      let req = new XMLHttpRequest();
-      req.open(`POST`, `/api/v1/cross_request/`, true);
-      req.send(body);
-      req.onload = function() {
-    }
+    await asyncRequest(`${APIServer}/Set_Phrase_Status/`,`POST`, {command:``, comment:`${id}`, data:`${status}`})
   }
 
     async function Load_phrases(ready){
-      let body = `{"username":"`+`"`+`,`+` "command":"Get_Phrases"`+`,`+` "comment":"`+`"`+`,`+` "data":"`+ready+`"` +`}`;
-      let req = new XMLHttpRequest();
-      req.open(`POST`, `/api/v1/cross_request/`, true);
-      req.send(body);
-      req.onload = function() {
-        let answer = JSON.parse(req.responseText);
+      let answer = await asyncRequest(  `${APIServer}/Get_Phrases/`,
+      `POST`, 
+      {command:``, comment:``, data:`${ready}`});
         table = document.getElementById('index_table_of_phrases');
         table_content = ''
         row_pattern =`    <tr id="tr_of_index_phrases__{{ phrase.id_phrase }}">
@@ -510,36 +477,22 @@ async function LoadSyllableFromWoordhunt(word){
 
         }
 
-        }
     }
 
 
-    function get_server_api_address(){
-      return document.body.dataset.apiserver
-    }
-    
-    
+   
     async function LoadOneSimpleData(element){
-          let body =      `{"username":"`+`"`+`,`+
-                          ` "command":"`+element.dataset.simplecommand+`"`+`,`+
-                          ` "comment":"`+`"`+`,`+
-                          ` "data":"`+`"` +
-                          `}`;
-          let req = new XMLHttpRequest();
-          req.open(`POST`, `/api/v1/cross_request/`, true);
-          req.send(body);
-          req.onload = function(){
-          let answer = JSON.parse(req.responseText);
-          element.innerHTML = answer.data
-        }
+          let answer = await asyncRequest(  `${APIServer}/${element.dataset.simplecommand}/`,
+                                            `POST`, 
+                                            {command:``, comment:``, data:``});
+          element.innerHTML = answer.data;
     }
     
     
     async function LoadSimpleData(){
-      
       let elements = document.querySelectorAll('[data-simplecommand]');
       for (element of elements) {
-        await LoadOneSimpleData(element)
+        LoadOneSimpleData(element)
      }
     }
     
@@ -548,29 +501,25 @@ async function LoadSyllableFromWoordhunt(word){
        //console.log('paginators count:'+elements.length);
        let syllables_curent_page = Number(getCookie('syllables_curent_page'+document.getElementById('index_table_of_syllables').dataset.ready, 1));
        for (let element of elements){
-            //console.log('pagination_auto:'+i)
-            //console.log(elements[i])
-            let body =      `{"username":"`+`"`+`,`+
-                            ` "command":"syllables_slices_count"`+`,`+
-                            ` "comment":"`+`"`+`,`+
-                            ` "data":"100,`+document.getElementById('index_table_of_syllables').dataset.ready+`"` +
-                            `}`;
-            let req = new XMLHttpRequest();
-            req.open(`POST`, `/api/v1/cross_request/`, true);
-            req.send(body);
-            req.onload=function(){
-              let answer = JSON.parse(req.responseText);
+              let answer = await asyncRequest(`${APIServer}/syllables_slices_count/`, `POST`, {command:``, comment:``, data:`100,${document.getElementById('index_table_of_syllables').dataset.ready}`})
               st=``
               for(let j=1, max=Number(answer.data)+1; j<max; j++) {
-                  //console.log(j)
                   st += `<td width="`+Math.floor(100/Number(answer.data))+`%" style="`+(j == syllables_curent_page ? `font-weight: bolder;text-shadow:1px 1px green,2px 2px #777;color: #333;transition: all 1s;border: 5px solid;`:`font-weight: normal;`)+`" ><a href="" onclick="Load_words_slice(100,`+j+`,`+Number(document.getElementById('index_table_of_syllables').dataset.ready)+`)"> `+j+`</a></td>`;
               }
               element.innerHTML = '';
               element.innerHTML = `<table width = "95%"><tr>` + st + `</tr></table>`;
             }
-       }
-    
   }
+
+
+
+
+function create_UUID() {
+  return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+    (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+  );
+}
+
 
 
 document.addEventListener('keyup', function (event) {

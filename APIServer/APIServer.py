@@ -17,6 +17,8 @@ import base64
 import pprint
 import json
 from settings import Options
+from typing import Dict, Any
+
 
 printer = pprint.PrettyPrinter(indent=12, width=120)
 prnt = printer.pprint
@@ -30,15 +32,15 @@ options = Options("options.ini")
 
 db = FileInformationDB.VolumeDB(base_storage_path.parent)
 app = FastAPI()
+#allow_origins=[options.SELF_ADRESS, options.API_ADRESS],
 
+#allow_credentials=True, 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[options.SELF_ADRESS, options.API_ADRESS],
-    allow_credentials=True, 
- 	allow_methods=["*"], 
+    allow_origins=["*"],
+ 	allow_methods=['GET','POST'], 
  	allow_headers=["*"]
 )
-
 
 #@app.middleware("http")
 #async def middleware(request: Request, call_next):
@@ -55,20 +57,30 @@ echo(style('datbase:', bg='bright_black', fg='bright_green')+style(dblang, fg='b
 dblang = LanguageDB(dblang, autocommit=False )
 
 
+class SiteRequests(BaseModel):
+	username:str
+	useruuid:str
+	command:str
+	comment:str
+	data:str
+
 class SiteRequest(BaseModel):
 	username:str
 	command:str
 	comment:str
 	data:str
 
-SECRETKEY=options.SECRETKEY
+
+@app.get("/")
+async def main():
+    return {"message": "Hello World"}
 
 @app.get("/GetAllUsers/{key}/")
 async def Get_All_Users(key:str):
-	if key == SECRETKEY:
+	if key == options.SECRET_KEY:
 		return JSONResponse({'status':'ok', 'users':dblang.GetUsers()})
 	else:
-		return JSONResponse({'status':'error'})
+		return JSONResponse({'status':'error, wrong secret key'})
 
 @app.post("/get_user_information/")
 async def get_user_information(rq:SiteRequest):
@@ -102,13 +114,22 @@ async def get_user_count_of_words_proceed_today(rq:SiteRequest):
 	print(response)
 	return JSONResponse(response)
 
+
+
+#async def syllables_slices_count(rq:Dict[Any, Any]):
+#async def syllables_slices_count(rq:SiteRequest):
 @app.post("/syllables_slices_count/")
-async def syllables_slices_count(rq:SiteRequest):
+async def syllables_slices_count(rq:SiteRequests):
+	#rq = SiteRequests(username=rqp['username'], command=rqp['command'], data=rqp['data'], comment=rqp['comment'], useruuid=rqp['useruuid'])
+	print("************************")
+	print("/syllables_slices_count/")
+	prnt(rq)
 	response = {}
-	printSiteRequest(inspect.currentframe().f_code.co_name, rq)
+	printSiteRequests(inspect.currentframe().f_code.co_name, rq)
 	response['data'] = dblang.GetCountOfSyllableSlices(rq.username, int(rq.data.split(',')[1]), int(rq.data.split(',')[0]))
 	print(response)
 	return JSONResponse(response)
+
 
 @app.post("/get_syllable_full_data/")
 async def get_syllable_full_data(rq:SiteRequest):
@@ -228,6 +249,14 @@ def printSiteRequest(procedure, rq):
 			style(text='comment:', bg='bright_black', fg='bright_green')+style(text=rq.comment, fg='bright_green') + ' ' +
 			style(text='data:', bg='bright_black', fg='bright_green')+style(text=rq.data, fg='bright_green'))
 
+def printSiteRequests(procedure, rq):
+	echo(	style(text=procedure, bg='bright_black', fg='bright_yellow') + ' ' +
+			style(text='username:', bg='bright_black', fg='bright_green')+style(text=rq.username, fg='bright_green') +  ' ' +
+			style(text='useruuid:', bg='bright_black', fg='bright_green')+style(text=rq.useruuid, fg='bright_green') +  ' ' +
+			style(text='command:', bg='bright_black', fg='bright_green')+style(text=rq.command, fg='bright_green') + ' ' +
+			style(text='comment:', bg='bright_black', fg='bright_green')+style(text=rq.comment, fg='bright_green') + ' ' +
+			style(text='data:', bg='bright_black', fg='bright_green')+style(text=rq.data, fg='bright_green'))
+
 
 class Examples(BaseModel):
 	rowid:int
@@ -244,7 +273,7 @@ class Syllable(BaseModel):
 	examples:List[Examples]
 
 
-from typing import Dict, Any
+
 @app.post("/Save_Syllabe/")
 async def Save_Syllabe(rq:Dict[Any, Any]):
 	response = {}
@@ -258,16 +287,13 @@ async def Save_Syllabe(rq:Dict[Any, Any]):
 					translations=rq['translations'],
 					examples = rq['examples']
 					)
-	'''echo(	style(text=inspect.currentframe().f_code.co_name, bg='bright_red', fg='bright_yellow') + ' ' +
-			style(text='username:', bg='bright_black', fg='bright_green')+style(text=rq.username, fg='bright_green') +  ' ' +
-			style(text='command:', bg='bright_black', fg='bright_green')+style(text=rq.command, fg='bright_green') + ' ' +
-			style(text='syllable_id', bg='bright_black', fg='bright_green')+style(text=rq.syllable_id, fg='bright_green') + ' ' +
-			style(text='word', bg='bright_black', fg='bright_green')+style(text=rq.word, fg='bright_green') + ' ' +
-			style(text='transcription:', bg='bright_black', fg='bright_green')+style(text=rq.transcription, fg='bright_green') + ' ' +
-			style(text='translations:', bg='bright_black', fg='bright_green')+style(text=rq.translations, fg='bright_green') + ' ' +
-			style(text='examples:', bg='bright_black', fg='bright_green')+style(text=rq.examples, fg='bright_green')   )
-			'''
 	response = dblang.SaveSyllable(syl)
+	return JSONResponse(response)
+
+@app.post("/Save_Phrase/")
+async def Save_Phrase(rq:SiteRequests):
+	printSiteRequests(inspect.currentframe().f_code.co_name, rq)	
+	response = dblang.SavePhrase(user_name = rq.username, phrase_id=int(rq.command), text=rq.comment, translate=rq.data)
 	return JSONResponse(response)
 
 

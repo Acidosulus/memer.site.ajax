@@ -2,16 +2,11 @@ import base64
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
 from django import forms
-#import sqlite3 as sl
 import datetime
 from datetime import date, timedelta
 import load_syllable_from_wooordhunt
 import os.path
 import os
-#import subprocess
-#import re
-#import hashlib
-#import threading
 import json
 import shutil
 from django.http import JsonResponse
@@ -25,8 +20,6 @@ from pathlib import Path
 from django.views.decorators.csrf import csrf_exempt  
 import configparser
 import django.http.request
-#from requests_toolbelt.multipart import decoder
-#from django.utils.encoding import smart_text
 import sys
 from django.conf import settings
 from click import echo, style
@@ -35,11 +28,14 @@ import requests
 import pprint
 from asgiref.sync import sync_to_async
 from django.contrib.auth.decorators import login_required
-
+from UsersDataStorage import UsersDataStorage
 
 printer = pprint.PrettyPrinter(indent=12, width=160)
 prnt = printer.pprint
 
+## users data storage with names and guids for substitutuion in html renders
+response = requests.get(f"{settings.API_ADRESS}/GetAllUsers/{settings.SECRET_KEY}/")
+usersDataStorage = UsersDataStorage(response.content.decode('utf-8'))
 
 
 # 'onchange':"document.getElementById('id_link_on_wooordhunt').href='https://wooordhunt.ru/word/'+escape(this.value)"
@@ -48,6 +44,7 @@ class UserForm(forms.Form):
 	transcription = forms.CharField(label="Транскрипция", widget=forms.TextInput(attrs={'class' : 'my_class_input_transcription'} ))
 	translations = forms.CharField(label="Перевод", widget=forms.Textarea(attrs={'class' : 'my_class_input_translations','rows':"7"} ))
 	examples = forms.CharField(label="Примеры", widget=forms.Textarea(attrs={'class':"my_class_input_examples",'rows':"7"} ))
+
 
 def load_word_to_words_db(pc_word:str):
 	words_data = Words.objects.filter(word= pc_word)
@@ -193,7 +190,9 @@ def hoster_control_clear_all(request,sitename:str):
 
 @login_required
 def index(request):
-	data = {'global_api_server_adress':settings.API_ADRESS, 'ready':0 }
+	print(f'request.user.get_username():{request.user.get_username()}')
+	print(type(usersDataStorage.data))
+	data = {'APIServer':settings.API_ADRESS, 'userUUID':usersDataStorage.FindDataByUserName(request.user.get_username())['uuid'], 'ready':0 }
 	return render(request, "index.html", context=data)
 
 @login_required
@@ -334,7 +333,7 @@ def add_new_with_parameter(request, pc_new_word):
 
 @login_required
 def add_new(request, pc_new_word):
-	data = {'word':pc_new_word.strip()}
+	data = {'word':pc_new_word.strip(), 'APIServer':settings.API_ADRESS, 'userUUID':usersDataStorage.FindDataByUserName(request.user.get_username())['uuid']}
 	return render(request, "add_new_word.html", context=data)
 
 
@@ -386,7 +385,7 @@ def DownLoadExamples(pl_list):
 @login_required
 def word_in_progress(request, pc_word=''):
 	print(f"wordinprogress     pc_word:{pc_word}")
-	data = {"global_api_server_adress":settings.API_ADRESS, 'word':pc_word.strip()}
+	data = {'APIServer':settings.API_ADRESS, 'userUUID':usersDataStorage.FindDataByUserName(request.user.get_username())['uuid'], 'word':pc_word.strip()}
 	return render(request, "word_in_progress.html", context=data)
 
 
@@ -408,120 +407,12 @@ def DownLoadmp3s (sentence):
 def books(request):
 	#lo_book = Books.objects.filter(userid=request.user.id).order_by('-dt')
 	#data = { 'books':lo_book }
-	data = {}
+	data = {'APIServer':settings.API_ADRESS, 'userUUID':usersDataStorage.FindDataByUserName(request.user.get_username())['uuid']}
 	return render(request, "books.html", context=data)
 
 @login_required
 def book(request, pc_book:str):
-	data = {"id_book":pc_book}
-	return render(request, "book.html", context=data)
-
-def book_(request, pc_book:str, pc_paragraph:str):
-	if int(pc_book)>0 and int(pc_paragraph)>0:
-		ll_all_words_Syllable = Syllable.objects.filter(ready=0, userid=request.user.id)
-		ll_all_words = []
-		for word in ll_all_words_Syllable:
-			ll_all_words.append(word.word.upper())
-		
-		##################Save position in book as user goes to next page
-		lo_book = Books.objects.get(id_book = int(pc_book), userid=request.user.id)
-		lo_book.current_paragraph = int(pc_paragraph)
-		lo_book.dt = datetime.datetime.now()
-		lo_book.save()
-		###########################################################################
-		lo_paragraph_navigation = Paragraphs.objects.filter(id_book=int(pc_book), userid=request.user.id).order_by('id_paragraph')[0]
-		ln_start_id = lo_paragraph_navigation.id_paragraph
-		lo_paragraph_navigation = Paragraphs.objects.filter(id_book=int(pc_book), userid=request.user.id).latest('id_paragraph')
-		ln_end_id = lo_paragraph_navigation.id_paragraph
-
-		lc_result_total = ''
-		ln_alternation_counter = 0
-		ln_sentence_count = 0
-		for i in range(-2,3):
-			lc_result = ''
-			if ln_start_id<=int(pc_paragraph)<=ln_end_id:
-				if (int(pc_paragraph)+i)<ln_start_id or (int(pc_paragraph)+i)>ln_end_id:
-					continue
-				lo_paragraph = Paragraphs.objects.get(id_book=int(pc_book), id_paragraph=int(pc_paragraph)+i, userid=request.user.id)
-				lc_source = lo_paragraph.paragraph
-				sentences =  split_pharagraf_on_sentences(lc_source.replace('<','&lt;').replace('>','&gt;'))  #re.split(r'(?<=[.!?…]) ', lc_source)
-				print(f'sentences: {sentences}')
-				#thr1 = threading.Thread(target=DownLoadmp3s, args=(sentences,)).start()
-				for sentence in sentences:
-					ll_words = sentence.split()
-					ln_sentence_count += 1
-					lc_sentence_name = 'sentence_'+str(ln_sentence_count)
-					ln_alternation_counter = ln_alternation_counter + 1
-					lc_sentence = sentence.strip()
-					#lc_file_name = hashlib.sha256(lc_sentence.encode('utf-8')).hexdigest() + '.mp3'
-					sentence_for_out_put = ''
-					for lc_word in ll_words:
-						word_clear = lc_word.replace('.',' ').replace(',',' ').replace('!',' ').replace('?',' ').replace('”','').replace('“','').replace('"',' ').replace("'",' ').upper().replace(' ','')
-						if word_clear in ll_all_words:
-							if Words.objects.filter(word = word_clear.lower()).count()>0:
-								foo = Words.objects.get(word = word_clear.lower())
-								sentence_for_out_put = sentence_for_out_put + ' ' + '<span style="color:#7a8500" id="hint'+str(foo.rowid)+'" '+ """oncontextmenu="return Show_Hint(this);" """ +\
-																				'>' + lc_word + '</span>'
-							else:
-								sentence_for_out_put = sentence_for_out_put + ' ' + '<span style="color:#7a8500" id="hint'+str(-1)+'" '+ """oncontextmenu="return Show_Hint(this);" """ +\
-																					'>' + lc_word + '</span>'
-						else:
-							# иначе в подскасказку кладём просто перевод из словаря
-							if len(word_clear)<3:
-								sentence_for_out_put = sentence_for_out_put + ' ' + lc_word
-							else:
-								try:
-									foo = Words.objects.get(word = word_clear.lower(), notfound = 0)
-									if len(foo.translations)>3:
-										sentence_for_out_put = sentence_for_out_put + ' ' + '<span id="hint'+str(foo.rowid)+'"'+\
-											"""oncontextmenu="return Show_Hint(this);" """+\
-											'>' + lc_word + '</span>'
-									else:
-										if foo.parent_word!='': 
-											foo1 = Words.objects.get(word = foo.parent_word.lower(), notfound = 0)
-											sentence_for_out_put = sentence_for_out_put + ' ' + '<span id="hint'+str(foo1.rowid)+'"'+\
-														"""oncontextmenu=" return Show_Hint(this);" """+\
-														'>' + lc_word + '</span>'
-										else:
-											sentence_for_out_put = sentence_for_out_put + ' ' + lc_word
-								except:
-									sentence_for_out_put = sentence_for_out_put + ' ' + lc_word
-					sentence_for_out_put = sentence_for_out_put + ' '
-					if len(lc_sentence) > 2:
-						lc_result = lc_result + '<span id = "'+\
-											lc_sentence_name+'" onclick="selectText(`'+lc_sentence_name+'`);" class = '+\
-								("'my_class_p_my_class_p_books'>" if ln_alternation_counter%2==0 else "'my_class_p_my_class_p_books_even'>") +\
-								sentence_for_out_put + "</span>" + \
-								' &nbsp;&nbsp;&nbsp;' + \
-								("<IMG WIDTH='48' HEIGHT='48'  title = '' src='/static/images/audio.svg' onclick = '" + \
-									'new Audio(`/sentence/' + base64.b64encode(bytes(lc_sentence.replace('?', '.'), 'utf-8')).decode() + '` ).play(); return false;' + \
-									"'>" if len(lc_sentence.strip().replace('.', '')) > 3 else '') + chr(13)
-
-
-			lc_result_total =   lc_result_total + '<p class="my_class_p_my_class_p_examples">'+\
-								lc_result+\
-								'</p>' + chr(10) + '<br>'
-
-
-
-		lc_link_on_start = "/book/" + pc_book + "/" + str(ln_start_id) +"/"
-		lc_link_on_end   = "/book/" + pc_book + "/" + str(ln_end_id) + "/"
-
-		lc_link_on_prev = "/book/" + pc_book + "/" + str(int(pc_paragraph)-5) + "/" if not(int(pc_paragraph)-5 < ln_start_id) else "/book/" + pc_book + "/" + str(ln_start_id) + "/"
-		lc_link_on_next = "/book/" + pc_book + "/" + str(int(pc_paragraph)+5) +"/" if not(int(pc_paragraph)+5 > ln_end_id) else "/book/" + pc_book + "/" + str(ln_end_id) +"/"
-
-		lc_in_book_position = str(int(pc_paragraph) - ln_start_id)+' / ' + str(ln_end_id - ln_start_id) + ' &nbsp;&nbsp;&nbsp;' + str(  round((int(pc_paragraph) - ln_start_id)*100 / (ln_end_id - ln_start_id),2))+' %'
-
-		data = {"text": lc_result_total,
-				'book_name':lo_book.book_name,
-				'link_on_start':lc_link_on_start,
-				'link_on_end':lc_link_on_end,
-				'link_on_next':lc_link_on_next,
-				'link_on_prev':lc_link_on_prev,
-				'in_book_position':lc_in_book_position,
-				'id_book':pc_book}
-	else:
-		data = {"text": '<p> Пример текста </p>'}
+	data = {'APIServer':settings.API_ADRESS, 'userUUID':usersDataStorage.FindDataByUserName(request.user.get_username())['uuid'], "id_book":pc_book}
 	return render(request, "book.html", context=data)
 
 
@@ -568,52 +459,30 @@ def unready(request, pc_unready_word):
 
 @login_required
 def phrases(request):
-	data = { 'readystatus':0 }
+	data = { 'readystatus':0, 'APIServer':settings.API_ADRESS, 'userUUID':usersDataStorage.FindDataByUserName(request.user.get_username())['uuid'] }
 	return render(request, "phrases.html", context=data)
 
 @login_required
 def phrases_ready_list(request):
-	data = { 'readystatus':1 }
+	data = { 'readystatus':1 , 'APIServer':settings.API_ADRESS, 'userUUID':usersDataStorage.FindDataByUserName(request.user.get_username())['uuid'] }
 	return render(request, "phrases.html", context=data)
+
 
 @login_required
 def phrases_add_new(request, pc_phrase_id):
-	print('===================')
-	print(f"phrases_add_new: {pc_phrase_id}")
-	print(f'request.POST.get("modify_type") {request.POST.get("modify_type")}	{type(request.POST.get("modify_type"))}')
-	print('===================')
-	if request.method == "POST":
-		print(request.method)
-		if request.POST.get("modify_type")=='new': # add new phrase
-			print('add new phrase')
-			phrase = Phrases(phrase = request.POST.get("phrase_text"), translation = request.POST.get("phrase_translation"), last_view = datetime.datetime.now(), userid=request.user.id)
-			if len(phrase.phrase)>4:
-				phrase.save()
-			print(request.POST.get("modify_type"))
-			
-		if 'edit' in request.POST.get("modify_type"): # modify existing phrase
-			print('modify existing phrase')
-			ln_phrase_id = pc_phrase_id #sx(request.POST.get("modify_type"), '[', ']')
-			print(f'Identifier of modifying phrase is {ln_phrase_id}')
-			phrase = Phrases.objects.filter(id_phrase=ln_phrase_id, userid=request.user.id).update(phrase=request.POST.get("phrase_text"), translation = request.POST.get("phrase_translation"), last_view = datetime.datetime.now())
-
-		return redirect(phrases)
-	data = {"modify_type":'new', "phrase_text":'', "phrase_translation":''}
-	if int(pc_phrase_id)>0:
-		phrase = Phrases.objects.get(userid=request.user.id, id_phrase=int(pc_phrase_id))
-		data = {"modify_type":f'edit[{request.user.id}]', "phrase_text":phrase.phrase, "phrase_translation":phrase.translation}
-	
+	data = { "modify_type":'new', "phrase_text":'', "phrase_translation":'', "phrase_id":pc_phrase_id,
+		     'APIServer':settings.API_ADRESS, 'userUUID':usersDataStorage.FindDataByUserName(request.user.get_username())['uuid']}
 	return render(request, "phrases_modify.html", context=data)
 
 
 @login_required
 def phrases_in_progress_with_id(request, pc_phrase_id):
-	data = {'phrase_id':pc_phrase_id}
+	data = {'APIServer':settings.API_ADRESS, 'userUUID':usersDataStorage.FindDataByUserName(request.user.get_username())['uuid'], 'phrase_id':pc_phrase_id}
 	return render(request, "phrase_in_progress.html", context=data)
 
 @login_required
 def phrases_in_progress(request):
-	data = {'phrase_id':0}
+	data = {'APIServer':settings.API_ADRESS, 'userUUID':usersDataStorage.FindDataByUserName(request.user.get_username())['uuid'], 'phrase_id':0}
 	return render(request, "phrase_in_progress.html", context=data)
 
 
@@ -716,6 +585,8 @@ def cross_request(request):
 	print(Fore.RESET,end='')
 	print('-------------------------cross_request------------------------', datetime.datetime.now())
 	return HttpResponse(r.text)
+
+
 
 @csrf_exempt
 def cross_request_no_response(request):
@@ -899,3 +770,5 @@ def GetDividedExamplesWH(source:str):
 		if len(str_example)>0:
 			result.append({'example':str_example, 'translate':str_translate})
 	return result
+
+

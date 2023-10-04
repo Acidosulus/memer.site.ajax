@@ -8,7 +8,7 @@
     <title>Phrases</title>
 </head>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+{% include "subpattern_onload.html" %} 
 <script src="{% static 'js/voca.js' %}"></script>
 
 
@@ -28,9 +28,9 @@
 
     <div class = 'my_div'>
         <div class="my_div_left">
-                <a href="/phrases/add_new/{{ id_phrase }}/"><IMG class ="image_little_button" WIDTH="64" HEIGHT="64"  title = "Редактировать фразу" src="{% static 'images/redo.png' %}"></a>
+                <a onclick="document.location.href = `/phrases/add_new/${document.body.dataset.phraseid}/`;"><IMG class ="image_little_button" WIDTH="64" HEIGHT="64"  title = "Редактировать фразу" src="{% static 'images/redo.png' %}"></a>
                     <IMG  WIDTH="64" HEIGHT="64" src="{% static 'images/empty_32x32.png' %}">
-                <a href="phrases/next_with_ready/{{ id_phrase }}/"><IMG class ="image_little_button" WIDTH="64" HEIGHT="64"  title = "Пометить фразу как выученную" src="{% static 'images/ready.png' %}"></a>
+                <a onclick="SetPhraseStatus(document.body.dataset.phraseid, 1); NextPhrase();"><IMG class ="image_little_button" WIDTH="64" HEIGHT="64"  title = "Пометить фразу как выученную" src="{% static 'images/ready.png' %}"></a>
                     <IMG  WIDTH="64" HEIGHT="64" src="{% static 'images/empty_32x32.png' %}">
                 <a onclick="javascript:history.back(); return false;"><IMG class ="image_little_button" WIDTH="64" HEIGHT="64"  title = "Назад" src="{% static 'images/back.png' %}"></a>
                     <IMG  WIDTH="64" HEIGHT="64" src="{% static 'images/empty_32x32.png' %}">
@@ -42,7 +42,7 @@
     <p class = 'my_class_p_my_class_p_examples' id="id_class_p_my_class_p_examples"></p>
     <p class = 'my_class_p_my_class_p_examples_russian' id ="id_class_p_my_class_p_examples_russian"></p>
 
-    <button class = 'button_add' onclick='NextPhrase()'>NEXT</button>
+    <button class = 'button_add' onclick='NextPhrase();'>NEXT</button>
 
     <br>
 
