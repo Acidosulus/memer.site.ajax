@@ -34,6 +34,7 @@ printer = pprint.PrettyPrinter(indent=12, width=160)
 prnt = printer.pprint
 
 ## users data storage with names and guids for substitutuion in html renders
+echo(style(text='Get data from APIServer:', fg='yellow') + style(text=f"{settings.API_ADRESS}/GetAllUsers/{settings.SECRET_KEY}/", fg='bright_yellow'))
 response = requests.get(f"{settings.API_ADRESS}/GetAllUsers/{settings.SECRET_KEY}/")
 usersDataStorage = UsersDataStorage(response.content.decode('utf-8'))
 
