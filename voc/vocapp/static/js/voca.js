@@ -371,6 +371,7 @@ async function LoadSyllableFromWoordhunt(word){
         document.getElementById('id_link_on_glosbe').href=`https://ru.glosbe.com/en/ru/${answer.word}`;
         
         document.getElementById('id_my_class_p_word').innerHTML = answer.word;
+        document.getElementById('id_my_class_p_transcription').onclick = function(){new Audio( `/static/sounds/${document.body.dataset.word}.mp3` ).play(); return false;};
         document.getElementById('id_my_class_p_transcription').innerHTML = answer.transcription;
         document.getElementById('id_my_class_p_my_class_p_translations').innerHTML = ``;
         let st = '';
