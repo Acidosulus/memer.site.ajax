@@ -397,15 +397,15 @@ async function LoadSyllableFromWoordhunt(word){
       console.log(document.body.dataset.word);
     }
 
-    function SetSyllableAsViewedAndLoadNext(word){
+    async function SetSyllableAsViewedAndLoadNext(word){
       let req = new XMLHttpRequest();
       let body =      `{"username":"`+`"`+`,`+` "command":"update_syllable_as_viewed"`+`,`+` "comment":"`+`"`+`,`+` "data":"`+word+`"` +`}`;
       req.open(`POST`, `/api/v1/cross_request/`, false);
       req.send(body);
       console.log(req.responseText);
       let answer = JSON.parse(req.responseText);
-      LoadNextProcessingWordIntoBody();
-      Load_Word_in_Progress_Data();
+      await LoadNextProcessingWordIntoBody();
+      await Load_Word_in_Progress_Data();
     }
 
     function GetBackGroundColorByIndex(id){
