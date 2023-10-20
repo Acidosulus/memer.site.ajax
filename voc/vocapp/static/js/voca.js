@@ -105,7 +105,8 @@ async function Load_Book_Page(){
                                                                                       (answer.Max_Paragraph_Number  - answer.Min_Paragraph_Number)).toFixed(2) + `% &nbsp;&nbsp;&nbsp;` + 
                                                                                       (answer.current_paragraph     - answer.Min_Paragraph_Number) + ` / ` + (answer.Max_Paragraph_Number- answer.Min_Paragraph_Number)
                             document.body.dataset.currentparagraph = answer.current_paragraph;
-                            let wordlist = await asyncRequest(`${APIServer}/Get_List_Of_User_Syllable_From_Paragraphs_Id/`, `POST`, {command:``, comment:`${answer.id_book}`, data:`${answer.current_paragraph},${answer.current_paragraph+1},${answer.current_paragraph+2},${answer.current_paragraph+3},${answer.current_paragraph+4}`})
+                            let wordlist = await asyncRequest(`${APIServer}/Get_List_Of_User_Syllable_From_Paragraphs_Id/`, `POST`, {command:``, comment:`${answer.id_book}`, data:`${answer.current_paragraph},${Number(answer.current_paragraph)+1},${Number(answer.current_paragraph)+2},${Number(answer.current_paragraph)+3},${Number(answer.current_paragraph)+4}`})
+                            console.log(wordlist);
                             let sentence_number = 0;
                                                           document.getElementById(`id_div_book_body`).innerHTML=``;
                                                           let jresponse = await asyncRequest(`${APIServer}/Get_Paragraphs/`,`POST`,{command:``, comment:``, data:`${answer.id_book},${answer.current_paragraph},5`});
@@ -367,6 +368,7 @@ async function LoadSyllableFromWoordhunt(word){
       let answer = await asyncRequest(`${APIServer}/get_syllable_full_data/`, `POST`, {command:``, comment:``, data:`${document.body.dataset.word}`},true)
 
         console.log(answer)
+        document.title = `${answer.word}`;
         document.getElementById('id_link_on_wooordhunt').href=`https://wooordhunt.ru/word/${answer.word}`;
         document.getElementById('id_link_on_glosbe').href=`https://ru.glosbe.com/en/ru/${answer.word}`;
         
