@@ -1,8 +1,10 @@
 import re
 import urllib
 import urllib.request
+import requests
 from pathlib import Path
 from bs4 import BeautifulSoup as BS
+import ssl
 
 def reduce(lc_source:str):
     return lc_source.replace('                ',' ').replace('                ', ' ').replace('        ', ' ').replace('        ', ' ').replace('    ', ' ').replace('    ', ' ').replace('  ', ' ').replace('  ', ' ').replace('  ', ' ')
@@ -27,14 +29,27 @@ def sx(source_string='', left_split='', right_split='', index=1):
         lc_str = lc_str[lc_str.find(left_split) + len(left_split):len(lc_str)]
     return lc_str[0:lc_str.find(right_split)]
 
+
+def download_file(url:str, path):
+	print(f'{url} ===> {path}')
+	lc_local_file_name = path
+	r = requests.get(url, stream=True, verify=False)
+	if r.status_code == 200:
+		with open(lc_local_file_name, 'wb') as f:
+			for chunk in r:
+				f.write(chunk) 
+
+
 class Wooordhunt:
     def __init__ (self, lc_link:str):
-        self.context = sx(urllib.request.urlopen(lc_link).read().decode('UTF-8') + '||||||', '<div id="header">', '||||||')
+        context = ssl._create_unverified_context()
+        self.context = sx(urllib.request.urlopen(lc_link, context=context).read().decode('UTF-8') + '||||||', '<div id="header">', '||||||')
         self.sound_path = sx(self.context , '<audio id="audio_us" preload="auto"> <source src="', '"')
         if len(self.sound_path)>5:
             path_for_sounds = Path(__file__).resolve().parent.parent / 'static' / 'sounds'
             print(f'path_for_sounds:{path_for_sounds}')
-            urllib.request.urlretrieve(r'https://wooordhunt.ru'+self.sound_path, path_for_sounds / sx((self.sound_path+'|')[::-1], '|', '/')[::-1])
+            #urllib.request.urlretrieve(r'http://wooordhunt.ru'+self.sound_path, path_for_sounds / sx((self.sound_path+'|')[::-1], '|', '/')[::-1])
+            download_file(r'http://wooordhunt.ru'+self.sound_path, path_for_sounds / sx((self.sound_path+'|')[::-1], '|', '/')[::-1])
 
     def get_transcription(self):
         lc_str = sx(self.context, u'class="transcription">', u'</span> <audio').replace(' ','')
@@ -98,7 +113,7 @@ def Delete_from_String_all_Characters_Unsuitable_For_FileName(pc:str):
     return lc_result.strip()
 
 
-if False:
+if True:
     lo_wh = Wooordhunt(r'https://wooordhunt.ru/word/quench')
     open("source.html", "w", encoding='utf8').write(lo_wh.context)
     print('========================================= transcription')
