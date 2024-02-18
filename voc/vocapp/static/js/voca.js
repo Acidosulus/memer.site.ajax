@@ -397,6 +397,8 @@ async function LoadSyllableFromWoordhunt(word){
       let answer = await asyncRequest(`${APIServer}/Get_Next_Syllable_For_Learning/`, `POST`, {command:``, comment:``, data:``})
       console.log(answer)
       document.body.dataset.word = answer.data;
+      document.querySelector(`#link_on_word_redo`).href=`/add_new_word/${answer.data}/`;
+      document.querySelector(`#img_into_link_on_word_redo`).title=`Редактировать слово ${answer.data}`;
       console.log(document.body.dataset.word);
     }
 
