@@ -110,7 +110,7 @@ async def get_user_count_of_words_ready(rq:SiteRequest):
 async def get_user_count_of_words_proceed_today(rq:SiteRequest):
 	response = {}
 	printSiteRequest(inspect.currentframe().f_code.co_name, rq)
-	response['data'] = 'None'
+	response['data'] = dblang.GetCountOfUserSyllablesWorkedOutToday(rq.username)
 	print(response)
 	return JSONResponse(response)
 

@@ -1,7 +1,7 @@
 import sys
 from click import echo, style
 from sqlalchemy import create_engine
-from sqlalchemy import Column, Integer, Table, MetaData, and_
+from sqlalchemy import Column, Integer, Table, MetaData, and_, func
 from sqlalchemy.orm import Session
 from sqlalchemy import Integer,  ForeignKey
 from sqlalchemy.orm import relationship
@@ -341,6 +341,16 @@ class LanguageDB:
 																Syllable.ready==ready)).count()
 		self.IfCommit()
 		return result
+
+	def GetCountOfUserSyllablesWorkedOutToday(self, user_name:str):
+		#current_user_id = self.session.query(User).filter(User.name==user_name). first().user_id
+		result = self.session.query(UserWordsLog, User).filter(and_(	User.name==user_name, 
+								       									User.user_id==UserWordsLog.user_id,
+																		UserWordsLog.dt>=datetime.datetime.now() - datetime.timedelta(days=1)
+																		)).count()
+		self.IfCommit()
+		return result
+
 
 	#return full data by the syllable
 	def GetSyllable(self, word:str, user_name:str):
