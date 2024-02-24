@@ -22,14 +22,14 @@
     <img width="64" height="64" src="{% static '/images/info.png' %}" onclick="clickDictionaryelectEvent(this);">
 </div>
 
-
+<!--
 <table   width = "100%" style="font-size:75%;">
     <tr>
                 <td style="border: 0px;" width="29%" align="center"><p align="left" style="color:rgb(50,125,50);"><span style="font-weight: bold;" id="id_book_name" class = 'book_name'></span></p></td>
                 <td style="border: 0px;" width="29%" align="center"><p align="right" style="color:rgb(50,125,50);"><span style="font-weight: bold; color:lime;" id="id_book_position" class = 'book_position'></span></p></td>
     </tr>
 </table>
-    
+-->    
                
    
 
@@ -199,8 +199,16 @@
 <br>
 <br>
 <br>
-<!--<div id="hintbox" style="display:'none'"></div>-->
+
 </body>
+
+<script defer lang="javascript">
+    let navbar = document.querySelector(`#navigation_subbar_optional`);
+    navbar.insertAdjacentHTML(`beforeend`,`<div class ='col-2 ml-4'><span style="font-weight: bold;" id="id_book_name" class = 'book_name'></span></div>`);
+    navbar.insertAdjacentHTML(`beforeend`,`<div class ='col-2 ml-4'><span style="font-weight: bold; color:lime;" id="id_book_position" class = 'book_position'></span></div>`);
+    LoadSimpleData();
+</script>
+
 </html>
 
 

@@ -5,7 +5,7 @@ window.onload = async function(event) {
   console.log(UserName, UserUUID, APIServer);
  
   Load_Books_List();
-  if (!(document.body.dataset.phraseid=='0')){   LoadSimpleData();   }
+  LoadSimpleData(); 
   if(document.getElementById('index_table_of_syllables')!=null){
         LoadPaginatorBlock();
         Load_words_slice(100,
