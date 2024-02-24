@@ -276,6 +276,9 @@ class Syllable(BaseModel):
 
 @app.post("/Save_Syllabe/")
 async def Save_Syllabe(rq:Dict[Any, Any]):
+	print("==========================================================================")
+	prnt(rq)
+	print("==========================================================================")
 	response = {}
 	prnt(rq)
 	prnt(type(rq))
@@ -292,7 +295,7 @@ async def Save_Syllabe(rq:Dict[Any, Any]):
 
 @app.post("/Save_Phrase/")
 async def Save_Phrase(rq:SiteRequests):
-	printSiteRequests(inspect.currentframe().f_code.co_name, rq)	
+	printSiteRequests(inspect.currentframe().f_code.co_name, rq)
 	response = dblang.SavePhrase(user_name = rq.username, phrase_id=int(rq.command), text=rq.comment, translate=rq.data)
 	return JSONResponse(response)
 

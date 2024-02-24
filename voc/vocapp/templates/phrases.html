@@ -1,43 +1,34 @@
 <!DOCTYPE html>
 
 {% load static %}
+{% include "_head.html" %} 
 
 <html>
-<head>
-    <meta charset="utf-8" />
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
-    <link rel="shortcut icon" type="image/png" href="{% static '/images/favicon.png' %}"/>
-    <title>Phrases</title>
-</head>
 
 {% include "subpattern_onload.html" %} 
 
-<script src="{% static 'js/voca.js' %}"></script>
 
 
-<body background="{% static 'images/background_bb.jpg' %}">
+{% include "_body_begin.html" %} 
 
-    <hr>
-            <table   width = "100%">
-                <tr>
-                    <td style="border: 0px;" width="10%" align="left"><div class ='div_float_left'><a onclick="javascript:history.back(); return false;"><IMG class ="image_little_button"  WIDTH="64" HEIGHT="64"  title = "Назад" src="{% static 'images/back.png' %}"></a></div></td>
-                    <td style="border: 0px;" width="10%" align="left"><a href="/"><IMG class ="image_little_button" WIDTH="64" HEIGHT="64"  title = "На главную" src="{% static 'images/home.png' %}"></a></td>
-                    <td style="border: 0px;" width="20%" align="center"></td>
-                    <td style="border: 0px;" width="30%" align="center"></td>
-                    <td style="border: 0px;" width="10%" align="right"><a href = '/phrases/add_new/0/'><IMG class ="image_little_button" style="display: inline-block;box-shadow: 2px 2px 3px 4px rgba(0,0,0,0.5);text-shadow: 1px 1px 2px black, 0 0 1em black; border-radius: 12px;" WIDTH="64" HEIGHT="64"  title = "Добавить фразу" src="{% static 'images/add.png' %}"></a></td>
-                    <td style="border: 0px;" width="10%" align="right"><a href = '/phrases/ready_list/'><IMG class ="image_little_button" style="display: inline-block;box-shadow: 2px 2px 3px 4px rgba(0,0,0,0.5);text-shadow: 1px 1px 2px black, 0 0 1em black; border-radius: 12px;" WIDTH="64" HEIGHT="64"  title = "Выученные фразы" src="{% static 'images/ready.png' %}"></a></td>
-                    <td style="border: 0px;" width="10%" align="right"><a href = "/phrases/in_progress/" style="margin:0px 0px 0px 0px"><IMG class ="image_little_button" style="display: inline-block;box-shadow: 2px 2px 3px 4px rgba(0,0,0,0.5);text-shadow: 1px 1px 2px black, 0 0 1em black; border-radius: 12px;" WIDTH="64" HEIGHT="64"  title = "Учить фразы" src="{% static 'images/education.png' %}"></a></td>
-                    </tr>
-            </table>
-    <hr>
+{% include "_navigation_panel.html" %} 
 
 
 
+    <div id = 'index_table_of_phrases' data-ready="{{ readystatus }}">
 
-    <table class="my_class_table_of_words" width = "100%" id = 'index_table_of_phrases' data-ready="{{ readystatus }}">
-    <hr>
-    
+    </div>
+
 </body>
+
+<script defer lang="javascript">
+    let navbar = document.querySelector(`#navigation_subbar_optional`);
+    navbar.insertAdjacentHTML(`beforeend`,`<div class ='col-2 ml-4'><a href = "/phrases/add_new/0/""><IMG WIDTH="64" HEIGHT="64"  title = "Добавить фразу" src="{% static 'images/add.png' %}"></a></div>`);
+    navbar.insertAdjacentHTML(`beforeend`,`<div class ='col-2 ml-4'><a href = "/phrases/ready_list/""><IMG WIDTH="64" HEIGHT="64"  title = "Выученные фразы" src="{% static 'images/ready.png' %}"></a></div>`);
+    navbar.insertAdjacentHTML(`beforeend`,`<div class ='col-2 ml-4'><a href = "/phrases/in_progress/"><IMG WIDTH="64" HEIGHT="64"  title = "Учить фразы" src="{% static 'images/education.png' %}"></a></div>`);
+
+</script>
+
 </html>
 
 

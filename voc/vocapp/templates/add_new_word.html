@@ -1,40 +1,20 @@
-<!DOCTYPE html>
 {% load static %}
+{% include "_head.html" %} 
+
 <html>
-<head>
-    <meta charset="utf-8" />
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
-    <link rel="shortcut icon" type="image/png" href="{% static '/images/favicon.png' %}"/>
-    <title>Add new word</title>
-</head>
 
 {% include "subpattern_onload.html" %} 
-<script src="{% static 'js/voca.js' %}"></script>
 
 
-<body id="body_add_new_word" background="{% static 'images/background_bb.jpg' %}" data-word="{{ word }}" >
 
-    <table   width = "100%" style="font-size:100%;">
-        <tr>
-            <td style="border: 0px;" width="19%" align="center"><p align="left"  style="color:rgb(50,125,50);">Количество слов на изучении: <span style="font-weight: bold; color:lime;" data-simplecommand="get_user_count_of_words_inprocess"></span></p></td>
-            <td style="border: 0px;" width="19%" align="center"><p align="left"  style="color:rgb(50,125,50);">Сегодня проработано слов: <span style="font-weight: bold; color:lime;" data-simplecommand="get_user_count_of_words_proceed_today"></span></p></td>
-            <td style="border: 0px;" width="19%" align="center"><p align="right" style="color:rgb(50,125,50);">Изучено слов: <span style="font-weight: bold; color:lime;"  data-simplecommand="get_user_count_of_words_ready"></span></p></td>
-            <td style="border: 0px;" width="19%" align="center"><a href="./personal_page/"><p data-simplecommand="get_user_information" id="class_above_panel_user_view" align="right" style="font-weight: bold; color:rgb(76, 96, 209);"></p></a></td>
-        </tr>
-    </table>
+{% include "_body_begin.html" %} 
 
-<hr>
-       
+{% include "_navigation_panel.html" %} 
+
+<div id = 'body_add_new_word' data-word="{{ word }}">
+</div>
+   
                 <div class="my_div_save">
-                    <div class ='div_float_left'><IMG WIDTH="48" HEIGHT="48" src="{% static 'images/empty_32x32.png' %}"></div>
-                    <div class ='div_float_left'><a onclick="javascript:history.back(); return false;"><IMG class ="image_little_button"  WIDTH="48" HEIGHT="48"  title = "Назад" src="{% static 'images/back.png' %}"></a></div>
-                    <div class ='div_float_left'><IMG  WIDTH="48" HEIGHT="48" src="{% static 'images/empty_32x32.png' %}"></div>
-                    <div class ='div_float_left'><a href="/"><IMG  class ="image_little_button"  WIDTH="48" HEIGHT="48"  title = "На главную" src="{% static 'images/home.png' %}"></a></div>
-                    <div class ='div_float_left'><IMG  WIDTH="48" HEIGHT="48" src="{% static 'images/empty_32x32.png' %}"></div>
-                    <div class ='div_float_right'><a id= 'id_link_on_wooordhunt' href="https://wooordhunt.ru/word/{{ word }}" target="_blank"><IMG  class ="image_little_button"  WIDTH="48" HEIGHT="48"  title = "wooordhunt.ru" src="{% static 'images/wh.ico' %}"></a></div>
-                    <div class ='div_float_right'><IMG  WIDTH="48" HEIGHT="48" src="{% static 'images/empty_32x32.png' %}"></div>
-                    <div class ='div_float_right'><a id= 'id_link_on_glosbe' href="https://ru.glosbe.com/en/ru/{{ word }}" target="_blank"><IMG  class ="image_little_button"  WIDTH="48" HEIGHT="48"  title = "ru.glosbe.com" src="https://ru.glosbe.com/assets/favicon/favicon-32x32.png"></a></div>
-                    <div class ='div_float_right'><IMG  WIDTH="48" HEIGHT="48" src="{% static 'images/empty_32x32.png' %}"></div>
                     <p align = "center"><input type="submit" value="Сохранить" class="button_save" onclick="SaveSyllable('/');"></p>
                     <p align = "center"><input type="submit" value="woordhunt =>>" class="button_save" onclick="LoadSyllableFromWoordhunt(document.getElementById(`id_word`).value);"></p>
                 </div>
@@ -60,14 +40,14 @@
 
 <a href = "{% static 'sounds' %}/{{ word }}.mp3" id="invisible_link_for_link_path"></a>
 
-<!--
-        <form method="POST" target="add_new/">{% csrf_token %}
-        <table width = '100%'>
-            {{ form.as_table }}
-        </table>
-            <p align = "center"><input type="submit" value="Сохранить" class="button"></p>
-        </form>
--->
+
+<script defer lang="javascript">
+    let navbar = document.querySelector(`#navigation_subbar_optional`);
+    navbar.insertAdjacentHTML(`beforeend`,`<div class ='col-2 ml-4'><a id= 'id_link_on_wooordhunt' href="https://wooordhunt.ru/word/{{ word }}" target="_blank"><IMG  class ="image_little_button"  WIDTH="48" HEIGHT="48"  title = "wooordhunt.ru" src="{% static 'images/wh.ico' %}"></a></div>`);
+    navbar.insertAdjacentHTML(`beforeend`,`<div class ='col-2 ml-4'><a id= 'id_link_on_glosbe' href="https://ru.glosbe.com/en/ru/{{ word }}" target="_blank"><IMG  class ="image_little_button"  WIDTH="48" HEIGHT="48"  title = "ru.glosbe.com" src="https://ru.glosbe.com/assets/favicon/favicon-32x32.png"></a></div>`);
+</script>
+
+
 </body>
 
 </html>

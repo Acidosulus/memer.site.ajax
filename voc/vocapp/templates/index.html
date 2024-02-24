@@ -1,34 +1,22 @@
-<!DOCTYPE html>
+
 
 {% load static %}
 
-<html>
-<head>
-    <meta charset="utf-8" />
-    <link rel="stylesheet" href="/static/css/styles.css" />
-    <link rel="shortcut icon" type="image/png" href="/static/images/favicon.png"/>
-    <title>Memorier</title>
-</head>
+{% include "_head.html" %} 
 
+<html>
 
 {% include "subpattern_onload.html" %} 
-<script src="/static/js/voca.js"></script>
-
-
-<body background="/static/images/background_bb.jpg"">
-
-
-    <table   width = "100%" style="font-size:100%;">
-        <tr>
-            <td style="border: 0px;" width="19%" align="center"><p align="left"  style="color:rgb(50,125,50);">Количество слов на изучении: <span style="font-weight: bold; color:lime;" data-simplecommand="get_user_count_of_words_inprocess"></span></p></td>
-            <td style="border: 0px;" width="19%" align="center"><p align="left"  style="color:rgb(50,125,50);">Сегодня проработано слов: <span style="font-weight: bold; color:lime;" data-simplecommand="get_user_count_of_words_proceed_today"></span></p></td>
-            <td style="border: 0px;" width="19%" align="center"><p align="right" style="color:rgb(50,125,50);">Изучено слов: <span style="font-weight: bold; color:lime;"  data-simplecommand="get_user_count_of_words_ready"></span></p></td>
-            <td style="border: 0px;" width="19%" align="center"><a href="./personal_page/"><p data-simplecommand="get_user_information" id="class_above_panel_user_view" align="right" style="font-weight: bold; color:rgb(76, 96, 209);"></p></a></td>
-        </tr>
-    </table>
 
 
 
+{% include "_body_begin.html" %} 
+
+{% include "_navigation_panel.html" %} 
+
+
+
+<!--
     <hr>
             <table  align="right">
                 <tr>
@@ -42,43 +30,76 @@
                 </tr>
             </table>
     <hr>
+-->
 
-    <script type="text/javascript">
-
-    </script>
-
-<!---------------------------------------------------------------------------------------------------------------------------------------------->
+<!--
 <div class="pagination_auto"></div>
-<!---------------------------------------------------------------------------------------------------------------------------------------------->
-
  <hr>
-
-
     <table id='index_table_of_syllables' class="my_class_table_of_words" width = "100%" data-ready="{{ ready }}">
     </table>
-
-    
     <hr>
-
-<!---------------------------------------------------------------------------------------------------------------------------------------------->
 <div class="pagination_auto"></div>
-<!---------------------------------------------------------------------------------------------------------------------------------------------->
+-->
 
 
-
-<div class="center_parent" id="search_result" hidden >
-    <div class="center_block" style="background-image:url('./static/images/background.gif'); box-shadow: 2px 2px 3px 4px rgba(0,0,0,0.5);">
-        <input autofocus autocomplete="off" type="text" class="my_class_input_word" style="width:90%; margin: 2px; padding: 2px 2px;" id="text_for_finding" value = "" oninput="get_finding(this.value)">
-        <a style="float:right; margin: 15px 15px 0px 0px"><img IMG  class ="image_little_button" WIDTH="64" HEIGHT="64"   title = "Закрыть" src="/static/images/exit.png" onclick="Close_Findind();"></a>
-        <table id ='span_search_result'>
-        </table>
+<div class="container">
+    <div class="row justify-content-center border border-success color_block_blue_green">
+      <div class="col-md-12 col-12 mt-5">
+        <div class="row">
+          <div class="col-4 mb-3"><a href="/books/" ><IMG WIDTH="160" HEIGHT="160"  title = "Список книг" src="/static/images/books.png">  </a></div>
+          <div class="col-4 mb-3"><a href="/word_in_progress/" ><IMG  WIDTH="160" HEIGHT="160"  title = "Учить слова" src="/static/images/education.png"></a></div>
+          <div class="col-4 mb-3"><a href="/phrases/" ><IMG  WIDTH="160" HEIGHT="160"  title = "Списк фраз"  src="/static/images/phrases.png"></a></div>
+        </div>
+        <div class="container-fluid justify-content-center">
+            <div class="row mt-5">
+              <div class="col-3 ml-3"><a style="margin:0px 0px 0px 0px"><IMG  WIDTH="160" HEIGHT="160"  title = "Поиск слов" src="/static/images/finding.png" onclick="Find_Word();"></a></div>
+              <div class="col-3 ml-3"><a href = '/add_new_word/ /'><IMG WIDTH="160" HEIGHT="160"  title = "Добавить слово" src="/static/images/add.png"></a></div>
+              <div class="col-3 ml-3"><a href = '/proceed_list/'><IMG WIDTH="160" HEIGHT="160"  title = "Выученные слова" src="/static/images/list.png"></a></div>
+              <div class="col-3 ml-3"><a href = '/ready_list/'><IMG WIDTH="160" HEIGHT="160"  title = "Слова в процессе обучения" src="/static/images/ready.png"></a></div>
+            </div>
+        </div>
+      </div>
     </div>
+  </div>
+
+  <div class="container mt-5">
+    <div class="row justify-content-center border border-success color_block_blue_green">
+      <div class="col-md-8 col-12 mt-5">
+        <div class="row">
+          <div class="col-4 mb-3"><a href = '/media_list/user_root_/'><IMG WIDTH="160" HEIGHT="160"  title = "Медиа" src="/static/images/images.png"></a></div>
+          <div class="col-4 mb-3"></div>
+          <div class="col-4 mb-3"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<div class="center_parent container" id="search_result" hidden >
+  
+    <div class="center_block border border-info rounded" style="background-image:url('./static/images/background.gif'); box-shadow: 2px 2px 3px 4px rgba(0,0,0,0.5); overflow-y: auto;">
+      <div class="container-fluid">
+          <div class="row mt-5">
+            <div class="col-11">
+              <input autofocus autocomplete="off" type="text" class="my_class_input_word" id="text_for_finding" value = "" oninput="get_finding(this.value)">
+            </div>
+            <div class="col-1">
+              <a ><img IMG  class ="image_little_button" WIDTH="64" HEIGHT="64"   title = "Закрыть" src="/static/images/exit.png" onclick="Close_Findind();"></a>
+            </div>
+      </div>
+
+      <div class="container-fluid">
+          <div class="col" id ='span_search_result'>
+          </div>
+      </div>
+
+    </div>
+  
+  </div>
 </div>
 
 
 
 <!---------------------------------------------------------------------------------------------------------------------------------------------->
-
 
 </body>
 </html>

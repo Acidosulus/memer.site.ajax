@@ -1,54 +1,38 @@
-<!DOCTYPE html>
+
 {% load static %}
+{% include "_head.html" %} 
+
 <html>
-<head>
-    <meta charset="utf-8" />
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
-    <link rel="shortcut icon" type="image/png" href="{% static '/images/favicon.png' %}"/>
-    <title>{{ word }}</title>
-</head>
 
 {% include "subpattern_onload.html" %} 
-<script src="{% static 'js/voca.js' %}"></script>
 
 
-<body id="body_word_in_progress" background="{% static 'images/background_bb.jpg' %}", data-apiserver="{{ global_api_server_adress }}" data-word="{{ word }}" >
-    <table   width = "100%" style="font-size:100%;">
-        <tr>
-            <td style="border: 0px;" width="19%" align="center"><p align="left"  style="color:rgb(50,125,50);">Количество слов на изучении: <span style="font-weight: bold; color:lime;" data-simplecommand="get_user_count_of_words_inprocess"></span></p></td>
-            <td style="border: 0px;" width="19%" align="center"><p align="left"  style="color:rgb(50,125,50);">Сегодня проработано слов: <span style="font-weight: bold; color:lime;" data-simplecommand="get_user_count_of_words_proceed_today"></span></p></td>
-            <td style="border: 0px;" width="19%" align="center"><p align="right" style="color:rgb(50,125,50);">Изучено слов: <span style="font-weight: bold; color:lime;"  data-simplecommand="get_user_count_of_words_ready"></span></p></td>
-            <td style="border: 0px;" width="19%" align="center"><a href="./personal_page/"><p data-simplecommand="get_user_information" id="class_above_panel_user_view" align="right" style="font-weight: bold; color:rgb(76, 96, 209);"></p></a></td>
-        </tr>
-    </table>
 
-<hr>
+{% include "_body_begin.html" %} 
 
-    <div class = 'my_div'>
-        <div class="my_div_left">
-                <a href="/add_new_word/" id="link_on_word_redo"><IMG id="img_into_link_on_word_redo" class ="image_little_button" WIDTH="64" HEIGHT="64"  title = "Редактировать слово" src="{% static 'images/redo.png' %}"></a>
-                <IMG  WIDTH="64" HEIGHT="64" src="{% static 'images/empty_32x32.png' %}">
-                <a onclick="javascript:history.back(); return false;"><IMG class ="image_little_button" WIDTH="64" HEIGHT="64"  title = "Назад" src="{% static 'images/back.png' %}"></a>
-                <IMG  WIDTH="64" HEIGHT="64" src="{% static 'images/empty_32x32.png' %}">
-                <a href="/"><IMG class ="image_little_button" WIDTH="64" HEIGHT="64"  title = "На главную" src="{% static 'images/home.png' %}"></a>
-        </div>
-        <div class="my_div_right">
-                <a id= 'id_link_on_wooordhunt' href="https://wooordhunt.ru/word/{{ word }}" target="_blank"><IMG  class ="image_little_button"  WIDTH="64" HEIGHT="64"  title = "wooordhunt.ru" src="{% static 'images/wh.ico' %}"></a>
-                <IMG  WIDTH="64" HEIGHT="64" src="{% static 'images/empty_32x32.png' %}">
-                <a id= 'id_link_on_glosbe' href="https://ru.glosbe.com/en/ru/{{ word }}" target="_blank"><IMG  class ="image_little_button"  WIDTH="48" HEIGHT="48"  title = "ru.glosbe.com" src="https://ru.glosbe.com/assets/favicon/favicon-32x32.png"></a>
-                <IMG  WIDTH="64" HEIGHT="64" src="{% static 'images/empty_32x32.png' %}">
-                <a href="/ready/{{ word }}/"><IMG class ="image_little_button" WIDTH="64" HEIGHT="64"  title = "Слово выученно" src="{% static 'images/ok.png' %}"></a>
-        </div>
-    </div>
+{% include "_navigation_panel.html" %} 
+
+
+<div id='dataset' data-apiserver="{{ global_api_server_adress }}" data-word="{{ word }}" data-type="body_word_in_progress">
+
     <p></p>
 
     <p  id='id_my_class_p_word'class = 'my_class_p_word' onclick='speakText(this.textContent)'></p>
     <p  id='id_my_class_p_transcription' class = 'my_class_p_transcription' onclick="new Audio( `{% static 'sounds' %}/{{ word }}.mp3` ).play(); return false;"></p>
     <p  id='id_my_class_p_my_class_p_translations' class = 'my_class_p_my_class_p_translations'></p>
     <p id='id_my_class_p_my_class_p_examples'></p>
-    <button class = 'button_add' onclick="SetSyllableAsViewedAndLoadNext(document.body.dataset.word); window.scroll({top:0,left:0,behavior: 'smooth'});">Next word</button>
+    <button class = 'button_add' onclick="SetSyllableAsViewedAndLoadNext(document.querySelector('#dataset').dataset.word); window.scroll({top:0,left:0,behavior: 'smooth'});">Next word</button>
     <p></p>
 </body>
+
+<script defer lang="javascript">
+    let navbar = document.querySelector(`#navigation_subbar_optional`);
+    navbar.insertAdjacentHTML(`beforeend`,`<div class ='col-2 ml-4'><a href="/add_new_word/" id="link_on_word_redo"><IMG id="img_into_link_on_word_redo"  WIDTH="64" HEIGHT="64"  title = "Редактировать слово" src="{% static 'images/redo.png' %}"></a></div>`);
+    navbar.insertAdjacentHTML(`beforeend`,`<div class ='col-2 ml-4'><a id= 'id_link_on_wooordhunt' href="https://wooordhunt.ru/word/{{ word }}" target="_blank"><IMG    WIDTH="64" HEIGHT="64"  title = "wooordhunt.ru" src="{% static 'images/wh.ico' %}"></a></div>`);
+    navbar.insertAdjacentHTML(`beforeend`,`<div class ='col-2 ml-4'><a id= 'id_link_on_glosbe' href="https://ru.glosbe.com/en/ru/{{ word }}" target="_blank"><IMG    WIDTH="64" HEIGHT="64"  title = "ru.glosbe.com" src="https://ru.glosbe.com/assets/favicon/favicon-32x32.png"></a></div>`);
+    navbar.insertAdjacentHTML(`beforeend`,`<div class ='col-2 ml-4'><a href="/ready/{{ word }}/"><IMG  WIDTH="64" HEIGHT="64"  title = "Слово выученно" src="{% static 'images/ok.png' %}"></a></div>`);
+</script>
+
 </html>
 
 

@@ -199,9 +199,17 @@ def index(request):
 @login_required
 def ready_list(request):
 	print(" ============== ready_list")
-	data = {'global_api_server_adress':settings.API_ADRESS, 'ready':1 }
+	data = {'APIServer':settings.API_ADRESS, 'ready':1, 'userUUID':usersDataStorage.FindDataByUserName(request.user.get_username())['uuid'] }
 	print(data)
 	return render(request, "ready_list.html", context=data)
+
+@login_required
+def proceed_list(request):
+	print(" ============== ready_list")
+	data = {'APIServer':settings.API_ADRESS, 'ready':0, 'userUUID':usersDataStorage.FindDataByUserName(request.user.get_username())['uuid'] }
+	print(data)
+	return render(request, "ready_list.html", context=data)
+
 
 
 def personal_page(request):
@@ -408,7 +416,7 @@ def DownLoadmp3s (sentence):
 def books(request):
 	#lo_book = Books.objects.filter(userid=request.user.id).order_by('-dt')
 	#data = { 'books':lo_book }
-	data = {'APIServer':settings.API_ADRESS, 'userUUID':usersDataStorage.FindDataByUserName(request.user.get_username())['uuid']}
+	data = {'APIServer':settings.API_ADRESS, 'userUUID':usersDataStorage.FindDataByUserName(request.user.get_username())['uuid'], 'body_id':'id_body_books'}
 	return render(request, "books.html", context=data)
 
 @login_required

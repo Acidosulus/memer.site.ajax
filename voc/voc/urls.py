@@ -49,6 +49,7 @@ urlpatterns = [
 	path('GetWoorhuntDataJSON/<str:pc_word>/', views.GetWoorhuntDataJSON),
 	path('add_new_word/', views.add_new),
 	path('ready_list/', views.ready_list),
+	path('proceed_list/', views.proceed_list),
 	path('next/<str:pc_last_word>/', views.next_with_last),
 	path('ready/<str:pc_ready_word>/', views.ready),
 	path('unready/<str:pc_unready_word>/', views.unready),

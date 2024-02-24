@@ -7,8 +7,9 @@ textarea,
 
 
 body{
-    font-family: Verdana;
-    }
+    /*font-family: Verdana;*/
+    background-color: #000a04;
+     }
 
 table{
     border: 0px;
@@ -78,7 +79,10 @@ td{
 }
 
 
-a {
+
+
+/* link with underline*/
+link{
     text-decoration: none;
     background-image: linear-gradient(currentColor, currentColor);
     background-position: 0% 100%;
@@ -87,17 +91,19 @@ a {
     transition: background-size .3s;
     color: Green;
 }
-a:hover {
+link:hover {
     background-size: 100% 2px;
     color: Lime;
 }
-a:visited {
+link:visited {
   color: Green;
 }
-a:visited:hover {
+link:visited:hover {
 background-size: 100% 2px;
   color: Lime;
 }
+
+
 
 h1{
     color:Grey;
@@ -371,21 +377,20 @@ my_div_save{
 
     .center_parent {
         width: 95%;
-        height: 95%;
+        height: 70%;
         position: fixed;
-        top: 20;
-        left: 20;
-        overflow: auto;
+        top: 120px;
+        left: 20px;
     }
     
     .center_block {
         width: 95%;
-        height: 95%;
+        height: 80%;
         position: fixed;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
+        top: 120px;
+        right: 0px;
+        bottom: 0px;
+        left: 0px;
         margin: auto;
         background: #0c1408;
         
@@ -405,3 +410,37 @@ my_div_save{
         background:black;
         border:1px solid #99c;
      }
+
+
+
+    .color_block_blue_green{
+        border-radius: 10px;
+        padding: 20px;
+        background-image: linear-gradient(to top right, rgba(0, 4, 255, 0.308), rgba(0, 48, 19, 0.5));
+    }
+
+    .color_block_gray{
+        border-radius: 10px;
+        padding: 20px;
+        background-image: linear-gradient(to top right, rgba(220, 220, 221, 0.055), rgba(220, 220, 221, 0.171));
+    }
+
+
+    .font_blue_larger{
+        color: rgb(60, 83, 212);
+        font-size: x-large;
+        font-weight: bolder ;
+    }
+
+
+    .font_green_larger{
+        color: rgb(30, 88, 44);
+        font-size: x-large;
+        font-weight: bolder ;
+    }
+
+    .font_red_larger{
+        color: rgb(160, 39, 39);
+        font-size: x-large;
+        font-weight: bolder ;
+    }    
