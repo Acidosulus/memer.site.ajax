@@ -26,7 +26,7 @@ table{
      width:100%}
 
 .image_little_button {
--webkit-transition: all 0.7s ease;
+    -webkit-transition: all 0.7s ease;
 transition: all 0.7s ease;
 }
 .image_little_button:hover {
@@ -79,6 +79,10 @@ td{
 }
 
 
+.img_with_backlight_on_hover:hover {
+    -webkit-filter: brightness(200%);
+    transition: -webkit-filter 1s;
+}
 
 
 /* link with underline*/
@@ -209,7 +213,7 @@ label:hover {
 
 
 .button_add {
-    background-color: Green;
+    background-color: rgb(3, 70, 3);
     border: none;
     color: white;
     height:90px;
@@ -269,16 +273,19 @@ label:hover {
 .button_save:hover {
     background-color: Green;
     color: Lime;
+    -webkit-transition: all 1s ease;
 }
 
 .button_trained:hover {
     background-color: Green;
     color: Lime;
+    -webkit-transition: all 1s ease;
 }
 
 .button_add:hover {
     background-color: Green;
     color: Lime;
+    -webkit-transition: all 1s ease;
 }
 
 
@@ -423,6 +430,12 @@ my_div_save{
         border-radius: 10px;
         padding: 20px;
         background-image: linear-gradient(to top right, rgba(220, 220, 221, 0.055), rgba(220, 220, 221, 0.171));
+    }
+
+    .color_block_book_paragraph{
+        border-radius: 10px;
+        padding: 20px;
+        background-image: linear-gradient(to top right, rgba(14, 14, 56, 0.055), rgba(2, 34, 2, 0.171));
     }
 
 

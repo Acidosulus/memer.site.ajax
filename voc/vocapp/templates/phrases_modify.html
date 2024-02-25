@@ -1,31 +1,19 @@
-<!DOCTYPE html>
-
 {% load static %}
+{% include "_head.html" %} 
 
 <html>
-<head>
-    <meta charset="utf-8" />
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
-    <link rel="shortcut icon" type="image/png" href="{% static '/images/favicon.png' %}"/>
-    <title>Phrases</title>
-</head>
 
 {% include "subpattern_onload.html" %} 
-<script src="/static/js/voca.js"></script>
 
-<body background="{% static 'images/background_bb.jpg' %}" id="body_phrase_edit" data-phraseid="{{ phrase_id }}">
-<hr>
-    <div class="my_div_save">
-        <div class ='div_float_left'><IMG WIDTH="48" HEIGHT="48" src="{% static 'images/empty_32x32.png' %}"></div>
-        <div class ='div_float_left'><a onclick="javascript:history.back(); return false;"><IMG class ="image_little_button"  WIDTH="48" HEIGHT="48"  title = "Назад" src="{% static 'images/back.png' %}"></a></div>
-        <div class ='div_float_left'><IMG  WIDTH="48" HEIGHT="48" src="{% static 'images/empty_32x32.png' %}"></div>
-        <div class ='div_float_left'><a href="/"><IMG  class ="image_little_button"  WIDTH="48" HEIGHT="48"  title = "На главную" src="{% static 'images/home.png' %}"></a></div>
-        <div class ='div_float_left'><IMG  WIDTH="48" HEIGHT="48" src="{% static 'images/empty_32x32.png' %}"></div>
-        <div class ='div_float_right'><IMG  WIDTH="48" HEIGHT="48" src="{% static 'images/empty_32x32.png' %}"></div>
-        <div class ='div_float_right'><IMG  WIDTH="48" HEIGHT="48" src="{% static 'images/empty_32x32.png' %}"></div>
-    </div>
-<hr>
 
+
+{% include "_body_begin.html" %} 
+
+{% include "_navigation_panel.html" %} 
+
+
+<div id="body_phrase_edit" data-phraseid="{{ phrase_id }}">
+</div>
 
     <form method="POST" target="_self">{% csrf_token %}
 
@@ -33,11 +21,16 @@
         <tr><th><label for="phrase_text">Phrase:</label></th><td class = 'td_input_new_word'><textarea autocomplete="off" autofocus type="text" name="phrase_text" cols="40" rows="10" class="my_class_input_examples" id="phrase_text" ></textarea></td></th></tr>
         <tr><th><label for="phrase_translation">Comment:</label></th><td class = 'td_input_new_word'><textarea autocomplete="off" name="phrase_translation" cols="40" rows="10" class="my_class_input_examples" id="phrase_translation"></textarea></td></th></tr>
     </table>
-        <p align = "center"><input type="submit" value="Сохранить" class="button_save" onclick="SavePhrase('/phrases/');"></p>
+        <p align = "center"><input type="button" value="Сохранить" class="button_save" onclick="SavePhrase('/phrases/');"></p>
     </form>
 
     <hr>
 </body>
+
+<script defer lang="javascript">
+    let navbar = document.querySelector(`#navigation_subbar_optional`);
+</script>
+
 </html>
 
 

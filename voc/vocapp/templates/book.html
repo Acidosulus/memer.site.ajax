@@ -21,15 +21,6 @@
     <img width="64" height="64" src="{% static '/images/angle_text_bright.png' %}" onclick="clickAutoSelectEvent(this);">
     <img width="64" height="64" src="{% static '/images/info.png' %}" onclick="clickDictionaryelectEvent(this);">
 </div>
-
-<!--
-<table   width = "100%" style="font-size:75%;">
-    <tr>
-                <td style="border: 0px;" width="29%" align="center"><p align="left" style="color:rgb(50,125,50);"><span style="font-weight: bold;" id="id_book_name" class = 'book_name'></span></p></td>
-                <td style="border: 0px;" width="29%" align="center"><p align="right" style="color:rgb(50,125,50);"><span style="font-weight: bold; color:lime;" id="id_book_position" class = 'book_position'></span></p></td>
-    </tr>
-</table>
--->    
                
    
 
@@ -38,23 +29,23 @@
 <div class = 'my_div' style="width:calc(100%); font-size:350%; font-weight: bold; text-align: center;">
     <a id = 'a_id_previous_10' onclick="FlipPages(-50);">
             <div class="my_div_left" style="width: calc(10%);">
-                <p>&lt;&lt;&lt;&laquo;</p>
+                <p style="font-weight:bolder;">&lt;&lt;&lt;&laquo;</p>
             </div>
     </a>
     <a id = 'a_id_previous' onclick="FlipPages(-5);">
         <div class="my_div_left" style="width: calc(33%);">
-            <p>&lt;&lt;&lt;</p>
+            <p style="font-weight:bolder;"> &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</p>
         </div>
     </a>
 
     <a  id = 'a_id_next' onclick="FlipPages(5);">
         <div class="my_div_left" style="width: calc(33%); text-align:right;">
-            <p>&gt;&gt;&gt;</p>
+            <p style="font-weight:bolder;">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; </p>
         </div>
     </a>
     <a  id = 'a_id_next_10' onclick="FlipPages(50);">
             <div class="my_div_left" style="width: calc(10%); text-align:right;">
-                <p>&raquo;&gt;&gt;&gt;</p>
+                <p style="font-weight:bolder;">&raquo;&gt;&gt;&gt;</p>
             </div>
     </a>
 </div>
@@ -78,23 +69,23 @@
 <div class = 'my_div' style="width:calc(100%); font-size:350%; font-weight: bold; text-align: center;">
     <a id = 'a_id_previous_10' onclick="FlipPages(-50); window.scroll({top:0,left:0,behavior: 'smooth'});">
             <div class="my_div_left" style="width: calc(10%);">
-                <p>&lt;&lt;&lt;&laquo;</p>
+                <p style="font-weight:bolder;">&lt;&lt;&lt;&laquo;</p>
             </div>
     </a>
     <a id = 'a_id_previous' onclick="FlipPages(-5); window.scroll({top:0,left:0,behavior: 'smooth'});">
         <div class="my_div_left" style="width: calc(33%);">
-            <p>&lt;&lt;&lt;</p>
+            <p style="font-weight:bolder;"> &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</p>
         </div>
     </a>
 
     <a  id = 'a_id_next' onclick="FlipPages(5); window.scroll({top:0,left:0,behavior: 'smooth'});">
         <div class="my_div_left" style="width: calc(33%); text-align:right;">
-            <p>&gt;&gt;&gt;</p>
+            <p style="font-weight:bolder;">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; </p>
         </div>
     </a>
     <a  id = 'a_id_next_10' onclick="FlipPages(50); window.scroll({top:0,left:0,behavior: 'smooth'});">
             <div class="my_div_left" style="width: calc(10%); text-align:right;">
-                <p>&raquo;&gt;&gt;&gt;</p>
+                <p style="font-weight:bolder;">&raquo;&gt;&gt;&gt;</p>
             </div>
     </a>
 </div>
@@ -204,9 +195,10 @@
 
 <script defer lang="javascript">
     let navbar = document.querySelector(`#navigation_subbar_optional`);
-    navbar.insertAdjacentHTML(`beforeend`,`<div class ='col-2 ml-4'><span style="font-weight: bold;" id="id_book_name" class = 'book_name'></span></div>`);
+    navbar.insertAdjacentHTML(`beforeend`,`<div class ='col-4 ml-4'><span style="font-weight: bold; color: rgb(60, 83, 212);" id="id_book_name" class = 'book_name'></span></div>`);
+    navbar.insertAdjacentHTML(`beforeend`,`<div class ='col-2 ml-4'><span style="font-weight: bold; color:lime;" id="id_book_position_percent" class = 'book_position'></span></div>`);
     navbar.insertAdjacentHTML(`beforeend`,`<div class ='col-2 ml-4'><span style="font-weight: bold; color:lime;" id="id_book_position" class = 'book_position'></span></div>`);
-    LoadSimpleData();
+    
 </script>
 
 </html>

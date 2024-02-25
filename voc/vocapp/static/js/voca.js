@@ -15,6 +15,8 @@ window.onload = async function(event) {
     }
 
     Load_Word_in_Progress_Data();
+    LoadSyllableFromWoordhunt();
+
     Load_Phrase_in_Progress_Data();
     Load_Phrase_in_Edit_Data();
     Load_Syllable_Into_Add_New_Word();
@@ -37,9 +39,12 @@ async function asyncRequest (uri, method, data, debug=false){
 
 // save phrase data into DB, if link parameter not empty goes by it link
 function SavePhrase(link){
+  console.log(`SavePhrase`);
+  console.log(`${APIServer}/Save_Phrase/`);
+  console.log(`${document.querySelector(`#body_phrase_edit`).dataset.phraseid}`);
   asyncRequest( `${APIServer}/Save_Phrase/`,
                 `POST`,
-                {command:`${document.body.dataset.phraseid}`, comment:`${document.getElementById('phrase_text').value}`, data:`${document.getElementById('phrase_translation').value}`})
+                {command:`${document.querySelector(`#body_phrase_edit`).dataset.phraseid}`, comment:`${document.getElementById('phrase_text').value}`, data:`${document.getElementById('phrase_translation').value}`})
   if (link.length>0){
                      window.location.href = link;
   }
@@ -48,15 +53,15 @@ function SavePhrase(link){
 
 
   async function Load_Phrase_in_Edit_Data(){
-    if(document.body.id!='body_phrase_edit'){
+    if(!document.querySelector(`#body_phrase_edit`)){
       console.log('Load_Phrase_in_Edit_Data', 'no phrase edit')
       return
     }
-    if (!(Number(document.body.dataset.phraseid)>=0)){
+    if (!(Number(document.querySelector(`#body_phrase_edit`).dataset.phraseid)>=0)){
       console.log('Load_Phrase_in_Edit_Data', 'no right phrase id')
       return
     }
-    let answer = await asyncRequest(`${APIServer}/Get_Phrase/`, `POST`, {command:``, comment:``, data:`${document.body.dataset.phraseid}`})
+    let answer = await asyncRequest(`${APIServer}/Get_Phrase/`, `POST`, {command:``, comment:``, data:`${document.querySelector(`#body_phrase_edit`).dataset.phraseid}`})
     document.getElementById('phrase_text').value = answer.phrase
     document.getElementById('phrase_translation').value = answer.translation;
   }
@@ -80,10 +85,11 @@ async function Load_Book_Page(){
     return;
   }
   let answer = await asyncRequest(`${APIServer}/Get_Book_Information/`, `POST`, {command:``, comment:``, data:`${document.querySelector(`#id_body_book`).dataset.idbook}`});
-                            document.getElementById(`id_book_name`).innerHTML = answer.book_name
-                            document.getElementById(`id_book_position`).innerHTML = ((answer.current_paragraph      - answer.Min_Paragraph_Number) * 100 / 
-                                                                                      (answer.Max_Paragraph_Number  - answer.Min_Paragraph_Number)).toFixed(2) + `% &nbsp;&nbsp;&nbsp;` + 
-                                                                                      (answer.current_paragraph     - answer.Min_Paragraph_Number) + ` / ` + (answer.Max_Paragraph_Number- answer.Min_Paragraph_Number)
+                            document.getElementById(`id_book_name`).innerHTML = answer.book_name;
+                            document.getElementById(`id_book_position_percent`).innerHTML = ((answer.current_paragraph      - answer.Min_Paragraph_Number) * 100 / 
+                                                                                      (answer.Max_Paragraph_Number  - answer.Min_Paragraph_Number)).toFixed(2) + `% &nbsp;&nbsp;&nbsp;`
+                            document.getElementById(`id_book_position`).innerHTML = (answer.current_paragraph     - answer.Min_Paragraph_Number) + ` / ` + (answer.Max_Paragraph_Number- answer.Min_Paragraph_Number);
+
                             document.querySelector(`#id_body_book`).dataset.currentparagraph = answer.current_paragraph;
                             let wordlist = await asyncRequest(`${APIServer}/Get_List_Of_User_Syllable_From_Paragraphs_Id/`, `POST`, {command:``, comment:`${answer.id_book}`, data:`${answer.current_paragraph},${Number(answer.current_paragraph)+1},${Number(answer.current_paragraph)+2},${Number(answer.current_paragraph)+3},${Number(answer.current_paragraph)+4}`})
                             console.log(wordlist);
@@ -91,7 +97,7 @@ async function Load_Book_Page(){
                                                           document.getElementById(`id_div_book_body`).innerHTML=``;
                                                           let jresponse = await asyncRequest(`${APIServer}/Get_Paragraphs/`,`POST`,{command:``, comment:``, data:`${answer.id_book},${answer.current_paragraph},5`});
                                                           for (let paragrath of jresponse){
-                                                                                            lc_book_paragraph = `<br><p class="my_class_p_my_class_p_examples">`;
+                                                                                            lc_book_paragraph = `<br><p class="my_class_p_my_class_p_examples color_block_book_paragraph">`;
                                                                                             for (let sentence of paragrath){
                                                                                                                             let modified_sentence = sentence.sentence;
                                                                                                                             for (word of wordlist.words){
@@ -111,7 +117,7 @@ async function Load_Book_Page(){
                                                                                                                             lc_book_paragraph += modified_sentence;
                                                                                                                             lc_book_paragraph += `</span>`;
                                                                                                                             lc_book_paragraph += `&nbsp; `
-                                                                                                                            lc_book_paragraph += `<IMG WIDTH='48' HEIGHT='48'  title = '' src='/static/images/audio.svg' onclick = 'new Audio("/sentence/${sentence.mime}").play(); return false;'>`
+                                                                                                                            lc_book_paragraph += `<IMG class='img_with_backlight_on_hover' WIDTH='48' HEIGHT='48'  title = '' src='/static/images/audio.svg' onclick = 'new Audio("/sentence/${sentence.mime}").play(); return false;'>`
                                                                                                                             lc_book_paragraph += `&nbsp;&nbsp;&nbsp; `
                                                                                                                           }
                                                                                             lc_book_paragraph += `</p>`
@@ -253,6 +259,14 @@ function AddExamplToNewSyllablePage(parent, example, translate, rowid, id_int){
 }
 
 async function LoadSyllableFromWoordhunt(word){
+  if (document.querySelector(`#body_add_new_word`)==null){
+           return}
+        else {
+              if (document.querySelector(`#body_add_new_word`).dataset.word.length=0){
+                   return
+                 }
+              }
+ 
   let req = new XMLHttpRequest(); // may be sync
   req.open(`GET`, `/GetWoorhuntDataJSON/${word}/`, true);
   req.send();
@@ -270,7 +284,7 @@ async function LoadSyllableFromWoordhunt(word){
 }
 
   async function Load_Syllable_Into_Add_New_Word(){
-    if(document.querySelector(`#body_add_new_word`)){
+    if(!document.querySelector(`#body_add_new_word`)){
       return
     }
     if (document.querySelector(`#dataset`).dataset.word==''){ // for empty new word case
@@ -328,7 +342,7 @@ async function LoadSyllableFromWoordhunt(word){
         document.querySelector('#body_phrase_in_progress').dataset.phraseid = await LoadNextProcessingPhraseIntoBody();
       }
       let answer = await asyncRequest( `${APIServer}/Get_Phrase/`,`POST`,{command:``, comment:``, data:`${document.querySelector('#body_phrase_in_progress').dataset.phraseid}`}, true)
-      document.getElementById('id_class_p_my_class_p_examples').innerHTML         = answer.phrase +`&nbsp;&nbsp;&nbsp;<IMG WIDTH='48' HEIGHT='48'  title = '' src='/static/images/audio.svg' onclick = 'new Audio("/sentence/`+answer.linkcode+`" ).play(); return false;'>`;
+      document.getElementById('id_class_p_my_class_p_examples').innerHTML         = answer.phrase +`&nbsp;&nbsp;&nbsp;<IMG class='img_with_backlight_on_hover' WIDTH='48' HEIGHT='48'  title = '' src='/static/images/audio.svg' onclick = 'new Audio("/sentence/`+answer.linkcode+`" ).play(); return false;'>`;
       document.getElementById('id_class_p_my_class_p_examples_russian').innerHTML = answer.translation;
      }
 
@@ -338,7 +352,7 @@ async function LoadSyllableFromWoordhunt(word){
     }
 
     async function UpdateCurrentPhraseAsViewed(){
-      asyncRequest(`${APIServer}/Update_phrase_as_viewed/`,'POST',{command:``, comment:``, data:`${document.querySelector('#body_phrase_in_progress').dataset.phraseid}`})
+      await asyncRequest(`${APIServer}/Update_phrase_as_viewed/`,'POST',{command:``, comment:``, data:`${document.querySelector('#body_phrase_in_progress').dataset.phraseid}`})
     }
 
     async function NextPhrase(){
@@ -376,7 +390,7 @@ async function LoadSyllableFromWoordhunt(word){
         document.getElementById('id_my_class_p_my_class_p_examples').innerHTML = ``;
         for (sl of answer.examples){
           if (sl.example!=null){
-                    document.getElementById('id_my_class_p_my_class_p_examples').insertAdjacentHTML('beforeend',`<p class = "my_class_p_my_class_p_examples">` + sl.example+ `<IMG WIDTH='48' HEIGHT='48'  title = '' src='/static/images/audio.svg' onclick = 'new Audio("/sentence/`+sl.linkcode+`" ).play(); return false;'></p>`);
+                    document.getElementById('id_my_class_p_my_class_p_examples').insertAdjacentHTML('beforeend',`<p class = "my_class_p_my_class_p_examples">` + sl.example+ `<IMG class='img_with_backlight_on_hover' WIDTH='48' HEIGHT='48'  title = '' src='/static/images/audio.svg' onclick = 'new Audio("/sentence/`+sl.linkcode+`" ).play(); return false;'></p>`);
           }
           if (sl.translate!=null){
                     document.getElementById('id_my_class_p_my_class_p_examples').insertAdjacentHTML('beforeend',`<p class = "my_class_p_my_class_p_examples_russian">` + sl.translate+ `</p><br>`);
@@ -433,7 +447,7 @@ async function LoadSyllableFromWoordhunt(word){
             <span class="font_blue_larger" > {{ forloop.counter }} </span>
         </div>
         <div class="col-4 font_blue_larger">
-            <span> <a href="./word_in_progress/{{ word.word }}/">{{ word.word }}</a> </span>
+            <span> <a href="/word_in_progress/{{ word.word }}/">{{ word.word }}</a> </span>
         </div>
         <div class="col-4" style="color:DarkRed"  onclick="new Audio('/static/sounds/{{ word.word }}.mp3').play(); return false;">
             <span class="font_red_larger"> {{ word.transcription }} </span>
@@ -442,7 +456,7 @@ async function LoadSyllableFromWoordhunt(word){
             <span class="font_blue_larger"> {{ word.show_count }} </span>
         </div>
         <div class="col-1">
-            <span class="font_blue_larger"> <a href="./add_new_word/{{ word.word }}/"><IMG class ="image_little_button" WIDTH="32" HEIGHT="32"  title = "Редактировать слово {{ word.word }}" src="/static/images/redo.png"></a> </span>
+            <span class="font_blue_larger"> <a href="/add_new_word/{{ word.word }}/"><IMG class ="image_little_button" WIDTH="32" HEIGHT="32"  title = "Редактировать слово {{ word.word }}" src="/static/images/redo.png"></a> </span>
         </div>
         <div class="col-1">
             <span class="font_blue_larger"> <a onclick='SetWordStatus("{{ word.word }}", (document.getElementById("index_table_of_syllables").dataset.ready==1?0:1)); document.getElementById("tr_of_index_words__{{ word.word }}").remove(); LoadSimpleData();'><IMG  class ="image_little_button" WIDTH="32" HEIGHT="32"  title = "Слово выученно" src="/static/images/ok.png"></a> </span>
@@ -589,7 +603,7 @@ async  function get_finding(lc_value){
             <span class="font_blue_larger" > {{ forloop.counter }} </span>
         </div>
         <div class="col-4 font_blue_larger">
-            <span> <a href="./word_in_progress/{{ word.word }}/">{{ word.word }}</a> </span>
+            <span> <a href="/word_in_progress/{{ word.word }}/">{{ word.word }}</a> </span>
         </div>
         <div class="col-4" style="color:DarkRed"  onclick="new Audio('/static/sounds/{{ word.word }}.mp3').play(); return false;">
             <span class="font_red_larger"> {{ word.transcription }} </span>
@@ -598,12 +612,12 @@ async  function get_finding(lc_value){
             <span class="font_blue_larger"> {{ word.show_count }} </span>
         </div>
         <div class="col-1">
-            <span class="font_blue_larger"> <a href="./add_new_word/{{ word.word }}/"><IMG class ="image_little_button" WIDTH="32" HEIGHT="32"  title = "Редактировать слово {{ word.word }}" src="/static/images/redo.png"></a> </span>
+            <span class="font_blue_larger"> <a href="/add_new_word/{{ word.word }}/"><IMG class ="image_little_button" WIDTH="32" HEIGHT="32"  title = "Редактировать слово {{ word.word }}" src="/static/images/redo.png"></a> </span>
         </div>
         <div class="col-1">
             <span class="font_blue_larger"> <a onclick='SetWordStatus("{{ word.word }}", (document.getElementById("index_table_of_syllables").dataset.ready==1?0:1)); document.getElementById("tr_of_index_words__{{ word.word }}").remove(); LoadSimpleData();'><IMG  class ="image_little_button" WIDTH="32" HEIGHT="32"  title = "Слово выученно" src="/static/images/ok.png"></a> </span>
         </div>
-      </div>
+        </div>
         `;
       document.getElementById("span_search_result").innerHTML='';
       for(let i = 0; i < answer.length; i++) {
