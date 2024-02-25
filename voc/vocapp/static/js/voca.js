@@ -15,7 +15,7 @@ window.onload = async function(event) {
     }
 
     Load_Word_in_Progress_Data();
-    LoadSyllableFromWoordhunt();
+    //LoadSyllableFromWoordhunt();
 
     Load_Phrase_in_Progress_Data();
     Load_Phrase_in_Edit_Data();
@@ -72,18 +72,20 @@ async function FlipPages(step){
   if(!document.querySelector(`#id_body_book`)){
     return;
   }
+  showOverlay();
   let jresponse =  await asyncRequest(`${APIServer}/Set_Book_Position/`, `POST`, {command:``, comment:``, data:`${document.querySelector(`#id_body_book`).dataset.idbook},${Number(document.querySelector(`#id_body_book`).dataset.currentparagraph)+step}`});
   if (jresponse.data='Ok'){
     document.querySelector(`#id_body_book`).dataset.currentparagraph = Number(document.querySelector(`#id_body_book`).dataset.currentparagraph)+step;
     await Load_Book_Page();
   }
-                              
+  hideOverlay();                              
 }
 
 async function Load_Book_Page(){
   if( !document.querySelector(`#id_body_book`)){
     return;
   }
+  showOverlay();
   let answer = await asyncRequest(`${APIServer}/Get_Book_Information/`, `POST`, {command:``, comment:``, data:`${document.querySelector(`#id_body_book`).dataset.idbook}`});
                             document.getElementById(`id_book_name`).innerHTML = answer.book_name;
                             document.getElementById(`id_book_position_percent`).innerHTML = ((answer.current_paragraph      - answer.Min_Paragraph_Number) * 100 / 
@@ -123,6 +125,7 @@ async function Load_Book_Page(){
                                                                                             lc_book_paragraph += `</p>`
                                                                                             document.getElementById(`id_div_book_body`).insertAdjacentHTML('beforeend',lc_book_paragraph)
                                                           }
+  hideOverlay();
 }
 
 function selectText(containerid) {
@@ -159,6 +162,7 @@ async function Load_Books_List(){
     if(!document.querySelector(`#id_table_of_books`)){
       return;
     }
+    showOverlay();
     let answer = await asyncRequest( `${APIServer}/Get_User_Books/`,
                                      `POST`,
                                      {command:``, comment:``, data:``})
@@ -183,7 +187,7 @@ async function Load_Books_List(){
                               replaceAll(`{ _book_position_information_percent_ }`, ((book.current_paragraph - book.Min_Paragraph_Number) * 100 / (book.Max_Paragraph_Number- book.Min_Paragraph_Number)).toFixed(2)).
                               replaceAll(`{ _book_position_information_from_to_ }`, (book.current_paragraph - book.Min_Paragraph_Number) + ` / ` + (book.Max_Paragraph_Number- book.Min_Paragraph_Number))
                               )}
-                            
+    hideOverlay();          
     }
 
 
@@ -266,7 +270,7 @@ async function LoadSyllableFromWoordhunt(word){
                    return
                  }
               }
- 
+  showOverlay();
   let req = new XMLHttpRequest(); // may be sync
   req.open(`GET`, `/GetWoorhuntDataJSON/${word}/`, true);
   req.send();
@@ -279,6 +283,7 @@ async function LoadSyllableFromWoordhunt(word){
     for (var example of answer.examples) {
                                           AddExamplToNewSyllablePage(document.getElementById(`id_examples`), example.example, example.translate, example.rowid, getRandomInt(1000000000000, 9999999999999));
                                         }
+  hideOverlay();
 }
 
 }
@@ -356,9 +361,11 @@ async function LoadSyllableFromWoordhunt(word){
     }
 
     async function NextPhrase(){
+      showOverlay();
       await UpdateCurrentPhraseAsViewed();
       document.querySelector('#body_phrase_in_progress').dataset.phraseid= await LoadNextProcessingPhraseIntoBody();
       await Load_Phrase_in_Progress_Data();
+      hideOverlay();
     }
 
     async function Load_Word_in_Progress_Data(){
@@ -409,6 +416,7 @@ async function LoadSyllableFromWoordhunt(word){
     }
 
     async function SetSyllableAsViewedAndLoadNext(word){
+      showOverlay();
       console.log(`send: ${word}`)
       let req = new XMLHttpRequest();
       let body =      `{"username":"`+`"`+`,`+` "command":"update_syllable_as_viewed"`+`,`+` "comment":"`+`"`+`,`+` "data":"`+word+`"` +`}`;
@@ -418,6 +426,7 @@ async function LoadSyllableFromWoordhunt(word){
       let answer = JSON.parse(req.responseText);
       await LoadNextProcessingWordIntoBody();
       await Load_Word_in_Progress_Data();
+      hideOverlay();
     }
 
     function GetBackGroundColorByIndex(id){
@@ -772,3 +781,16 @@ function get_book_information(element, lctype){
       }
 
   function WordChange() {document.getElementById('id_link_on_wooordhunt').href='https://wooordhunt.ru/word/'+escape(this.value)}
+
+
+
+
+  // Функция для отображения занавески
+function showOverlay() {
+  document.getElementById('overlay').style.display = 'block';
+}
+
+// Функция для скрытия занавески
+function hideOverlay() {
+  document.getElementById('overlay').style.display = 'none';
+}
