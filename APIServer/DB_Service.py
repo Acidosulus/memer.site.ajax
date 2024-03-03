@@ -614,13 +614,15 @@ class LanguageDB:
 		self.session.commit()
 
 	def GetTodayReadingParagraphs(self, user_name):
-		return self.session.query(func.max(ReadingJournal.id_paragraph) - func.min(ReadingJournal.id_paragraph)).\
-            					filter(ReadingJournal.dt >= (func.current_timestamp() - func.cast(concat(1, 'day'), INTERVAL) ) ).\
-								filter(ReadingJournal.user_id == self.GetUserId(user_name) ).\
-								one()[0]
-	
-		#return self.session.query(func.max(ReadingJournal.id_paragraph) - func.min(ReadingJournal.id_paragraph)).\
-        #    		filter(ReadingJournal.dt >= func.current_timestamp() - func.interval()).one()
+		return self.session.execute(text(f"""--sql
+								   			select sum(diff)
+												from (
+														SELECT id_book, max(id_paragraph) - min(id_paragraph) as diff
+														FROM public.reading_journal
+														WHERE dt >= CURRENT_TIMESTAMP - INTERVAL '1 day' and user_id = {self.GetUserId(user_name)}
+														group by id_book ) as ct
+														;""")).one()[0]
+
 
 
 printer = pprint.PrettyPrinter(indent=12, width=180)
