@@ -287,12 +287,11 @@ class LanguageDB:
 
 	def SaveBookPosition(self, user_name:str, id_book:int, new_current_paragraph:int):
 		if self.GetMinParagraphNumberByBook(user_name, id_book) <= new_current_paragraph <= self.GetMaxParagraphNumberByBook(user_name, id_book):
-
 			self.session.execute(	update(Book).
 														where(and_(	Book.user_id==self.GetUserId(user_name),
 																	Book.id_book==id_book)).
-														values(current_paragraph = new_current_paragraph))
-			
+														values(	current_paragraph = new_current_paragraph,
+					 											dt = datetime.datetime.now()))
 			self.session.commit()
 			result = {'data':'Ok'}
 		else:
@@ -589,9 +588,12 @@ class LanguageDB:
 			append_if_not_exists(element[0], result)
 		return result
 
+	def GetLasReadedBookByUser(self, user_name:str):
+		return self.session.query(Book.id_book).filter(Book.user_id == self.GetUserId(user_name)).order_by(Book.dt.desc()).first()[0]
+
+
 printer = pprint.PrettyPrinter(indent=12, width=180)
 prnt = printer.pprint
-
 
 
 if True:
@@ -599,7 +601,8 @@ if True:
 		dbn = LanguageDB(options.LANDDBURI, autocommit=False)
 	else:
 		dbn = LanguageDB(options.LANDDBURI, False)
-	print(dbn.SavePhrase('admin',0, 'delme', 'удали меня'))
+		#print(f"GetLasReadedBookByUser:{dbn.GetLasReadedBookByUser('admin')}")
+	#print(dbn.SavePhrase('admin',0, 'delme', 'удали меня'))
 	#prnt(dbn.GetUserBooks('admin'))
 	#prnt(dbn.GetUserId('admin'))
 	#prnt(dbn.SaveBookPosition('admin',1,7212))

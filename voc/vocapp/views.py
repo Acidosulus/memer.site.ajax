@@ -424,6 +424,18 @@ def book(request, pc_book:str):
 	data = {'APIServer':settings.API_ADRESS, 'userUUID':usersDataStorage.FindDataByUserName(request.user.get_username())['uuid'], "id_book":pc_book}
 	return render(request, "book.html", context=data)
 
+def read_last_opened_book(request):
+
+	curl = f"{settings.API_ADRESS}/get_last_opened_book_id/"
+	r = requests.post(curl, json.dumps({"username":request.user.username, "command":"", "comment":"", "data":""}))
+	echo(style(text='cross_request => ', fg='yellow')+' '+
+		style(text=curl, fg='yellow'))
+	print(Fore.LIGHTGREEN_EX,end='')
+	prnt(r.text)
+	print(Fore.RESET,end='')
+	print('-------------------------cross_request------------------------', datetime.datetime.now())
+	data = {'APIServer':settings.API_ADRESS, 'userUUID':usersDataStorage.FindDataByUserName(request.user.get_username())['uuid'], "id_book":json.loads(r.text)['data']}
+	return render(request, "book.html", context=data)
 
 def get_sentence(request, pc_sentence:str):
 	lc_file_name = DownLoadmp3s(pc_sentence)

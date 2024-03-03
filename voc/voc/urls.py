@@ -55,6 +55,7 @@ urlpatterns = [
 	path('unready/<str:pc_unready_word>/', views.unready),
 	path('book/<str:pc_book>/', views.book),
 	path('books/', views.books),
+	path('read_last_opened_book/', views.read_last_opened_book),
 	path('phrases/', views.phrases),
 	path('phrases/ready_list/', views.phrases_ready_list),
 	path('phrases/add_new/', views.phrases_add_new),

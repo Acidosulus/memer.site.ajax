@@ -1,0 +1,19 @@
+{% load static %}
+<nav class="navbar sticky-top bg-body-tertiary" role="navigation" style="background-image: url('/static/images/background_bb.jpg');">
+  <div class="container-fluid">
+    <div class="col-6">
+      <div class="row" id="navigation_subbar_optional">
+        <div class ='col-2 ml-4'><a onclick="javascript:history.back(); return false;"><IMG class="img_with_backlight_on_hover"  WIDTH="64" HEIGHT="64"  title = "Назад" src="{% static 'images/back.png' %}"></a></div>
+        <div class ='col-2 ml-4'><a href="/"><IMG class="img_with_backlight_on_hover" WIDTH="64" HEIGHT="64"  title = "На главную" src="{% static 'images/home.png' %}"></a></div>
+      </div>
+    </div>
+    <div class="col-6">
+        <div class="row">
+            <div class="col-2 color_block_gray"><span style="font-weight: bold; color:rgb(0, 38, 255);">words: </span><span style="font-weight: bold; color:lime;" data-simplecommand="get_user_count_of_words_inprocess"></span></div>
+            <div class="col-2 color_block_gray"><span style="font-weight: bold; color:rgb(0, 38, 255);">today: </span><span style="font-weight: bold; color:lime;" data-simplecommand="get_user_count_of_words_proceed_today"></span></div>
+            <div class="col-2 color_block_gray"><span style="font-weight: bold; color:rgb(0, 38, 255);">ready: </span><span style="font-weight: bold; color:lime;"  data-simplecommand="get_user_count_of_words_ready"></span></div>
+            <div class="col-5 d-flex justify-content-end color_block_gray"><a href="./personal_page/" data-simplecommand="get_user_information" style="font-weight: bold; color:rgb(76, 96, 209);"> </a></div>
+      </div> <!-- row -->
+    </div>
+  </div>
+</nav>

@@ -10,7 +10,6 @@
 {% include "_body_begin.html" %} 
 
 {% include "_navigation_panel.html" %} 
-
 <div id = 'body_add_new_word' data-word="{{ word }}">
 </div>
    
@@ -20,7 +19,7 @@
                 </div>
 <hr>
         <table width = '100%' style="border: 0px;">
-            <tr><th><label for="id_word">Слово:</label></th><td class = 'td_input_new_word'><input autocomplete="off" autofocus type="text" name="word" class="my_class_input_word" id="id_word" value ="{{ word }}" onchange="{document.getElementById('id_link_on_wooordhunt').href='https://wooordhunt.ru/word/'+escape(this.value)}"></td></tr>
+            <tr><th><label for="id_word">Слово:</label></th><td class = 'td_input_new_word'><input autocomplete="off" autofocus type="text" name="word" class="my_class_input_word" id="id_word" value ="{{ word }}" onchange="{document.getElementById('id_link_on_wooordhunt').href='https://wooordhunt.ru/word/'+escape(this.value)}" oninput="this.value = this.value.toLowerCase()"></td></tr>
             <tr><th><label for="id_transcription">Транскрипция:</label></th><td class = 'td_input_new_word'><input autocomplete="off" type="text" name="transcription" class="my_class_input_transcription" id="id_transcription" value = "{{ transcription }}"></td></tr>
             <tr><th><label for="id_translations">Перевод:</label></th><td class = 'td_input_new_word'><textarea autocomplete="off" name="translations" cols="40" rows="10" class="my_class_input_translations" id="id_translations">{{ translations }}</textarea></td></tr>
             <tr><th><label for="">Примеры:</label></th>

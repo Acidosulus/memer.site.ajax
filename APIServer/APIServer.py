@@ -115,6 +115,15 @@ async def get_user_count_of_words_proceed_today(rq:SiteRequest):
 	return JSONResponse(response)
 
 
+@app.post("/get_last_opened_book_id/")
+async def get_last_opened_book_id(rq:SiteRequest):
+	response = {}
+	printSiteRequest(inspect.currentframe().f_code.co_name, rq)
+	response['data'] = dblang.GetLasReadedBookByUser(rq.username)
+	print(response)
+	return JSONResponse(response)
+
+
 
 #async def syllables_slices_count(rq:Dict[Any, Any]):
 #async def syllables_slices_count(rq:SiteRequest):

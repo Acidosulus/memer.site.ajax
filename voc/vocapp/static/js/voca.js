@@ -15,7 +15,6 @@ window.onload = async function(event) {
     }
 
     Load_Word_in_Progress_Data();
-    //LoadSyllableFromWoordhunt();
 
     Load_Phrase_in_Progress_Data();
     Load_Phrase_in_Edit_Data();
@@ -289,13 +288,16 @@ async function LoadSyllableFromWoordhunt(word){
 }
 
   async function Load_Syllable_Into_Add_New_Word(){
+    console.log('Load_Syllable_Into_Add_New_Word');
     if(!document.querySelector(`#body_add_new_word`)){
+      console.log("isn't Load_Syllable_Into_Add_New_Word");
       return
     }
-    if (document.querySelector(`#dataset`).dataset.word==''){ // for empty new word case
+    if (document.querySelector(`#body_add_new_word`).dataset.word.length<=0){ // for empty new word case
+      console.log("Load_Syllable_Into_Add_New_Word  word's length is zero");
       return
     }
-                            let answer = await asyncRequest(`${APIServer}/get_syllable_full_data/`, `POST`, {command:``, comment:``, data:`${document.querySelector(`#dataset`).dataset.word}`});
+                            let answer = await asyncRequest(`${APIServer}/get_syllable_full_data/`, `POST`, {command:``, comment:``, data:`${document.querySelector(`#body_add_new_word`).dataset.word}`});
                             console.log(answer)
                             document.querySelector(`#body_add_new_word`).dataset.syllable_id = answer.syllable_id;
                             document.getElementById(`id_transcription`).value = answer.transcription

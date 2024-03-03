@@ -14,35 +14,35 @@
 
 {% include "_navigation_panel.html" %} 
 
-
-
-<!--
-    <hr>
-            <table  align="right">
-                <tr>
-                    <td style="border: 0px;" width="10%" align="center"><a href = '/media_list/user_root_/'><IMG class ="image_little_button" style="display: inline-block;box-shadow: 2px 2px 3px 4px rgba(0,0,0,0.5);text-shadow: 1px 1px 2px black, 0 0 1em black; border-radius: 12px;" WIDTH="64" HEIGHT="64"  title = "Медиа" src="/static/images/images.png"></a></td>
-                    <td style="border: 0px;" width="10%" align="center"><a href = '/add_new_word/ /'><IMG class ="image_little_button" style="display: inline-block;box-shadow: 2px 2px 3px 4px rgba(0,0,0,0.5);text-shadow: 1px 1px 2px black, 0 0 1em black; border-radius: 12px;" WIDTH="64" HEIGHT="64"  title = "Добавить слово" src="/static/images/add.png"></a></td>
-                    <td style="border: 0px;" width="10%" align="center"><a href = '/ready_list/'><IMG class ="image_little_button" style="display: inline-block;box-shadow: 2px 2px 3px 4px rgba(0,0,0,0.5);text-shadow: 1px 1px 2px black, 0 0 1em black; border-radius: 12px;" WIDTH="64" HEIGHT="64"  title = "Выученные слова" src="/static/images/ready.png"></a></td>
-                    <td style="border: 0px;" width="10%" align="center"><a href="/word_in_progress/" style="margin:0px 0px 0px 0px"><IMG class ="image_little_button" style="display: inline-block;box-shadow: 2px 2px 3px 4px rgba(0,0,0,0.5);text-shadow: 1px 1px 2px black, 0 0 1em black; border-radius: 12px;" WIDTH="64" HEIGHT="64"  title = "Учить слова" src="/static/images/education.png"></a></td>
-                    <td style="border: 0px;" width="10%" align="center"><a href="/phrases/" style="margin:0px 0px 0px 0px"><IMG class ="image_little_button" style="display: inline-block;box-shadow: 2px 2px 3px 4px rgba(0,0,0,0.5);text-shadow: 1px 1px 2px black, 0 0 1em black; border-radius: 12px;" WIDTH="64" HEIGHT="64"  title = "Списк фраз"  src="/static/images/phrases.png"></a></td>
-                    <td style="border: 0px;" width="10%" align="center"><a href="/books/"   style="margin:0px 0px 0px 0px"><IMG class ="image_little_button" style="display: inline-block;box-shadow: 2px 2px 3px 4px rgba(0,0,0,0.5);text-shadow: 1px 1px 2px black, 0 0 1em black; border-radius: 12px;" WIDTH="64" HEIGHT="64"  title = "Список книг" src="/static/images/books.png">  </a></td>
-                    <td style="border: 0px;" width="10%" align="center"><a style="margin:0px 0px 0px 0px"><IMG class ="image_little_button" style="display: inline-block;box-shadow: 2px 2px 3px 4px rgba(0,0,0,0.5);text-shadow: 1px 1px 2px black, 0 0 1em black; border-radius: 12px;" WIDTH="64" HEIGHT="64"  title = "Поиск слов" src="/static/images/finding.png" onclick="Find_Word();"></a></td>
-                </tr>
-            </table>
-    <hr>
--->
-
-<!--
-<div class="pagination_auto"></div>
- <hr>
-    <table id='index_table_of_syllables' class="my_class_table_of_words" width = "100%" data-ready="{{ ready }}">
-    </table>
-    <hr>
-<div class="pagination_auto"></div>
--->
-
-
 <div class="container">
+  <div class="row justify-content-center border border-success color_block_blue_green">
+    <div class="col-md-12 col-12 mt-5">
+      <div class="row">
+        <div class="col-4 mb-3"><a href= "/books/" ><IMG class="img_with_backlight_on_hover" WIDTH="160" HEIGHT="160"  title = "Список книг" src="/static/images/books.png">  </a></div>
+        <div class="col-4 ml-3"><a href = '/proceed_list/'><IMG class="img_with_backlight_on_hover" WIDTH="160" HEIGHT="160"  title = "Слова в процессе обучения" src="/static/images/list.png"></a></div>
+        <div class="col-4 mb-3"><a href= "/phrases/" ><IMG class="img_with_backlight_on_hover"  WIDTH="160" HEIGHT="160"  title = "Списк фраз"  src="/static/images/phrases.png"></a></div>
+      </div>
+      <div class="row mt-5">
+        <div class="col-4 ml-3"><a href = '/read_last_opened_book/'><IMG class="img_with_backlight_on_hover" WIDTH="160" HEIGHT="160"  title = "Вернуться к чтению" src="/static/images/opened_book.png"></a></div>
+        <div class="col-4 ml-3"><a href = '/word_in_progress/'><IMG class="img_with_backlight_on_hover" WIDTH="160" HEIGHT="160"  title = "Учить слова" src="/static/images/education.png"></a></div>
+        <div class="col-4 mb-3"><a href = "/phrases/in_progress/" ><IMG class="img_with_backlight_on_hover"  WIDTH="160" HEIGHT="160"  title = "Прорабатывать фразы"  src="/static/images/phrases_academic_hood.png"></a></div>
+      </div>
+      <div class="row mt-5">
+        <div class="col-4 ml-3"></div>
+        <div class="col-4 ml-3"><a style="margin:0px 0px 0px 0px"><IMG class="img_with_backlight_on_hover"  WIDTH="160" HEIGHT="160"  title = "Поиск слов" src="/static/images/finding.png" onclick="Find_Word();"></a></div>
+      </div>
+      <div class="row mt-5">
+        <div class="col-4 ml-3"></div>
+        <div class="col-4 ml-3"><a href = '/add_new_word/ /'><IMG class="img_with_backlight_on_hover" WIDTH="160" HEIGHT="160"  title = "Добавить слово" src="/static/images/add.png"></a></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!--
+<div class="container">
+  
     <div class="row justify-content-center border border-success color_block_blue_green">
       <div class="col-md-12 col-12 mt-5">
         <div class="row">
@@ -54,14 +54,14 @@
             <div class="row mt-5">
               <div class="col-3 ml-3"><a style="margin:0px 0px 0px 0px"><IMG class="img_with_backlight_on_hover"  WIDTH="160" HEIGHT="160"  title = "Поиск слов" src="/static/images/finding.png" onclick="Find_Word();"></a></div>
               <div class="col-3 ml-3"><a href = '/add_new_word/ /'><IMG class="img_with_backlight_on_hover" WIDTH="160" HEIGHT="160"  title = "Добавить слово" src="/static/images/add.png"></a></div>
-              <div class="col-3 ml-3"><a href = '/proceed_list/'><IMG class="img_with_backlight_on_hover" WIDTH="160" HEIGHT="160"  title = "Выученные слова" src="/static/images/list.png"></a></div>
-              <div class="col-3 ml-3"><a href = '/ready_list/'><IMG class="img_with_backlight_on_hover" WIDTH="160" HEIGHT="160"  title = "Слова в процессе обучения" src="/static/images/ready.png"></a></div>
+              <div class="col-3 ml-3"><a href = '/proceed_list/'><IMG class="img_with_backlight_on_hover" WIDTH="160" HEIGHT="160"  title = "Слова в процессе обучения" src="/static/images/list.png"></a></div>
+              <div class="col-3 ml-3"><a href = '/ready_list/'><IMG class="img_with_backlight_on_hover" WIDTH="160" HEIGHT="160"  title = "Выученные слова" src="/static/images/ready.png"></a></div>
             </div>
         </div>
       </div>
     </div>
   </div>
-
+-->
   <div class="container mt-5">
     <div class="row justify-content-center border border-success color_block_blue_green">
       <div class="col-md-8 col-12 mt-5">
