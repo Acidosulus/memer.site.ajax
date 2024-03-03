@@ -1,7 +1,7 @@
 import sys
 from click import echo, style
 from sqlalchemy import create_engine
-from sqlalchemy import Column, Integer, Table, MetaData, and_, func
+from sqlalchemy import Column, Integer, Table, MetaData, and_, func, text
 from sqlalchemy.orm import Session
 from sqlalchemy import Integer,  ForeignKey
 from sqlalchemy.orm import relationship
@@ -15,6 +15,9 @@ import math
 import datetime
 import inspect
 from settings import Options
+
+from sqlalchemy.dialects.postgresql import INTERVAL
+from sqlalchemy.sql.functions import concat
 
 options = Options('options.ini')
 
@@ -45,6 +48,15 @@ class Sentence(Base):
 	id_sentence = Column(Integer, primary_key=True, nullable=False)
 
 	book = relationship('Book')
+
+class ReadingJournal(Base):
+	__tablename__ = 'reading_journal'
+	
+	row_id = Column(Integer, primary_key=True, nullable=False)
+	user_id = Column(Integer, ForeignKey('users.user_id'), nullable=False)
+	id_paragraph = Column(Integer,ForeignKey('sentences.id_paragraph'), nullable=False)
+	id_book = Column(ForeignKey('books.id_book'), nullable=False)
+	dt = Column(DateTime, nullable=True)
 
 
 class Phrase(Base):
@@ -293,6 +305,7 @@ class LanguageDB:
 														values(	current_paragraph = new_current_paragraph,
 					 											dt = datetime.datetime.now()))
 			self.session.commit()
+			self.SaveBookReadingData( self.GetUserId(user_name), id_book, new_current_paragraph)
 			result = {'data':'Ok'}
 		else:
 			result = {'data':'ERROR: New current paragraph is outside of book paragraph range.'}
@@ -588,8 +601,26 @@ class LanguageDB:
 			append_if_not_exists(element[0], result)
 		return result
 
+
 	def GetLasReadedBookByUser(self, user_name:str):
 		return self.session.query(Book.id_book).filter(Book.user_id == self.GetUserId(user_name)).order_by(Book.dt.desc()).first()[0]
+
+
+	def SaveBookReadingData(self, id_user, id_book, id_paragraph):
+		self.session.add(ReadingJournal( 	user_id = id_user,
+										  			id_book = id_book,
+													id_paragraph = id_paragraph,
+													dt = datetime.datetime.now() ))
+		self.session.commit()
+
+	def GetTodayReadingParagraphs(self, user_name):
+		return self.session.query(func.max(ReadingJournal.id_paragraph) - func.min(ReadingJournal.id_paragraph)).\
+            					filter(ReadingJournal.dt >= (func.current_timestamp() - func.cast(concat(1, 'day'), INTERVAL) ) ).\
+								filter(ReadingJournal.user_id == self.GetUserId(user_name) ).\
+								one()[0]
+	
+		#return self.session.query(func.max(ReadingJournal.id_paragraph) - func.min(ReadingJournal.id_paragraph)).\
+        #    		filter(ReadingJournal.dt >= func.current_timestamp() - func.interval()).one()
 
 
 printer = pprint.PrettyPrinter(indent=12, width=180)
@@ -601,7 +632,7 @@ if True:
 		dbn = LanguageDB(options.LANDDBURI, autocommit=False)
 	else:
 		dbn = LanguageDB(options.LANDDBURI, False)
-		#print(f"GetLasReadedBookByUser:{dbn.GetLasReadedBookByUser('admin')}")
+		#print(f"GetTodayReadingParagraphs: {dbn.GetTodayReadingParagraphs('admin')}")
 	#print(dbn.SavePhrase('admin',0, 'delme', 'удали меня'))
 	#prnt(dbn.GetUserBooks('admin'))
 	#prnt(dbn.GetUserId('admin'))

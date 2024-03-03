@@ -77,6 +77,7 @@ async function FlipPages(step){
     document.querySelector(`#id_body_book`).dataset.currentparagraph = Number(document.querySelector(`#id_body_book`).dataset.currentparagraph)+step;
     await Load_Book_Page();
   }
+  LoadSimpleData();
   hideOverlay();                              
 }
 

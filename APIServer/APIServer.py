@@ -98,6 +98,14 @@ async def get_user_count_of_words_inprocess(rq:SiteRequest):
 	print(response)
 	return JSONResponse(response)
 
+@app.post("/get_user_count_of_paragraphs_read_today/")
+async def get_user_count_of_paragraphs_read_today(rq:SiteRequest):
+	response = {}
+	printSiteRequest(inspect.currentframe().f_code.co_name, rq)
+	response['data'] = dblang.GetTodayReadingParagraphs(rq.username)
+	print(response)
+	return JSONResponse(response)
+
 @app.post("/get_user_count_of_words_ready/")
 async def get_user_count_of_words_ready(rq:SiteRequest):
 	response = {}
