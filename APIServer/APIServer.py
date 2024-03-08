@@ -23,8 +23,10 @@ from typing import Dict, Any
 printer = pprint.PrettyPrinter(indent=12, width=120)
 prnt = printer.pprint
 
+
 base_storage_path = Path(os.path.abspath(os.curdir)).parent / 'Storage'
 echo(style('Base storage path: ', fg='yellow') + style(base_storage_path, fg='bright_yellow'))
+
 
 options = Options("options.ini")
 
