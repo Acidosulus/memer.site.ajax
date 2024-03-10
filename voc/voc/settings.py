@@ -66,7 +66,7 @@ DATABASES = {
 DEBUG = True
 
 #CSRF_TRUSTED_ORIGINS = ['https://localhost.com']
-ALLOWED_HOSTS = ['memer.site','www.memer.site','localhost','127.0.0.1','192.168.0.35','10.19.16.224',"185.112.225.153"]
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition

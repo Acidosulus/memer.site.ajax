@@ -478,3 +478,11 @@ my_div_save{
         left: 50%;
         transform: translate(-50%, -50%);
     }
+
+
+    .outline-text {
+        color: rgba(255, 255, 255, 0.5); /* Полупрозрачный цвет текста */
+        font-size: 120%;
+        -webkit-text-stroke-width: 1px; /* Ширина контура текста */
+        -webkit-text-stroke-color: rgba(0, 0, 0, 0.5); /* Цвет контура текста */
+      }

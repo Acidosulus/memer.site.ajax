@@ -131,6 +131,35 @@ class SyllablesParagraph(Base):
 	syllable = relationship('Syllable')
 
 
+class HPLink(Base):
+    __tablename__ = 'hp_links'
+
+    link_id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, nullable=False)
+    row_id = Column(Integer)
+    name = Column(Text, nullable=False)
+    hyperlink = Column(Text)
+    onclick = Column(Text)
+    image_url = Column(Text, nullable=False)
+
+class HPPlank(Base):
+    __tablename__ = 'hp_planks'
+
+    plank_id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, nullable=False)
+    plank_name = Column(Text, nullable=False)
+    index = Column(Integer, default=0, nullable=False)
+
+class HPRow(Base):
+    __tablename__ = 'hp_rows'
+
+    row_id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, nullable=False)
+    row_name = Column(Text, nullable=False)
+    row_type = Column(Integer, default=0, nullable=False)
+    row_index = Column(Integer, default=0, nullable=False)
+    plank_id = Column(Integer, ForeignKey('hp_planks.plank_id'), default=0, nullable=False)
+    plank = relationship("HPPlank", backref="rows")
 
 import psycopg2
 class LanguageDB:
