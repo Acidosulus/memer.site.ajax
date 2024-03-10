@@ -1,14 +1,16 @@
-<!DOCTYPE html>
-
 {% load static %}
+{% include "_head.html" %} 
 
 <html>
-<head>
-	<meta charset="utf-8" />
-	<link rel="stylesheet" href="{% static 'css/styles.css' %}" />
-	<link rel="shortcut icon" type="image/png" href="{% static '/images/favicon.png' %}"/>
-	<title>Memorier</title>
-</head>
+
+{% include "subpattern_onload.html" %} 
+
+
+
+{% include "_body_begin.html" %} 
+
+{% include "_navigation_panel.html" %} 
+
 
 <style>
 	.fullscreen:-webkit-full-screen {
@@ -107,8 +109,8 @@
 		return decodeURIComponent((pStr))
 	}
 
-	function PageLoad(){
-		CreateHighLinksPath();
+	async function PageLoad(){
+		await CreateHighLinksPath();
 		Get_Comment_For_Files();
 	}
 
@@ -116,10 +118,6 @@
 		var oh = document.getElementById('title_header')
 		var clink = '{{current_folder_name}}';
 		oh.insertAdjacentHTML('afterbegin',`
-		<a href="/"><IMG  class ="image_little_button"  WIDTH="48" HEIGHT="48"  title = "На главную" src="{% static 'images/home.png' %}"></a>
-		<IMG  WIDTH="64" HEIGHT="64" src="{% static 'images/empty_32x32.png' %}">
-		<a onclick="javascript:history.back(); return false;"><IMG class ="image_little_button"  WIDTH="48" HEIGHT="48"  title = "Назад" src="{% static 'images/back.png' %}"></a>
-		<IMG  WIDTH="64" HEIGHT="64" src="{% static 'images/empty_32x32.png' %}">
 		<a href = '/media_list/user_root_/'><IMG class ="image_little_button" style="display: inline-block;box-shadow: 2px 2px 3px 4px rgba(0,0,0,0.5);text-shadow: 1px 1px 2px black, 0 0 1em black; border-radius: 12px;" WIDTH="64" HEIGHT="64"  title = "Медиа" src="{% static 'images/images.png' %}"></a>`);
 		var SplittedList = clink.split('|');
 		var StringLinksBuffer = '';
@@ -132,7 +130,7 @@
 		});
 	}
 
-	function Get_Comment_For_Files(){
+	async function Get_Comment_For_Files(){
 		var lc_path = "{{ current_folder_name }}"
 		console.log(lc_path)
 		var descriptors = document.querySelectorAll("p.pFileDescriptor");
@@ -142,6 +140,36 @@
 
 	}
 
+	async function Get_Comment_For_File(descriptor) {
+    var current_folder_name = `{{ current_folder_name }}`;
+    var username = `{{ user_name }}`;
+    var body = JSON.stringify({
+        username: username,
+        command: "get_media_description",
+        folder: current_folder_name,
+        filename: descriptor.id
+    });
+
+    console.log(descriptor.id);
+    var url = `/api/v1/media_cross_request/media_description/`;
+
+    fetch(url, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: body
+    })
+    .then(response => response.text())
+    .then(data => {
+        descriptor.innerHTML = data;
+        console.log(url + "=>" + data);
+    })
+    .catch(error => {
+        console.error("Error:", error);
+    });
+}
+/*
 	function Get_Comment_For_File(descriptor){
 											var current_folder_name = `{{ current_folder_name }}`
 											var username = `{{ user_name }}`
@@ -158,7 +186,7 @@
 													descriptor.innerHTML = req.responseText;
 													console.log(url + '=>' +req.responseText);
 	}
-
+*/
 	function Edit_Comment(current_folder_name, file_name){
 		var descriptor = document.querySelector("p[id='"+file_name+"']");
 		var username = `{{ user_name }}`
@@ -209,10 +237,8 @@
 
 
 
-<body background="{% static 'images/background_bb.jpg' %}" onload="PageLoad();">
 
 <h1 id="title_header"></h1>
-
 	<table   width = "100%" style="font-size:50%;">
 		<tr>
 			<td style="border: 0px;" width="20%" align="center"><p align="right" style="color:rgb(50,125,50);"><span style="font-weight: bold; color:rgb(76, 96, 209);" class="class_user_view"></span></p></td>
@@ -220,10 +246,6 @@
 	</table>
 	<hr>
 	<hr>
-		<a align="right" onclick="Add_Directory()"><IMG class ="image_little_button"  WIDTH="48" HEIGHT="48"  title = "Добавить раздел" src="{% static 'images/add.png' %}"></a>
-		<IMG  WIDTH="64" HEIGHT="64" src="{% static 'images/empty_32x32.png' %}">
-		<IMG  WIDTH="64" HEIGHT="64" src="{% static 'images/empty_32x32.png' %}">
-		<a align="right" onclick="Add_Media()"><IMG class ="image_little_button"  WIDTH="48" HEIGHT="48"  title = "Добавить медиа файлы" src="{% static 'images/add_media.png' %}"></a>
 	<p></p>
 	<hr>
 	<hr>
@@ -232,13 +254,9 @@
 
 
 <div hidden = "true" id="file_upload_div">
-	    <!-- multipart/form-data ensures that form
-		    data is going to be encoded as MIME data -->
     <form action="/media_upload/{{ current_folder_name }}/" method="POST" enctype="multipart/form-data"> {% csrf_token %}
         <h2>Upload Files</h2>
 		<p>Select files to upload:
-            <!-- name of the input fields are going to
-                be used in our php script-->
             <input type="file" name="files" multiple>
             <br><br>
             <input type="submit" name="submit" value="Upload" >
@@ -275,4 +293,14 @@
 <!---------------------------------------------------------------------------------------------------------------------------------------------->     
 
 </body>
+
+<script defer lang="javascript">
+	PageLoad();
+    let navbar = document.querySelector(`#navigation_subbar_optional`);
+    navbar.insertAdjacentHTML(`beforeend`,`<div class ='col-2 ml-4'><a onclick="Add_Directory();" ><IMG class="img_with_backlight_on_hover" WIDTH="64" HEIGHT="64"  title = "Добавить рааздел" src="{% static 'images/add.png' %}"></a></div>`);
+    navbar.insertAdjacentHTML(`beforeend`,`<div class ='col-2 ml-4'><a onclick="Add_Media();"     ><IMG  class="img_with_backlight_on_hover"WIDTH="64" HEIGHT="64"  title = "Добавить медиа файлы" src="{% static 'images/add_media.png' %}"></a></div>`);
+		
+
+</script>
+
 </html>

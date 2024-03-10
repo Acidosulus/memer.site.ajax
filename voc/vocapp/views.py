@@ -650,10 +650,6 @@ def media_edit_comment(request:django.http.request.HttpRequest):
 
 
 def get_user_media(request, folder:str, file:str):
-	pass
-
-
-def get_user_media(request, folder:str, file:str):
 	folder = folder.replace("|","/")
 	lc_path = get_user_media_path(request) / ( folder.replace("|","/") if folder.upper()!="USER_ROOT_" else "") / file
 	print(f'Sent media:{lc_path}')
@@ -793,3 +789,4 @@ def GetDividedExamplesWH(source:str):
 	return result
 
 
+ 
