@@ -1,0 +1,65 @@
+{% load static %}
+{% include "_head.html" %} 
+
+<html>
+
+{% include "subpattern_onload.html" %} 
+
+
+
+{% include "_body_begin.html" %} 
+
+{% include "_navigation_panel.html" %} 
+<div id = 'body_add_new_word' data-word="{{ word }}">
+</div>
+   
+                <div class="my_div_save">
+                    <p align = "center"><input type="submit" value="Сохранить" class="button_save" onclick="SaveSyllable('/');"></p>
+                    <p align = "center"><input type="submit" value="woordhunt =>>" class="button_save" onclick="LoadSyllableFromWoordhunt(document.getElementById(`id_word`).value);"></p>
+                </div>
+<hr>
+        <table width = '100%' style="border: 0px;">
+            <tr><th><label for="id_word">Слово:</label></th><td class = 'td_input_new_word'><input autocomplete="off" autofocus type="text" name="word" class="my_class_input_word" id="id_word" value ="{{ word }}" onchange="{document.getElementById('id_link_on_wooordhunt').href='https://wooordhunt.ru/word/'+escape(this.value)}" oninput="this.value = this.value.toLowerCase()"></td></tr>
+            <tr><th><label for="id_transcription">Транскрипция:</label></th><td class = 'td_input_new_word'><input autocomplete="off" type="text" name="transcription" class="my_class_input_transcription" id="id_transcription" value = "{{ transcription }}"></td></tr>
+            <tr><th><label for="id_translations">Перевод:</label></th><td class = 'td_input_new_word'><textarea autocomplete="off" name="translations" cols="40" rows="10" class="my_class_input_translations" id="id_translations">{{ translations }}</textarea></td></tr>
+            <tr><th><label for="">Примеры:</label></th>
+                <td class = 'td_input_new_word'>
+                    <span id="id_examples"></span>
+                </td>
+            </tr>
+        </table>
+        <div style="text-align:right;">
+        <a>
+                <IMG  onclick="AddExamplToNewSyllablePage(document.getElementById(`id_examples`),``,``,0,getRandomInt(1000000000000, 9999999999999));" class="img_with_backlight_on_hover" style="display: inline-block;box-shadow: 2px 2px 3px 4px rgba(0,0,0,0.5);text-shadow: 1px 1px 2px black, 0 0 1em black; border-radius: 12px;" WIDTH="64" HEIGHT="64"  title = "Добавить слово" src="{% static 'images/add.png' %}">
+        </a>
+        </div>
+            <p align = "center"><input type="submit" value="Сохранить" class="button_save" onclick="SaveSyllable('/');"></p>
+        
+
+
+<a href = "{% static 'sounds' %}/{{ word }}.mp3" id="invisible_link_for_link_path"></a>
+
+
+<script defer lang="javascript">
+    let navbar = document.querySelector(`#navigation_subbar_optional`);
+    navbar.insertAdjacentHTML(`beforeend`,`<div class ='col-2 ml-4'><a id= 'id_link_on_wooordhunt' href="https://wooordhunt.ru/word/{{ word }}" target="_blank"><IMG  class="img_with_backlight_on_hover"  WIDTH="48" HEIGHT="48"  title = "wooordhunt.ru" src="{% static 'images/wh.ico' %}"></a></div>`);
+    navbar.insertAdjacentHTML(`beforeend`,`<div class ='col-2 ml-4'><a id= 'id_link_on_glosbe' href="https://ru.glosbe.com/en/ru/{{ word }}" target="_blank"><IMG  class="img_with_backlight_on_hover"  WIDTH="48" HEIGHT="48"  title = "ru.glosbe.com" src="https://ru.glosbe.com/assets/favicon/favicon-32x32.png"></a></div>`);
+</script>
+
+
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+

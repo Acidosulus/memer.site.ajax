@@ -78,7 +78,7 @@ async function FlipPages(step){
     await Load_Book_Page();
   }
   LoadSimpleData();
-  hideOverlay();                              
+  hideOverlay();
 }
 
 async function Load_Book_Page(){
