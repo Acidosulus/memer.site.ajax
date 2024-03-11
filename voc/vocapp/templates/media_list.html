@@ -265,28 +265,31 @@
 </div>
 
 
-<table class="my_class_table_of_words" width = "100%">
+<div class="container-fluid">
 	{% for dir in directories %}
-	<tr>
-		<td width="85%"><a href="{{ dir.link }}">{{ dir.dir_name }}</a></td>
-		<td width="15%" align="center">
-			<a onclick='Rename_Directory("{{ current_folder_name }}", "{{ dir.dir_name }}")'><IMG  class ="image_little_button"  WIDTH="32" HEIGHT="32"  title = "Переименовать" src="{% static 'images/rename.png' %}"></a>    
-			<a onclick='Delete_Directory("{{ dir.delete_link }}")'><IMG  class ="image_little_button"  WIDTH="32" HEIGHT="32"  title = "Удалить" src="{% static 'images/delete.png' %}"></a>
-		</td>
-	</tr>
+	<div class="row justify-content-center border border-success color_block_blue_green">
+			<div class="row">
+				<div class="col-11"><a href="{{ dir.link }}">{{ dir.dir_name }}</a></div>
+				<div class="col-1">
+					<a onclick='Rename_Directory("{{ current_folder_name }}", "{{ dir.dir_name }}")'><IMG  class ="image_little_button"  WIDTH="32" HEIGHT="32"  title = "Переименовать" src="{% static 'images/rename.png' %}"></a>    
+					<a onclick='Delete_Directory("{{ dir.delete_link }}")'><IMG  class ="image_little_button"  WIDTH="32" HEIGHT="32"  title = "Удалить" src="{% static 'images/delete.png' %}"></a>
+				</div>
+			</div>
+	</div>
 	{% endfor %}
+
 	{% for media in medias %}
-	<tr>
-		<td width="100%" align="center">
+	<div class="row justify-content-center border border-success mt-1">
+		<div class="col">
 				<IMG title="{{ media.media_link }}" src="{{ media.media_link }}" style="max-height:100vh; max-width:100vw;" onclick="makeFullScreen(this);">
 				<p class ="pFileDescriptor" id ="{{ media.file_name }}"></p>
 				<a onclick='Edit_Comment("{{ current_folder_name }}", "{{ media.file_name }}")'><IMG  class ="image_little_button"  WIDTH="32" HEIGHT="32"  title = "Комментарий" src="{% static 'images/redo.png' %}"></a>
 				<a onclick='Rename_Directory("{{ current_folder_name }}", "{{ media.rename_link }}")'><IMG  class ="image_little_button"  WIDTH="32" HEIGHT="32"  title = "Переименовать" src="{% static 'images/rename.png' %}"></a>
 				<a onclick='Delete_Directory("{{ media.delete_link }}")'><IMG  class ="image_little_button"  WIDTH="32" HEIGHT="32"  title = "Удалить" src="{% static 'images/delete.png' %}"></a>
-		</td>
-	</tr>
+		</div>
+	</div>
 	{% endfor %}
-	</table>
+</div>
 
 <hr>
 
@@ -299,8 +302,6 @@
     let navbar = document.querySelector(`#navigation_subbar_optional`);
     navbar.insertAdjacentHTML(`beforeend`,`<div class ='col-2 ml-4'><a onclick="Add_Directory();" ><IMG class="img_with_backlight_on_hover" WIDTH="64" HEIGHT="64"  title = "Добавить рааздел" src="{% static 'images/add.png' %}"></a></div>`);
     navbar.insertAdjacentHTML(`beforeend`,`<div class ='col-2 ml-4'><a onclick="Add_Media();"     ><IMG  class="img_with_backlight_on_hover"WIDTH="64" HEIGHT="64"  title = "Добавить медиа файлы" src="{% static 'images/add_media.png' %}"></a></div>`);
-		
-
 </script>
 
 </html>
