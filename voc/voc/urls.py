@@ -36,6 +36,7 @@ urlpatterns = [
 	path('api/v1/media_cross_request/media_edit_comment/', views.media_edit_comment),
     #path('api/v1/media_list_rename_media/<str:folder>/<str:new_media_name>/', views.rename_user_media),
     path('api/v1/get_media_source/<str:folder>/<str:file>', views.get_user_media),
+	path('api/v1/get_asset/<str:folder>/<str:file>', views.get_user_asset),
     path('media_upload/<str:user_folder>/', views.Upload_User_Media),
 	path('hoster', views.hoster),
 	path('hoster/<str:sitename>/', views.hoster_control),
@@ -69,6 +70,7 @@ urlpatterns = [
 	path('api/<str:pc_type>/<str:pc_book_id>/', views.json_response),
     path('restapi/v1/<str:pc_first>/<str:pc_second>/<str:pc_third>/', views.rest_response),
 	path('sentence/<str:pc_sentence>/', views.get_sentence),# для генерации mp3 по переданному предложению
-
+	path('edit_tile/', views.edit_tile),
+	path('select_tile/', views.select_tile),
 ]
 

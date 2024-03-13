@@ -90,17 +90,17 @@ def load_word_to_words_db_by_book(pc_book_id:str):
 
 
 def get_user_storage_path(request):
-	#print('get_user_storage_path   ==========>','user:',request.user.username,'	 id:', request.user.id)
-	#return Path(os.path.abspath(os.curdir)).resolve().parent / 'Storage' / request.user.username
 	return settings.BASE_DIR.parent / 'Storage' / request.user.username
 
 def get_user_media_path(request):
-	#print('get_user_media_path   ==========>','user:',request.user.username,'	 id:', request.user.id)
 	return  get_user_storage_path(request) / "media"
 
 def get_user_assets_path(request):
-	#print('get_user_assets_path   ==========>','user:',request.user.username,'	 id:', request.user.id)
 	return  get_user_storage_path(request) / "assets"
+
+def get_user_tiles_path(request):
+	return  get_user_assets_path(request) / "tiles"
+
 
 def Create_User_Storage(request):
 	print("User account path:", get_user_storage_path(request))
@@ -110,6 +110,8 @@ def Create_User_Storage(request):
 		os.makedirs(get_user_media_path(request))
 	if not os.path.exists(get_user_assets_path(request)):
 		os.makedirs(get_user_assets_path(request))
+	if not os.path.exists(get_user_tiles_path(request)):
+		os.makedirs(get_user_tiles_path(request))
 
  
 
@@ -394,7 +396,7 @@ def DownLoadExamples(pl_list):
 
 @login_required
 def word_in_progress(request, pc_word=''):
-	print(f"wordinprogress     pc_word:{pc_word}")
+	print(f"wordinprogress	 pc_word:{pc_word}")
 	data = {'APIServer':settings.API_ADRESS, 'userUUID':usersDataStorage.FindDataByUserName(request.user.get_username())['uuid'], 'word':pc_word.strip()}
 	return render(request, "word_in_progress.html", context=data)
 
@@ -493,7 +495,7 @@ def phrases_ready_list(request):
 @login_required
 def phrases_add_new(request, pc_phrase_id):
 	data = { "modify_type":'new', "phrase_text":'', "phrase_translation":'', "phrase_id":pc_phrase_id,
-		     'APIServer':settings.API_ADRESS, 'userUUID':usersDataStorage.FindDataByUserName(request.user.get_username())['uuid']}
+			 'APIServer':settings.API_ADRESS, 'userUUID':usersDataStorage.FindDataByUserName(request.user.get_username())['uuid']}
 	return render(request, "phrases_modify.html", context=data)
 
 
@@ -791,3 +793,57 @@ def GetDividedExamplesWH(source:str):
 
 
  
+@login_required
+def edit_tile(request):
+	pc_tile_id=''
+	data = {'tile_id':pc_tile_id.strip(), 'APIServer':settings.API_ADRESS, 'userUUID':usersDataStorage.FindDataByUserName(request.user.get_username())['uuid']}
+	return render(request, "./home_page/edit_tile.html", context=data)
+
+
+
+def find_files_by_extension(folder_path, extensions):
+
+	if not os.path.isdir(folder_path):
+		print(f"Ошибка: {folder_path} не является действительной папкой.")
+		return []
+
+	found_files = []
+
+	for root, dirs, files in os.walk(folder_path):
+		for file in files:
+			print('=:>', os.path.splitext(file)[1].upper())
+			if os.path.splitext(file)[1].upper() in extensions:
+				found_files.append(os.path.join(file))
+
+	return found_files
+
+def get_user_asset(request, folder:str, file:str):
+	folder = folder.replace("|","/")
+	lc_path = get_user_assets_path(request) / ( folder.replace("|","/") if folder.upper()!="USER_ROOT_" else "") / file
+	print(f'Sent media:{lc_path}')
+	with open(lc_path, mode='br') as fh:
+		return HttpResponse(fh.read(), content_type='content/image')
+
+
+@login_required
+def select_tile(request):
+	pc_tile_id=''
+	icons_list = []
+	sub_list = []
+	icons_list_source = find_files_by_extension(get_user_tiles_path(request), ['.JPEG','.JPG','.GIF','.BMP','.PNG','.WEBP','.ICO','.SVG'])
+	for number, icon in enumerate(icons_list_source):
+		sub_list.append({'icon':icon, 'number':(((number+1)%12)+1)})
+		if (number+1)%12==0:
+			if len(sub_list)>0:
+				icons_list.append(sub_list)
+				sub_list=[]
+
+
+	data = {'tile_id':pc_tile_id.strip(),
+		 	'user_asset_path':get_user_tiles_path(request),
+			'icons_list':icons_list,
+			'APIServer':settings.API_ADRESS, 'userUUID':usersDataStorage.FindDataByUserName(request.user.get_username())['uuid']}
+	print(data)
+	print(find_files_by_extension(get_user_tiles_path(request), ['JPEG','JPG','GIF','BMP','PNG','WEBP','ICO','SVG']))
+	return render(request, "./home_page/select_tile.html", context=data)
+

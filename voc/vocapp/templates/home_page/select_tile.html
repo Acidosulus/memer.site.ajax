@@ -10,8 +10,20 @@
 {% include "_body_begin.html" %} 
 
 {% include "_navigation_panel.html" %} 
-<div class="container mt-5">
-    <h1>Введите данные</h1>
+
+    <h1>{{ user_asset_path }}</h1>
+    <div class="container">
+      {% for icon_links in icons_list %}
+      <div class="row justify-content-center">
+            {% for icon in icon_links %}
+            <div class="col-1">
+                <img src="/api/v1/get_asset/tiles/{{ icon.icon }}" class="img-fluid img-thumbnail bg-dark" style="width:100%; height:width">
+            </div>
+            {% endfor %}
+      </div>
+      {% endfor %}
+    </div>
+
     <form>
       <div class="form-group">
         <label for="inputName">Название</label>
@@ -31,7 +43,6 @@
       </div>
       <button type="submit" class="btn btn-primary">Отправить</button>
     </form>
-  </div>
 
 
 <script defer lang="javascript">
