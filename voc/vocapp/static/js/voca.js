@@ -797,3 +797,43 @@ function showOverlay() {
 function hideOverlay() {
   document.getElementById('overlay').style.display = 'none';
 }
+
+
+
+//'image/jpeg, image/png, image/bmp, image/x-icon, image/webp'
+
+function handleFileUpload(list_of_file_types, url) {
+  
+  var fileInput = document.createElement('input');
+  fileInput.type = 'file';
+  fileInput.style.display = 'none';
+  fileInput.id = 'fileInput';
+  fileInput.multiple = true;
+  fileInput.accept = list_of_file_types;
+  document.body.appendChild(fileInput);
+  
+  fileInput.click();
+
+  fileInput.addEventListener('change', function(event) {
+      var files = event.target.files;
+
+      for (var i = 0; i < files.length; i++) {
+          var formData = new FormData();
+          formData.append('file', files[i]);
+
+          var xhr = new XMLHttpRequest();
+          xhr.open('POST', url);
+          xhr.onload = function() {
+              if (xhr.status === 200) {
+                  console.log('Файл успешно загружен на сервер.');
+              } else {
+                  console.error('Произошла ошибка при загрузке файла на сервер.');
+              }
+          };
+          xhr.send(formData);
+      }
+
+      document.body.removeChild(fileInput);
+  });
+  fileInput.value = '';
+}
