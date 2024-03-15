@@ -822,7 +822,12 @@ def get_user_asset(request, folder:str, file:str):
 	lc_path = get_user_assets_path(request) / ( folder.replace("|","/") if folder.upper()!="USER_ROOT_" else "") / file
 	print(f'Sent media:{lc_path}')
 	with open(lc_path, mode='br') as fh:
-		return HttpResponse(fh.read(), content_type='content/image')
+		response = HttpResponse(fh.read(), content_type='content/image')
+	response['Cache-Control'] = 'max-age=3600*24*7'
+	response['Expires'] = 'Sun, 17 Mar 2084 12:00:00 GMT'
+	return response
+
+
 
 
 @login_required

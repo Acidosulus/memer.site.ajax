@@ -11,50 +11,67 @@
 
 {% include "_navigation_panel.html" %} 
 
-    <h1>{{ user_asset_path }}</h1>
+
+<style>
+  .selected {
+              border: 10px solid lime;
+            }
+</style>
+  <hr>
+  {% include "home_page/_select_tile_select_button.html" %} 
+  <br>
+
     <div class="container">
       {% for icon_links in icons_list %}
       <div class="row justify-content-center">
             {% for icon in icon_links %}
             <div class="col-1">
-                <img src="/api/v1/get_asset/tiles/{{ icon.icon }}" class="img-fluid img-thumbnail bg-dark" style="width:100%; height:width">
+                <img src="/api/v1/get_asset/tiles/{{ icon.icon }}" class="img-fluid img-thumbnail bg-dark" style="width:100%; height:width" data-selected="no" data-filename="{{ icon.icon }}">
             </div>
             {% endfor %}
       </div>
       {% endfor %}
     </div>
-
-    <form>
-      <div class="form-group">
-        <label for="inputName">Название</label>
-        <input type="text" class="form-control" id="inputName" placeholder="Введите название">
-      </div>
-      <div class="form-group">
-        <label for="inputLink">Ссылка</label>
-        <input type="text" class="form-control" id="inputLink" placeholder="Введите ссылку">
-      </div>
-      <div class="form-group">
-        <label for="inputIcon">Иконка</label>
-        <input type="text" class="form-control" id="inputIcon" placeholder="Введите имя иконки (например, 'fa-home')">
-      </div>
-      <div class="form-group">
-        <label for="inputColor">Выбор цвета</label>
-        <input type="color" class="form-control" id="inputColor">
-      </div>
-      <button type="submit" class="btn btn-primary">Отправить</button>
-    </form>
-
+    <br>
+    {% include "home_page/_select_tile_select_button.html" %} 
+    <br>
+  
 
 <script defer lang="javascript">
     let navbar = document.querySelector(`#navigation_subbar_optional`);
-    navbar.insertAdjacentHTML(`beforeend`,`<div class ='col-2 ml-4'><a id= 'id_link_on_wooordhunt' href="https://wooordhunt.ru/word/{{ word }}" target="_blank"><IMG  class="img_with_backlight_on_hover"  WIDTH="48" HEIGHT="48"  title = "wooordhunt.ru" src="{% static 'images/wh.ico' %}"></a></div>`);
-    navbar.insertAdjacentHTML(`beforeend`,`<div class ='col-2 ml-4'><a id= 'id_link_on_glosbe' href="https://ru.glosbe.com/en/ru/{{ word }}" target="_blank"><IMG  class="img_with_backlight_on_hover"  WIDTH="48" HEIGHT="48"  title = "ru.glosbe.com" src="https://ru.glosbe.com/assets/favicon/favicon-32x32.png"></a></div>`);
+      navbar.insertAdjacentHTML(`beforeend`,`<div class ='col-2 ml-4'><a id= 'id_link_on_wooordhunt' href="https://wooordhunt.ru/word/{{ word }}" target="_blank"><IMG  class="img_with_backlight_on_hover"  WIDTH="48" HEIGHT="48"  title = "wooordhunt.ru" src="{% static 'images/wh.ico' %}"></a></div>`);
+      navbar.insertAdjacentHTML(`beforeend`,`<div class ='col-2 ml-4'><a id= 'id_link_on_glosbe' href="https://ru.glosbe.com/en/ru/{{ word }}" target="_blank"><IMG  class="img_with_backlight_on_hover"  WIDTH="48" HEIGHT="48"  title = "ru.glosbe.com" src="https://ru.glosbe.com/assets/favicon/favicon-32x32.png"></a></div>`);
+        
+        
+        document.addEventListener("DOMContentLoaded", function() {
+        const images = document.querySelectorAll(".img-thumbnail");
+        images.forEach(function(image) {
+                                          image.addEventListener("click", function() {
+                                              images.forEach(function(img) {
+                                                  img.classList.remove("selected");
+                                                  img.dataset.selected = `no`;
+                                              });
+                                              this.classList.add("selected");
+                                              this.dataset.selected = `yes`;
+                                          });
+                                        });
+                                      });
+
+    function SelectImage(){
+      for (let image of document.querySelectorAll(".img-thumbnail")){
+            if (image.dataset.selected == `yes`){
+              return image.dataset.filename;
+            }
+          }
+      
+    }
 </script>
 
 
 </body>
 
 </html>
+
 
 
 
