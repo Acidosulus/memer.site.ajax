@@ -802,21 +802,21 @@ def edit_tile(request):
 
 
 def find_files_by_extension(folder_path, extensions):
-
 	if not os.path.isdir(folder_path):
-		print(f"Ошибка: {folder_path} не является действительной папкой.")
+		print(f"Ошибка: {folder_path} не является папкой.")
 		return []
-
-	found_files = []
-
+	files_with_dates = []
 	for root, dirs, files in os.walk(folder_path):
 		for file in files:
-			print('=:>', os.path.splitext(file)[1].upper())
 			if os.path.splitext(file)[1].upper() in extensions:
-				found_files.append(os.path.join(file))
+				file_path = os.path.join(root, file)
+				creation_time = os.path.getctime(file_path)
+				files_with_dates.append((file_path, creation_time))
+	sorted_files = sorted(files_with_dates, key=lambda x: x[1])
+	return [os.path.basename(file[0]) for file in sorted_files]
 
-	return found_files
 
+@login_required
 def get_user_asset(request, folder:str, file:str):
 	folder = folder.replace("|","/")
 	lc_path = get_user_assets_path(request) / ( folder.replace("|","/") if folder.upper()!="USER_ROOT_" else "") / file
@@ -828,11 +828,7 @@ def get_user_asset(request, folder:str, file:str):
 	return response
 
 
-
-
-@login_required
-def select_tile(request):
-	pc_tile_id=''
+def get_tiles_lists(request):
 	icons_list = []
 	sub_list = []
 	icons_list_source = find_files_by_extension(get_user_tiles_path(request), ['.JPEG','.JPG','.GIF','.BMP','.PNG','.WEBP','.ICO','.SVG'])
@@ -842,13 +838,76 @@ def select_tile(request):
 			if len(sub_list)>0:
 				icons_list.append(sub_list)
 				sub_list=[]
+	if len(sub_list)>0:
+		icons_list.append(sub_list)
+	return icons_list
 
+@login_required
+def Get_files_lists_json(request):
+    result = json.dumps(get_tiles_lists(request))
+    return HttpResponse(result)
 
+@login_required
+def select_tile(request):
+	pc_tile_id=''
 	data = {'tile_id':pc_tile_id.strip(),
 		 	'user_asset_path':get_user_tiles_path(request),
-			'icons_list':icons_list,
+			'icons_list':get_tiles_lists(request),
 			'APIServer':settings.API_ADRESS, 'userUUID':usersDataStorage.FindDataByUserName(request.user.get_username())['uuid']}
-	print(data)
-	print(find_files_by_extension(get_user_tiles_path(request), ['JPEG','JPG','GIF','BMP','PNG','WEBP','ICO','SVG']))
 	return render(request, "./home_page/select_tile.html", context=data)
 
+
+@csrf_exempt
+@login_required
+def Delete_Tile(request, file_name:str):
+	if request.method == 'GET':
+		upload_dir = get_user_tiles_path(request)
+		file_path = os.path.join(upload_dir, file_name)
+		if os.path.exists(file_path):
+			file_path = os.path.join(upload_dir, file_name)
+		print(f'deleted file: {file_path}')
+		os.remove(file_path)
+		return JsonResponse({'message': f'File deleted {file_name} successfully'}, status=200)
+	else:
+		return JsonResponse({'error': 'METHOD error. GET awaited'}, status=400)
+
+
+
+@csrf_exempt
+@login_required
+def Upload_Tiles(request):
+	if request.method == 'POST':
+		uploaded_files = request.FILES.getlist('file_name')
+		upload_dir = get_user_tiles_path(request)  # Путь к папке для сохранения файлов
+		
+		for file in uploaded_files:
+			file_name = file.name
+			file_path = os.path.join(upload_dir, file_name)
+			
+			# Проверяем, существует ли файл с таким именем
+			if os.path.exists(file_path):
+				# Если файл с таким именем уже существует, генерируем новое имя
+				file_name = generate_new_filename(file_path, file_name)
+				file_path = os.path.join(upload_dir, file_name)
+			
+			print(f'save to: {file_path}')
+			# Сохраняем файл на сервере
+			with open(file_path, 'wb+') as destination:
+				for chunk in file.chunks():
+					destination.write(chunk)
+		
+		return JsonResponse({'message': 'Files uploaded successfully'}, status=200)
+	else:
+		return JsonResponse({'error': 'No files were provided'}, status=400)
+
+def generate_new_filename(upload_dir, filename):
+	base_name, extension = os.path.splitext(filename)
+	counter = 1
+	new_filename = f"{base_name}_{counter}{extension}"
+	
+	# Пока не найдем уникальное имя файла, добавляем к базовому имени счетчик
+	while os.path.exists(os.path.join(upload_dir, new_filename)):
+		counter += 1
+		new_filename = f"{base_name}_{counter}{extension}"
+	
+	return new_filename

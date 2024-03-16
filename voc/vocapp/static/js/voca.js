@@ -801,7 +801,7 @@ function hideOverlay() {
 
 
 //'image/jpeg, image/png, image/bmp, image/x-icon, image/webp'
-
+//handleFileUpload(`image/jpeg, image/png, image/bmp, image/x-icon, image/webp`, `/tiles_upload/`)
 function handleFileUpload(list_of_file_types, url) {
   
   var fileInput = document.createElement('input');
@@ -819,7 +819,7 @@ function handleFileUpload(list_of_file_types, url) {
 
       for (var i = 0; i < files.length; i++) {
           var formData = new FormData();
-          formData.append('file', files[i]);
+          formData.append('file_name', files[i]);
 
           var xhr = new XMLHttpRequest();
           xhr.open('POST', url);
