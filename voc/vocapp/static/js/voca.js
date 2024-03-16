@@ -802,7 +802,7 @@ function hideOverlay() {
 
 //'image/jpeg, image/png, image/bmp, image/x-icon, image/webp'
 //handleFileUpload(`image/jpeg, image/png, image/bmp, image/x-icon, image/webp`, `/tiles_upload/`)
-function handleFileUpload(list_of_file_types, url) {
+function handleFileUpload(list_of_file_types, url, callback) {
   
   var fileInput = document.createElement('input');
   fileInput.type = 'file';
@@ -811,28 +811,24 @@ function handleFileUpload(list_of_file_types, url) {
   fileInput.multiple = true;
   fileInput.accept = list_of_file_types;
   document.body.appendChild(fileInput);
-  
   fileInput.click();
-
   fileInput.addEventListener('change', function(event) {
       var files = event.target.files;
-
       for (var i = 0; i < files.length; i++) {
           var formData = new FormData();
           formData.append('file_name', files[i]);
-
           var xhr = new XMLHttpRequest();
-          xhr.open('POST', url);
+          xhr.open('POST', url, false);
           xhr.onload = function() {
               if (xhr.status === 200) {
                   console.log('Файл успешно загружен на сервер.');
+                  callback();
               } else {
                   console.error('Произошла ошибка при загрузке файла на сервер.');
               }
           };
           xhr.send(formData);
       }
-
       document.body.removeChild(fileInput);
   });
   fileInput.value = '';

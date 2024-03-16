@@ -33,20 +33,7 @@
       navbar.insertAdjacentHTML(`beforeend`,`<div class ='col-2 ml-4'><a id= 'id_link_on_wooordhunt' href="https://wooordhunt.ru/word/{{ word }}" target="_blank"><IMG  class="img_with_backlight_on_hover"  WIDTH="48" HEIGHT="48"  title = "wooordhunt.ru" src="{% static 'images/wh.ico' %}"></a></div>`);
       navbar.insertAdjacentHTML(`beforeend`,`<div class ='col-2 ml-4'><a id= 'id_link_on_glosbe' href="https://ru.glosbe.com/en/ru/{{ word }}" target="_blank"><IMG  class="img_with_backlight_on_hover"  WIDTH="48" HEIGHT="48"  title = "ru.glosbe.com" src="https://ru.glosbe.com/assets/favicon/favicon-32x32.png"></a></div>`);
         
-        document.addEventListener("DOMContentLoaded", function() {
-        const images = document.querySelectorAll(".img-thumbnail");
-        images.forEach(function(image) {
-                                          image.addEventListener("click", function() {
-                                              images.forEach(function(img) {
-                                                  img.classList.remove("selected");
-                                                  img.dataset.selected = `no`;
-                                              });
-                                              this.classList.add("selected");
-                                              this.dataset.selected = `yes`;
-                                              console.log(this.dataset.filename);
-                                          });
-                                        });
-                                      });
+
 
     function SelectImage(){
       for (let image of document.querySelectorAll(".img-thumbnail")){
@@ -74,9 +61,10 @@
       console.log(GetSelectedFileName().length);
       if (GetSelectedFileName().length>0){
                                         $.ajax({
-                                                    "url": `/tile_delete/${GetSelectedFileName()}`,
-                                                    "method": "GET",
-                                                    "timeout": 0,
+                                                    url: `/tile_delete/${GetSelectedFileName()}`,
+                                                    method: "GET",
+                                                    async: false,
+                                                    timeout: 0,
                                                     });
       }
     }
@@ -94,6 +82,7 @@
 
   function FillTilesField(){
   field = document.querySelector('#tiles_field');
+  field.innerHTML = ``;
   let tiles = GetTiles();
   let rowcounter = 0;
     for (let row of tiles){
@@ -102,10 +91,39 @@
       field.insertAdjacentHTML(`beforeend`,`<div class="row justify-content-center" id="${rowid}"></div>`);
       rowelement = document.querySelector(`#${rowid}`);
       for (element of row){
-        rowelement.insertAdjacentHTML(`beforeend`,`<div class="col-1"><img src="/api/v1/get_asset/tiles/${element.icon}" class="img-fluid img-thumbnail bg-dark" style="width:100%; height:width" data-selected="no" data-filename="${element.icon}"></div>`);
-        console.log(element);
+        rowelement.insertAdjacentHTML(`beforeend`,`<div class="col-1"><img onclick="SelectTileonClick(this);" src="/api/v1/get_asset/tiles/${element.icon}" class="img-fluid img-thumbnail bg-dark" style="width:100%; height:width" data-selected="no" data-filename="${element.icon}"></div>`);
+        //console.log(element);
       }
     }
+
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const images = document.querySelectorAll(".img-thumbnail");
+        images.forEach(function(image) {
+                                          image.addEventListener("click", function() {
+                                              images.forEach(function(img) {
+                                                  img.classList.remove("selected");
+                                                  img.dataset.selected = `no`;
+                                              });
+                                              this.classList.add("selected");
+                                              this.dataset.selected = `yes`;
+                                              //console.log(this.dataset.filename);
+                                          });
+                                        });
+                                      });
+  }
+
+
+
+  function SelectTileonClick(selectme){
+    const tiles = document.querySelectorAll(".img-thumbnail");
+    for (tile of tiles){
+              tile.classList.remove("selected");
+              tile.dataset.selected = `no`;
+    }
+    selectme.classList.add("selected");
+    selectme.dataset.selected = `yes`;
+    //console.log(`selectme.dataset.filename`);
   }
 
   FillTilesField();
