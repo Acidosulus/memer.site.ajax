@@ -485,3 +485,19 @@ my_div_save{
         -webkit-text-stroke-width: 1px; /* Ширина контура текста */
         -webkit-text-stroke-color: rgba(0, 0, 0, 0.5); /* Цвет контура текста */
       }
+
+
+      .dynamic-form {
+        width: 95%;
+        height: 95%;
+        position: fixed;
+        z-index: 2;
+        left: 2.5%;
+        background-color: white;
+        border: 1px solid #2426c2;
+        border-radius: 15px;
+        top:max(50px, 10%);
+        overflow-y: auto;
+        max-height: 90%;
+      }
+    

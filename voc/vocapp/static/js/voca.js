@@ -1,9 +1,27 @@
 var selection_state=1;
 
+// arrays of modal form IDs
+var forms = [];
+
+var forms_zindex=1;
+
+var border_colors = ["border-primary", "border-secondary", "border-success", "border-danger", "border-warning", "border-info", "border-dark"];
+
+window.addEventListener('resize', function() {
+  ResizeModalForms();
+});
+
 window.onload = async function(event) {
   // global variables for connect to APIServer
   console.log(UserName, UserUUID, APIServer);
- 
+
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") {
+      CloseToplevelDynamicForm();
+    }
+  });
+  
+
   Load_Books_List();
   LoadSimpleData(); 
   if(document.getElementById('index_table_of_syllables')!=null){
@@ -832,4 +850,171 @@ function handleFileUpload(list_of_file_types, url, callback) {
       document.body.removeChild(fileInput);
   });
   fileInput.value = '';
+}
+
+function getRandomInt(max) {
+  return Math.floor(Math.random() * max);
+}
+
+
+// run in screen form, fill and show
+function RunInScreenForm (form_name, execute_after_load, request_link) {
+  let outerRootElement = document.getElementsByTagName(`body`)[0];
+  form_name = form_name + `_${getRandomInt(999999999999999)}`
+  forms_zindex++;
+  console.log(forms_zindex);
+  outerRootElement.insertAdjacentHTML(
+    `beforeEnd`,
+    `<div id="${form_name}" style="background-image: url('/static/images/background.gif');" class="dynamic-form container-fluid border-5 ${border_colors[forms_zindex%9]}" data-zindex="${forms_zindex}"></div>`);
+
+  forms.push(form_name);
+  document.getElementById(forms[forms.length-1]).setAttribute(`z-index`, forms_zindex);
+ 
+  let xhr = new XMLHttpRequest();
+  xhr.open(`GET`, request_link);
+  xhr.send();
+  xhr.onload = function() {
+    document.getElementById(`${forms[forms.length-1]}`).insertAdjacentHTML(`afterBegin`, xhr.responseText);
+
+    document.getElementById(`${forms[forms.length-1]}`).insertAdjacentHTML(
+      `beforeEnd`,
+      `<hr><br>
+        <div class="row">
+          <div class="col-11">
+          <!--  <button type="submit" class="btn btn-primary btn-lg btn-block col-6" id="button_modal_dialog_ok">
+              &nbsp&nbsp&nbsp&nbspОк&nbsp&nbsp&nbsp&nbsp
+             </button>-->
+          </div>
+          <div class="col-1">
+            <button id="${forms[forms.length-1]}_dialog_escape_button" type="button" class="btn btn-secondary btn-lg btn-block col-12" onclick="CloseToplevelDynamicForm();">
+              Отмена
+            </button>
+          </div>`);
+    eval(execute_after_load);
+    ResizeModalForms();
+}
+
+}
+
+
+function ResizeModalForms(){
+  console.log(`height: ${document.getElementById(`${forms[forms.length-1]}`).getBoundingClientRect().height}`);
+  console.log(`top _dialog_escape_button: ${document.getElementById(`${forms[forms.length-1]}_dialog_escape_button`).getBoundingClientRect().top}`);
+  console.log(`height _dialog_escape_button: ${document.getElementById(`${forms[forms.length-1]}_dialog_escape_button`).getBoundingClientRect().height}`);
+  document.getElementById(`${forms[forms.length-1]}`).getBoundingClientRect().height = document.getElementById(`${forms[forms.length-1]}_dialog_escape_button`).getBoundingClientRect().top
+                                                                         + document.getElementById(`${forms[forms.length-1]}_dialog_escape_button`).getBoundingClientRect().height + 24;
+  let new_form_height = document.getElementById(`${forms[forms.length-1]}_dialog_escape_button`).getBoundingClientRect().top + document.getElementById(`${forms[forms.length-1]}_dialog_escape_button`).getBoundingClientRect().height + 50;
+  document.getElementById(`${forms[forms.length-1]}`).style.height=`${new_form_height}px`;
+
+  console.log(`width: ${document.getElementById(`${forms[forms.length-1]}`).getBoundingClientRect().width}`);
+  let new_form_width = document.getElementById(`${forms[forms.length-1]}`).getBoundingClientRect().width*0.9;
+  document.getElementById(`${forms[forms.length-1]}`).style.width=`${new_form_width}px`;
+
+}
+
+
+function CloseInScreenForm(form_id){
+  document.querySelector(`#${form_id}`).remove();
+ }
+
+ function CloseToplevelDynamicForm(){
+   if (forms.length>0){
+     CloseInScreenForm(forms[forms.length - 1]);
+     forms.pop();
+   }
+ }
+
+
+
+
+ function OnLoadTileSelect(){
+  FillTilesField();
+}
+
+
+function SelectImage(){
+  for (let image of document.querySelectorAll(".img-thumbnail")){
+        if (image.dataset.selected == `yes`){
+          return image.dataset.filename;
+        }
+      }
+}
+
+
+
+function GetSelectedFileName(){
+  if (document.querySelector('.selected')==null){
+    return '';
+  }
+  else{
+    return document.querySelector('.selected').dataset.filename;
+  }
+}
+
+
+function DeleteTileImage(){
+  console.log(`DeleteTileImage()`);
+  console.log(GetSelectedFileName());
+  console.log(GetSelectedFileName().length);
+  if (GetSelectedFileName().length>0){
+                                    $.ajax({
+                                                url: `/tile_delete/${GetSelectedFileName()}`,
+                                                method: "GET",
+                                                async: false,
+                                                timeout: 0,
+                                                });
+  }
+}
+
+function GetTiles() {
+var xhr = new XMLHttpRequest();
+xhr.open("GET", "/tiles_JSON/", false);
+xhr.setRequestHeader("Content-Type", "application/json");
+xhr.send();
+var jsonResponse = JSON.parse(xhr.responseText);
+return jsonResponse;
+}
+
+
+function FillTilesField(){
+field = document.querySelector('#tiles_field');
+field.innerHTML = ``;
+let tiles = GetTiles();
+let rowcounter = 0;
+for (let row of tiles){
+  rowcounter++;
+  let rowid = `tilesrowid${rowcounter}`;
+  field.insertAdjacentHTML(`beforeend`,`<div class="row justify-content-center" id="${rowid}"></div>`);
+  rowelement = document.querySelector(`#${rowid}`);
+  for (element of row){
+    rowelement.insertAdjacentHTML(`beforeend`,`<div class="col-1"><img onclick="SelectTileonClick(this);" src="/api/v1/get_asset/tiles/${element.icon}" class="img-fluid img-thumbnail bg-dark" style="width:100%; height:width" data-selected="no" data-filename="${element.icon}"></div>`);
+    //console.log(element);
+  }
+}
+document.addEventListener("DOMContentLoaded", function() {
+    const images = document.querySelectorAll(".img-thumbnail");
+    images.forEach(function(image) {
+                                      image.addEventListener("click", function() {
+                                          images.forEach(function(img) {
+                                              img.classList.remove("selected");
+                                              img.dataset.selected = `no`;
+                                          });
+                                          this.classList.add("selected");
+                                          this.dataset.selected = `yes`;
+                                          //console.log(this.dataset.filename);
+                                      });
+                                    });
+                                  });
+}
+
+
+
+function SelectTileonClick(selectme){
+const tiles = document.querySelectorAll(".img-thumbnail");
+for (tile of tiles){
+          tile.classList.remove("selected");
+          tile.dataset.selected = `no`;
+}
+selectme.classList.add("selected");
+selectme.dataset.selected = `yes`;
 }

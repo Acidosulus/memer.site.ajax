@@ -1,15 +1,12 @@
 {% load static %}
-{% include "_head.html" %} 
 
 <html>
 
-{% include "subpattern_onload.html" %} 
 
 
 
-{% include "_body_begin.html" %} 
 
-{% include "_navigation_panel.html" %} 
+
 
 
 <style>
@@ -26,125 +23,4 @@
    {% include "home_page/_select_tile_select_button.html" %} 
     
   
-
-
-<script defer lang="javascript">
-    let navbar = document.querySelector(`#navigation_subbar_optional`);
-      navbar.insertAdjacentHTML(`beforeend`,`<div class ='col-2 ml-4'><a id= 'id_link_on_wooordhunt' href="https://wooordhunt.ru/word/{{ word }}" target="_blank"><IMG  class="img_with_backlight_on_hover"  WIDTH="48" HEIGHT="48"  title = "wooordhunt.ru" src="{% static 'images/wh.ico' %}"></a></div>`);
-      navbar.insertAdjacentHTML(`beforeend`,`<div class ='col-2 ml-4'><a id= 'id_link_on_glosbe' href="https://ru.glosbe.com/en/ru/{{ word }}" target="_blank"><IMG  class="img_with_backlight_on_hover"  WIDTH="48" HEIGHT="48"  title = "ru.glosbe.com" src="https://ru.glosbe.com/assets/favicon/favicon-32x32.png"></a></div>`);
-        
-
-
-    function SelectImage(){
-      for (let image of document.querySelectorAll(".img-thumbnail")){
-            if (image.dataset.selected == `yes`){
-              return image.dataset.filename;
-            }
-          }
-    }
-    
-    
-
-    function GetSelectedFileName(){
-      if (document.querySelector('.selected')==null){
-        return '';
-      }
-      else{
-        return document.querySelector('.selected').dataset.filename;
-      }
-    }
-    
-
-    function DeleteTileImage(){
-      console.log(`DeleteTileImage()`);
-      console.log(GetSelectedFileName());
-      console.log(GetSelectedFileName().length);
-      if (GetSelectedFileName().length>0){
-                                        $.ajax({
-                                                    url: `/tile_delete/${GetSelectedFileName()}`,
-                                                    method: "GET",
-                                                    async: false,
-                                                    timeout: 0,
-                                                    });
-      }
-    }
-
-  function GetTiles() {
-    
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", "/tiles_JSON/", false);
-    xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.send();
-    var jsonResponse = JSON.parse(xhr.responseText);
-    return jsonResponse;
-  }
-
-
-  function FillTilesField(){
-  field = document.querySelector('#tiles_field');
-  field.innerHTML = ``;
-  let tiles = GetTiles();
-  let rowcounter = 0;
-    for (let row of tiles){
-      rowcounter++;
-      let rowid = `tilesrowid${rowcounter}`;
-      field.insertAdjacentHTML(`beforeend`,`<div class="row justify-content-center" id="${rowid}"></div>`);
-      rowelement = document.querySelector(`#${rowid}`);
-      for (element of row){
-        rowelement.insertAdjacentHTML(`beforeend`,`<div class="col-1"><img onclick="SelectTileonClick(this);" src="/api/v1/get_asset/tiles/${element.icon}" class="img-fluid img-thumbnail bg-dark" style="width:100%; height:width" data-selected="no" data-filename="${element.icon}"></div>`);
-        //console.log(element);
-      }
-    }
-
-
-    document.addEventListener("DOMContentLoaded", function() {
-        const images = document.querySelectorAll(".img-thumbnail");
-        images.forEach(function(image) {
-                                          image.addEventListener("click", function() {
-                                              images.forEach(function(img) {
-                                                  img.classList.remove("selected");
-                                                  img.dataset.selected = `no`;
-                                              });
-                                              this.classList.add("selected");
-                                              this.dataset.selected = `yes`;
-                                              //console.log(this.dataset.filename);
-                                          });
-                                        });
-                                      });
-  }
-
-
-
-  function SelectTileonClick(selectme){
-    const tiles = document.querySelectorAll(".img-thumbnail");
-    for (tile of tiles){
-              tile.classList.remove("selected");
-              tile.dataset.selected = `no`;
-    }
-    selectme.classList.add("selected");
-    selectme.dataset.selected = `yes`;
-    //console.log(`selectme.dataset.filename`);
-  }
-
-  FillTilesField();
-
-</script>
-
-
-</body>
-
-</html>
-
-
-
-
-
-
-
-
-
-
-
-
-
 
