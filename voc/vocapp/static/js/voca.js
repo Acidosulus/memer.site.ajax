@@ -898,7 +898,7 @@ function RunInScreenForm ({form_name, execute_after_load, request_link, execute_
             </div>
               `);
     }
-    document.getElementById(`${forms[forms.length-1]}`).insertAdjacentHTML(`beforeend`, `<div id="id_anchor_end"></div>`);
+    document.getElementById(`${forms[forms.length-1]}`).insertAdjacentHTML(`beforeend`, `<hr id="id_anchor_end">`);
     
     //document.getElementById(`${forms[forms.length-1]}`).style.height = document.getElementById(`${forms[forms.length-1]}`).querySelector('#id_anchor_end').getBoundingClientRect().top
 
@@ -922,14 +922,19 @@ function RunInScreenForm ({form_name, execute_after_load, request_link, execute_
 
 function ResizeModalForms(){
 
-//  console.log( document.getElementById(`${forms[forms.length-1]}`).querySelector('#id_anchor_end').getBoundingClientRect().top );
-
-  document.getElementById(`${forms[forms.length-1]}`).style.height = 0.95 * document.getElementById(`${forms[forms.length-1]}`).getBoundingClientRect().height;
-  
-  document.getElementById(`${forms[forms.length-1]}`).style.width = 0.95 * document.getElementById(`${forms[forms.length-1]}`).getBoundingClientRect().width ;
   
 
 
+
+
+  
+  // document.getElementById(`${forms[forms.length-1]}`).style.height = 0.95 * document.getElementById(`${forms[forms.length-1]}`).getBoundingClientRect().height;
+  // document.getElementById(`${forms[forms.length-1]}`).style.width = 0.95 * document.getElementById(`${forms[forms.length-1]}`).getBoundingClientRect().width ;
+  
+  
+  
+
+  // console.log( document.getElementById(`${forms[forms.length-1]}`).querySelector('#id_anchor_end').getBoundingClientRect() );
 
   // console.log(`height: ${document.getElementById(`${forms[forms.length-1]}`).getBoundingClientRect().height}`);
   // // console.log(`top _dialog_escape_button: ${document.getElementById(`${forms[forms.length-1]}_dialog_escape_button`).getBoundingClientRect().top}`);

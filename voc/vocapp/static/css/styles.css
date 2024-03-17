@@ -489,8 +489,7 @@ my_div_save{
 
 
       .dynamic-form {
-        width: 95%;
-        height: 95%;
+        max-width: 95%;
         position: fixed;
         z-index: 2;
         background-color: white;
