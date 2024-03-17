@@ -858,7 +858,7 @@ function getRandomInt(max) {
 
 
 // run in screen form, fill and show
-function RunInScreenForm (form_name, execute_after_load, request_link) {
+function RunInScreenForm ({form_name, execute_after_load, request_link, execute_on_ok, ok_id, ok_title}) {
   let outerRootElement = document.getElementsByTagName(`body`)[0];
   form_name = form_name + `_${getRandomInt(999999999999999)}`
   forms_zindex++;
@@ -880,16 +880,23 @@ function RunInScreenForm (form_name, execute_after_load, request_link) {
       `beforeEnd`,
       `<hr><br>
         <div class="row">
-          <div class="col-11">
-          <!--  <button type="submit" class="btn btn-primary btn-lg btn-block col-6" id="button_modal_dialog_ok">
-              &nbsp&nbsp&nbsp&nbspОк&nbsp&nbsp&nbsp&nbsp
-             </button>-->
-          </div>
-          <div class="col-1">
-            <button id="${forms[forms.length-1]}_dialog_escape_button" type="button" class="btn btn-secondary btn-lg btn-block col-12" onclick="CloseToplevelDynamicForm();">
+          <div class="col-6">`+
+             ((execute_on_ok.length>0)
+             ?
+             `<button type="button" class="btn btn-primary btn-lg btn-block button_save col" id="${(ok_id.length>0,ok_id,'button_modal_dialog_ok')}">
+              &nbsp&nbsp&nbsp&nbsp${(ok_title.length>0,ok_title,'Ok')}&nbsp&nbsp&nbsp&nbsp
+             </button>`
+             :
+             ``)
+          +`</div>
+
+          <div class="col-6">
+            <button id="${forms[forms.length-1]}_dialog_escape_button" type="button" class="btn btn-secondary btn-lg btn-block button_save col" onclick="CloseToplevelDynamicForm();">
               Отмена
             </button>
-          </div>`);
+          </div>
+        </div>
+          `);
     eval(execute_after_load);
     ResizeModalForms();
 }
@@ -901,10 +908,10 @@ function ResizeModalForms(){
   console.log(`height: ${document.getElementById(`${forms[forms.length-1]}`).getBoundingClientRect().height}`);
   console.log(`top _dialog_escape_button: ${document.getElementById(`${forms[forms.length-1]}_dialog_escape_button`).getBoundingClientRect().top}`);
   console.log(`height _dialog_escape_button: ${document.getElementById(`${forms[forms.length-1]}_dialog_escape_button`).getBoundingClientRect().height}`);
-  document.getElementById(`${forms[forms.length-1]}`).getBoundingClientRect().height = document.getElementById(`${forms[forms.length-1]}_dialog_escape_button`).getBoundingClientRect().top
-                                                                         + document.getElementById(`${forms[forms.length-1]}_dialog_escape_button`).getBoundingClientRect().height + 24;
-  let new_form_height = document.getElementById(`${forms[forms.length-1]}_dialog_escape_button`).getBoundingClientRect().top + document.getElementById(`${forms[forms.length-1]}_dialog_escape_button`).getBoundingClientRect().height + 50;
-  document.getElementById(`${forms[forms.length-1]}`).style.height=`${new_form_height}px`;
+  // document.getElementById(`${forms[forms.length-1]}`).getBoundingClientRect().height = document.getElementById(`${forms[forms.length-1]}_dialog_escape_button`).getBoundingClientRect().top
+                                                                        //  + document.getElementById(`${forms[forms.length-1]}_dialog_escape_button`).getBoundingClientRect().height + 24;
+  //let new_form_height = document.getElementById(`${forms[forms.length-1]}_dialog_escape_button`).getBoundingClientRect().top + document.getElementById(`${forms[forms.length-1]}_dialog_escape_button`).getBoundingClientRect().height + 50;
+  // document.getElementById(`${forms[forms.length-1]}`).style.height=`${new_form_height}px`;
 
   console.log(`width: ${document.getElementById(`${forms[forms.length-1]}`).getBoundingClientRect().width}`);
   let new_form_width = document.getElementById(`${forms[forms.length-1]}`).getBoundingClientRect().width*0.9;
@@ -927,17 +934,15 @@ function CloseInScreenForm(form_id){
 
 
 
- function OnLoadTileSelect(){
-  FillTilesField();
+ function OnLoadTileSelect(currrent_icon){
+  FillTilesField(currrent_icon);
 }
 
 
+
 function SelectImage(){
-  for (let image of document.querySelectorAll(".img-thumbnail")){
-        if (image.dataset.selected == `yes`){
-          return image.dataset.filename;
-        }
-      }
+  document.querySelector(`#inputIcon`).value = GetSelectedFileName();
+  CloseToplevelDynamicForm();
 }
 
 
@@ -976,7 +981,7 @@ return jsonResponse;
 }
 
 
-function FillTilesField(){
+function FillTilesField(currrent_icon){
 field = document.querySelector('#tiles_field');
 field.innerHTML = ``;
 let tiles = GetTiles();
@@ -987,7 +992,7 @@ for (let row of tiles){
   field.insertAdjacentHTML(`beforeend`,`<div class="row justify-content-center" id="${rowid}"></div>`);
   rowelement = document.querySelector(`#${rowid}`);
   for (element of row){
-    rowelement.insertAdjacentHTML(`beforeend`,`<div class="col-1"><img onclick="SelectTileonClick(this);" src="/api/v1/get_asset/tiles/${element.icon}" class="img-fluid img-thumbnail bg-dark" style="width:100%; height:width" data-selected="no" data-filename="${element.icon}"></div>`);
+    rowelement.insertAdjacentHTML(`beforeend`,`<div class="col-1"><img onclick="SelectTileonClick(this);" src="/api/v1/get_asset/tiles/${element.icon}" class="img-fluid img-thumbnail bg-dark ${(currrent_icon==element.icon?'selected':'')}" style="width:100%; height:width" data-selected="no" data-filename="${element.icon}"></div>`);
     //console.log(element);
   }
 }

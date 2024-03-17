@@ -131,8 +131,8 @@ class SyllablesParagraph(Base):
 	syllable = relationship('Syllable')
 
 
-class HPLink(Base):
-    __tablename__ = 'hp_links'
+class HPTile(Base):
+    __tablename__ = 'hp_tiles'
 
     link_id = Column(Integer, primary_key=True)
     user_id = Column(Integer, nullable=False)
@@ -160,6 +160,10 @@ class HPRow(Base):
     row_index = Column(Integer, default=0, nullable=False)
     plank_id = Column(Integer, ForeignKey('hp_planks.plank_id'), default=0, nullable=False)
     plank = relationship("HPPlank", backref="rows")
+
+
+
+
 
 import psycopg2
 class LanguageDB:
@@ -642,6 +646,7 @@ class LanguageDB:
 													dt = datetime.datetime.now() ))
 		self.session.commit()
 
+
 	def GetTodayReadingParagraphs(self, user_name):
 		return self.session.execute(text(f"""--sql
 								   			select sum(diff)
@@ -652,6 +657,30 @@ class LanguageDB:
 														group by id_book ) as ct
 														;""")).one()[0]
 
+
+	def SaveTile(self, user_name, name, hyperlink, onclick, image_url):
+		ln_user_id = self.GetUserId(user_name)
+		if ln_user_id>0:
+			if phrase_id>0:
+				try:
+					phrase = self.session.query(Phrase).filter(and_(	Phrase.id_phrase == phrase_id,
+																		Phrase.user_id == ln_user_id)).first()
+					prnt(RowToDict(phrase))
+					phrase.phrase = text
+					phrase.translation = translate
+					phrase.last_view = datetime.datetime.now()
+					self.session.commit()
+					return {"status":"ok"}
+				except:
+					return {"status":"error - data has not saved"}
+			else: #it's a new phrase
+				try:
+					self.session.add(Phrase(phrase=text, translation = translate, user_id = ln_user_id, last_view = datetime.datetime.now(), dt=datetime.datetime.now(), ready=0, show_count=0))
+					self.session.commit()
+					return {"status":"ok"}
+				except: return {"status":"error - data has not added"}
+		else:
+			return {"status":"error - wrong user name"}
 
 
 printer = pprint.PrettyPrinter(indent=12, width=180)

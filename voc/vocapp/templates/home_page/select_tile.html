@@ -10,10 +10,29 @@
 
 
 <style>
-  .selected {
-              border: 10px solid lime;
-            }
+   
+  @keyframes borderAnimation {
+  0% {
+    border-color: red;
+  }
+  50% {
+    border-color: blue;
+  }
+  100% {
+    border-color: lime;
+  }
+}
+
+.selected
+ {
+  border: 10px solid yellow;
+  animation: borderAnimation 1s infinite;
+}
 </style>
+
+
+
+  <h1 style="color:rgb(92, 172, 13);">Icons available for selection</h1>
   <hr>
   {% include "home_page/_select_tile_select_button.html" %} 
   <br>
