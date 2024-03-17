@@ -493,12 +493,11 @@ my_div_save{
         height: 95%;
         position: fixed;
         z-index: 2;
-        left: 2.5%;
         background-color: white;
         border: 1px solid #2426c2;
         border-radius: 15px;
-        top:max(50px, 10%);
+        top:max(20px, 7%);
+        left:2.5%;
         overflow-y: auto;
-        max-height: 90%;
       }
     

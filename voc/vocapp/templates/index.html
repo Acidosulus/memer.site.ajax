@@ -68,7 +68,9 @@
           <!-- <div class="col-2 ml-9"><a href = '/edit_tile/'><IMG class="img_with_backlight_on_hover" WIDTH="120" HEIGHT="120"  title = "Редактирование плиток" src="/static/images/tile.png"></a></div> -->
           <div class="col-2 ml-9"><a  onclick="RunInScreenForm({form_name:`select_tile`, execute_after_load:``, request_link:`/edit_tile/`, execute_on_ok:''});"><IMG class="img_with_backlight_on_hover" WIDTH="120" HEIGHT="120"  title = "Редактирование плиток" src="/static/images/tile.png"></a></div>
           <!--<div class="col-2 ml-9"><a href = '/select_tile/'><IMG class="img_with_backlight_on_hover" WIDTH="120" HEIGHT="120"  title = "Выбор иконки плитки" src="/static/images/tiles.png"></a></div>-->
-          <div class="col-2 ml-9"><a onclick="RunInScreenForm({form_name:`select_tile`, execute_after_load:`OnLoadTileSelect();ResizeModalForms();`, request_link:`/select_tile/`, execute_on_ok:''});"><IMG class="img_with_backlight_on_hover" WIDTH="120" HEIGHT="120"  title = "Выбор иконки плитки" src="/static/images/tiles.png"></a></div>
+          <div class="col-2 ml-9"><a onclick="RunInScreenForm({ form_name:`select_tile`,
+                                                                execute_after_load:`OnLoadTileSelect();ResizeModalForms();`,
+                                                                request_link:`/select_tile/`});"><IMG class="img_with_backlight_on_hover" WIDTH="120" HEIGHT="120"  title = "Выбор иконки плитки" src="/static/images/tiles.png"></a></div>
         </div>
       </div>
     </div>

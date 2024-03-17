@@ -134,13 +134,13 @@ class SyllablesParagraph(Base):
 class HPTile(Base):
     __tablename__ = 'hp_tiles'
 
-    link_id = Column(Integer, primary_key=True)
+    tile_id = Column(Integer, primary_key=True)
     user_id = Column(Integer, nullable=False)
     row_id = Column(Integer)
     name = Column(Text, nullable=False)
     hyperlink = Column(Text)
     onclick = Column(Text)
-    image_url = Column(Text, nullable=False)
+    icon = Column(Text, nullable=False)
 
 class HPPlank(Base):
     __tablename__ = 'hp_planks'
@@ -658,29 +658,22 @@ class LanguageDB:
 														;""")).one()[0]
 
 
-	def SaveTile(self, user_name, name, hyperlink, onclick, image_url):
+	def SaveTile(self, tile_id, user_name, name, hyperlink, icon):
 		ln_user_id = self.GetUserId(user_name)
-		if ln_user_id>0:
-			if phrase_id>0:
-				try:
-					phrase = self.session.query(Phrase).filter(and_(	Phrase.id_phrase == phrase_id,
-																		Phrase.user_id == ln_user_id)).first()
-					prnt(RowToDict(phrase))
-					phrase.phrase = text
-					phrase.translation = translate
-					phrase.last_view = datetime.datetime.now()
-					self.session.commit()
-					return {"status":"ok"}
-				except:
-					return {"status":"error - data has not saved"}
-			else: #it's a new phrase
-				try:
-					self.session.add(Phrase(phrase=text, translation = translate, user_id = ln_user_id, last_view = datetime.datetime.now(), dt=datetime.datetime.now(), ready=0, show_count=0))
-					self.session.commit()
-					return {"status":"ok"}
-				except: return {"status":"error - data has not added"}
+		tile = self.session.query(HPTile).filter(and_(	HPTile.user_id == ln_user_id,
+                                                		HPTile.tile_id == tile_id)).first()
+		if tile is None:
+			self.session.add(HPTile(	user_id = ln_user_id,
+                 			name = name,
+                    		hyperlink = hyperlink,
+                      		icon = icon))
+			return {"status":"ok"}
 		else:
-			return {"status":"error - wrong user name"}
+			tile.name = name
+			tile.hyperlink = hyperlink
+			tile.icon = icon
+			self.session.commit()
+			return {"status":"ok"}
 
 
 printer = pprint.PrettyPrinter(indent=12, width=180)

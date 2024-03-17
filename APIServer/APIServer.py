@@ -38,17 +38,17 @@ app = FastAPI()
 
 #allow_credentials=True, 
 app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
+	CORSMiddleware,
+	allow_origins=["*"],
  	allow_methods=['GET','POST'], 
  	allow_headers=["*"]
 )
 
 #@app.middleware("http")
 #async def middleware(request: Request, call_next):
-#    print("middleware:","request.headers:", request.headers)
-#    print("middleware:","request.body:", request.body)
-#    return await call_next(request)
+#	print("middleware:","request.headers:", request.headers)
+#	print("middleware:","request.body:", request.body)
+#	return await call_next(request)
 
 
 if sys.platform == 'linux':
@@ -72,10 +72,20 @@ class SiteRequest(BaseModel):
 	comment:str
 	data:str
 
+class Tile(BaseModel):
+	username:str
+	tile_id:int
+	name:str
+	hyperlink:str
+	icon:str
 
 @app.get("/")
 async def main():
-    return {"message": "Hello World"}
+	return {"message": "Hello World"}
+
+app.post("/Save_Tile/")
+async def SaveTile(tile:Tile):
+	print(tile)
 
 @app.get("/GetAllUsers/{key}/")
 async def Get_All_Users(key:str):
@@ -135,11 +145,8 @@ async def get_last_opened_book_id(rq:SiteRequest):
 
 
 
-#async def syllables_slices_count(rq:Dict[Any, Any]):
-#async def syllables_slices_count(rq:SiteRequest):
 @app.post("/syllables_slices_count/")
 async def syllables_slices_count(rq:SiteRequests):
-	#rq = SiteRequests(username=rqp['username'], command=rqp['command'], data=rqp['data'], comment=rqp['comment'], useruuid=rqp['useruuid'])
 	print("************************")
 	print("/syllables_slices_count/")
 	prnt(rq)
