@@ -343,8 +343,7 @@ def add_new_with_parameter(request, pc_new_word):
 	return add_new( request, 	pc_new_word)
 
 @login_required
-def add_new(request):
-	pc_new_word=''
+def add_new(request, pc_new_word=''):
 	data = {'word':pc_new_word.strip(), 'APIServer':settings.API_ADRESS, 'userUUID':usersDataStorage.FindDataByUserName(request.user.get_username())['uuid']}
 	return render(request, "add_new_word.html", context=data)
 
