@@ -26,7 +26,7 @@
 
 <script defer lang="javascript">
     let navbar = document.querySelector(`#navigation_subbar_optional`);
-    navbar.insertAdjacentHTML(`beforeend`,`<div class ='col-2 ml-4'><a href="/add_new_word/" id="link_on_word_redo"><IMG class="img_with_backlight_on_hover" id="img_into_link_on_word_redo"  WIDTH="64" HEIGHT="64"  title = "Редактировать слово" src="{% static 'images/redo.png' %}"></a></div>`);
+    navbar.insertAdjacentHTML(`beforeend`,`<div class ='col-2 ml-4'><a href="/add_new_word/{{ word }}/" id="link_on_word_redo"><IMG class="img_with_backlight_on_hover" id="img_into_link_on_word_redo"  WIDTH="64" HEIGHT="64"  title = "Редактировать слово" src="{% static 'images/redo.png' %}"></a></div>`);
     navbar.insertAdjacentHTML(`beforeend`,`<div class ='col-2 ml-4'><a id= 'id_link_on_wooordhunt' href="https://wooordhunt.ru/word/{{ word }}" target="_blank"><IMG  class="img_with_backlight_on_hover"  WIDTH="64" HEIGHT="64"  title = "wooordhunt.ru" src="{% static 'images/wh.ico' %}"></a></div>`);
     navbar.insertAdjacentHTML(`beforeend`,`<div class ='col-2 ml-4'><a id= 'id_link_on_glosbe' href="https://ru.glosbe.com/en/ru/{{ word }}" target="_blank"><IMG class="img_with_backlight_on_hover"   WIDTH="64" HEIGHT="64"  title = "ru.glosbe.com" src="https://ru.glosbe.com/assets/favicon/favicon-32x32.png"></a></div>`);
     navbar.insertAdjacentHTML(`beforeend`,`<div class ='col-2 ml-4'><a href="/ready/{{ word }}/"><IMG class="img_with_backlight_on_hover" WIDTH="64" HEIGHT="64"  title = "Слово выученно" src="{% static 'images/ok.png' %}"></a></div>`);
