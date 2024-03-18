@@ -33,7 +33,6 @@ window.onload = async function(event) {
     }
 
     Load_Word_in_Progress_Data();
-
     Load_Phrase_in_Progress_Data();
     Load_Phrase_in_Edit_Data();
     Load_Syllable_Into_Add_New_Word();
@@ -1058,36 +1057,19 @@ selectme.dataset.selected = `yes`;
 
 async function SaveTile() {
 
-  var name = document.getElementById('inputName').value;
-  var link = document.getElementById('inputLink').value;
-  var icon = document.getElementById('inputIcon').value;
-  var color = document.getElementById('inputColor').value;
-
-
+  
     const data = {
-        username: "example_username",
-        tile_id: 123,
-        name: "example_name",
-        hyperlink: "example_hyperlink",
-        icon: "example_icon"
+        username: "",
+        tile_id: 0,
+        name: document.getElementById('inputName').value,
+        hyperlink: document.getElementById('inputLink').value,
+        icon: document.getElementById('inputIcon').value,
+        color: document.getElementById('inputColor').value
     };
 
-    try {
-        const response = await fetch('YOUR_FASTAPI_ENDPOINT', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        });
 
-        if (response.ok) {
-            const jsonResponse = await response.json();
-            console.log('Data successfully sent to FastAPI:', jsonResponse);
-        } else {
-            console.error('Failed to send data to FastAPI:', response.statusText);
-        }
-    } catch (error) {
-        console.error('Error sending data to FastAPI:', error);
-    }
+    asyncRequest( `${APIServer}/Save_Tile/`,
+    `POST`,
+    data
+    )
 }

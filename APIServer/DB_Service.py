@@ -141,6 +141,7 @@ class HPTile(Base):
     hyperlink = Column(Text)
     onclick = Column(Text)
     icon = Column(Text, nullable=False)
+    color = Column(Text)
 
 class HPPlank(Base):
     __tablename__ = 'hp_planks'
@@ -640,7 +641,7 @@ class LanguageDB:
 
 
 	def SaveBookReadingData(self, id_user, id_book, id_paragraph):
-		self.session.add(ReadingJournal( 	user_id = id_user,
+		self.session.add( ReadingJournal( 	user_id = id_user,
 										  			id_book = id_book,
 													id_paragraph = id_paragraph,
 													dt = datetime.datetime.now() ))
@@ -667,13 +668,13 @@ class LanguageDB:
                  			name = name,
                     		hyperlink = hyperlink,
                       		icon = icon))
-			return {"status":"ok"}
+			return {"status":"ok - added"}
 		else:
 			tile.name = name
 			tile.hyperlink = hyperlink
 			tile.icon = icon
 			self.session.commit()
-			return {"status":"ok"}
+			return {"status":"ok - updated"}
 
 
 printer = pprint.PrettyPrinter(indent=12, width=180)

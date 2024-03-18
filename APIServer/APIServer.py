@@ -74,18 +74,25 @@ class SiteRequest(BaseModel):
 
 class Tile(BaseModel):
 	username:str
+	useruuid:str
 	tile_id:int
 	name:str
 	hyperlink:str
 	icon:str
+	color:str
 
 @app.get("/")
 async def main():
 	return {"message": "Hello World"}
 
-app.post("/Save_Tile/")
+@app.post("/Save_Tile/")
 async def SaveTile(tile:Tile):
 	print(tile)
+	return dblang.SaveTile(	tile_id = tile.tile_id,
+						 	user_name = tile.username,
+				  			name = tile.name,
+				   			hyperlink = tile.hyperlink,
+        					icon = tile.icon)
 
 @app.get("/GetAllUsers/{key}/")
 async def Get_All_Users(key:str):
