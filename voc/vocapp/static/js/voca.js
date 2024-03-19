@@ -237,32 +237,43 @@ function GetAllExamplesFromNewSyllablePage(){
   return result
 }
 
-// save syllable data into DB, if link parameter not empty goes by it link
-function SaveSyllable(link){
-  if(!document.querySelector(`#body_add_new_word`)){
-    return;
+
+function SaveSyllable(link) {
+  if (!document.querySelector(`#body_add_new_word`)) {
+      return;
   }
-  let obody = {   username:``,
-                  command:`Save_Syllabe`,
-                  word:document.getElementById(`id_word`).value,
-                  syllable_id:(document.querySelector(`#body_add_new_word`).dataset.syllable_id==='undefined'? -1:document.querySelector(`#body_add_new_word`).dataset.syllable_id),
-                  transcription:document.getElementById(`id_transcription`).value,
-                  translations:document.getElementById(`id_translations`).value,
-                  examples:GetAllExamplesFromNewSyllablePage()
-              }
-  console.log(`obody`, obody)
-  let response = fetch('/api/v1/cross_request/', {
-                                                  method: 'POST',
-                                                  headers: {
-                                                    'Content-Type': 'application/json;charset=utf-8'
-                                                  },
-                                                  body: JSON.stringify(obody)
-                                                  }
-                      )
   if (link.length>0){
-    window.location.href = link;
+    showOverlay();
+  }
+  let obody = {
+      username: ``,
+      command: `Save_Syllabe`,
+      word: document.getElementById(`id_word`).value,
+      syllable_id: (document.querySelector(`#body_add_new_word`).dataset.syllable_id === 'undefined' ? -1 : document.querySelector(`#body_add_new_word`).dataset.syllable_id),
+      transcription: document.getElementById(`id_transcription`).value,
+      translations: document.getElementById(`id_translations`).value,
+      examples: GetAllExamplesFromNewSyllablePage()
+  };
+  console.log(`obody`, obody);
+  $.ajax({
+      url: '/api/v1/cross_request/',
+      type: 'POST',
+      dataType: 'json',
+      contentType: 'application/json;charset=utf-8',
+      data: JSON.stringify(obody),
+      async: false,
+      success: function (data) {
+          console.log('Request successful:', data);
+      },
+      error: function (xhr, status, error) {
+          console.error('Request failed:', error);
+      }
+  });
+  if (link.length > 0) {
+      window.location.href = link;
   }
 }
+
 
 function AddExamplToNewSyllablePage(parent, example, translate, rowid, id_int){
   let pattern = `<div class="div_example_class" data-rowid="{ _rowid_ }" id="example_section_{ _random_ }" style="text-align:right;"><IMG class ="image_little_button" WIDTH="64" HEIGHT="64"  title = "Удалить пример" src="/static/images/delete.png" onclick="document.getElementById('example_section_{ _random_ }').remove();"'>
