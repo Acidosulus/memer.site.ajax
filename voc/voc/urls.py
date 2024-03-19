@@ -38,9 +38,9 @@ urlpatterns = [
     path('api/v1/get_media_source/<str:folder>/<str:file>', views.get_user_media),
 	path('api/v1/get_asset/<str:folder>/<str:file>', views.get_user_asset),
     path('media_upload/<str:user_folder>/', views.Upload_User_Media),
-    path('tiles_upload/', views.Upload_Tiles),
-    path('tile_delete/<str:file_name>', views.Delete_Tile),
-    path('tiles_JSON/', views.Get_files_lists_json),
+    path('icons_upload/', views.Upload_Icons),
+    path('icon_delete/<str:file_name>', views.Delete_Icon),
+    path('icons_JSON/', views.Get_files_lists_json),
 	path('hoster', views.hoster),
 	path('hoster/<str:sitename>/', views.hoster_control),
 	path('hoster/<str:sitename>/delete_all/', views.hoster_control_clear_all),
@@ -74,6 +74,6 @@ urlpatterns = [
     path('restapi/v1/<str:pc_first>/<str:pc_second>/<str:pc_third>/', views.rest_response),
 	path('sentence/<str:pc_sentence>/', views.get_sentence),# для генерации mp3 по переданному предложению
 	path('edit_tile/', views.edit_tile),
-	path('select_tile/', views.select_tile),
+	path('select_icon/', views.select_icon),
 ]
 

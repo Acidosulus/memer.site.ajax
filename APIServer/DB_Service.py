@@ -134,9 +134,8 @@ class SyllablesParagraph(Base):
 class HPTile(Base):
     __tablename__ = 'hp_tiles'
 
-    tile_id = Column(Integer, primary_key=True)
+    tile_id = Column(Integer, primary_key=True, autoincrement=True)
     user_id = Column(Integer, nullable=False)
-    row_id = Column(Integer)
     name = Column(Text, nullable=False)
     hyperlink = Column(Text)
     onclick = Column(Text)
@@ -659,7 +658,8 @@ class LanguageDB:
 														;""")).one()[0]
 
 
-	def SaveTile(self, tile_id, user_name, name, hyperlink, icon):
+	def SaveTile(self, tile_id, user_name, name, hyperlink, icon, color):
+		print('SaveTile:', tile_id, user_name, name, hyperlink, icon)
 		ln_user_id = self.GetUserId(user_name)
 		tile = self.session.query(HPTile).filter(and_(	HPTile.user_id == ln_user_id,
                                                 		HPTile.tile_id == tile_id)).first()
@@ -667,12 +667,15 @@ class LanguageDB:
 			self.session.add(HPTile(	user_id = ln_user_id,
                  			name = name,
                     		hyperlink = hyperlink,
-                      		icon = icon))
+                      		icon = icon,
+                        	color = color))
+			self.session.commit()
 			return {"status":"ok - added"}
 		else:
 			tile.name = name
 			tile.hyperlink = hyperlink
 			tile.icon = icon
+			tile.color = color
 			self.session.commit()
 			return {"status":"ok - updated"}
 

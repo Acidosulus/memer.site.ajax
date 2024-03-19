@@ -827,7 +827,7 @@ def get_user_asset(request, folder:str, file:str):
 	return response
 
 
-def get_tiles_lists(request):
+def get_icons_lists(request):
 	icons_list = []
 	sub_list = []
 	icons_list_source = find_files_by_extension(get_user_tiles_path(request), ['.JPEG','.JPG','.GIF','.BMP','.PNG','.WEBP','.ICO','.SVG'])
@@ -843,22 +843,22 @@ def get_tiles_lists(request):
 
 @login_required
 def Get_files_lists_json(request):
-    result = json.dumps(get_tiles_lists(request))
+    result = json.dumps(get_icons_lists(request))
     return HttpResponse(result)
 
 @login_required
-def select_tile(request):
+def select_icon(request):
 	pc_tile_id=''
 	data = {'tile_id':pc_tile_id.strip(),
 		 	'user_asset_path':get_user_tiles_path(request),
-			'icons_list':get_tiles_lists(request),
+			'icons_list':get_icons_lists(request),
 			'APIServer':settings.API_ADRESS, 'userUUID':usersDataStorage.FindDataByUserName(request.user.get_username())['uuid']}
-	return render(request, "./home_page/select_tile.html", context=data)
+	return render(request, "./home_page/select_icon.html", context=data)
 
 
 @csrf_exempt
 @login_required
-def Delete_Tile(request, file_name:str):
+def Delete_Icon(request, file_name:str):
 	if request.method == 'GET':
 		upload_dir = get_user_tiles_path(request)
 		file_path = os.path.join(upload_dir, file_name)
@@ -874,7 +874,7 @@ def Delete_Tile(request, file_name:str):
 
 @csrf_exempt
 @login_required
-def Upload_Tiles(request):
+def Upload_Icons(request):
 	if request.method == 'POST':
 		uploaded_files = request.FILES.getlist('file_name')
 		upload_dir = get_user_tiles_path(request)  # Путь к папке для сохранения файлов

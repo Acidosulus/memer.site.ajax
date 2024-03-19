@@ -975,8 +975,8 @@ function CloseInScreenForm(form_id){
 
 
 
- function OnLoadTileSelect(currrent_icon){
-  FillTilesField(currrent_icon);
+ function OnLoadIconSelect(currrent_icon){
+  FillIconsField(currrent_icon);
 }
 
 
@@ -998,8 +998,8 @@ function GetSelectedFileName(){
 }
 
 
-function DeleteTileImage(){
-  console.log(`DeleteTileImage()`);
+function DeleteIconImage(){
+  console.log(`DeleteIconImage()`);
   console.log(GetSelectedFileName());
   console.log(GetSelectedFileName().length);
   if (GetSelectedFileName().length>0){
@@ -1014,7 +1014,7 @@ function DeleteTileImage(){
 
 function GetTiles() {
 var xhr = new XMLHttpRequest();
-xhr.open("GET", "/tiles_JSON/", false);
+xhr.open("GET", "/icons_JSON/", false);
 xhr.setRequestHeader("Content-Type", "application/json");
 xhr.send();
 var jsonResponse = JSON.parse(xhr.responseText);
@@ -1022,7 +1022,7 @@ return jsonResponse;
 }
 
 
-function FillTilesField(currrent_icon){
+function FillIconsField(currrent_icon){
 field = document.querySelector('#tiles_field');
 field.innerHTML = ``;
 let tiles = GetTiles();
@@ -1033,7 +1033,7 @@ for (let row of tiles){
   field.insertAdjacentHTML(`beforeend`,`<div class="row justify-content-center" id="${rowid}"></div>`);
   rowelement = document.querySelector(`#${rowid}`);
   for (element of row){
-    rowelement.insertAdjacentHTML(`beforeend`,`<div class="col-1"><img onclick="SelectTileonClick(this);" src="/api/v1/get_asset/tiles/${element.icon}" class="img-fluid img-thumbnail bg-dark ${(currrent_icon==element.icon?'selected':'')}" style="width:100%; height:width" data-selected="no" data-filename="${element.icon}"></div>`);
+    rowelement.insertAdjacentHTML(`beforeend`,`<div class="col-1"><img onclick="SelectIcononClick(this);" src="/api/v1/get_asset/tiles/${element.icon}" class="img-fluid img-thumbnail bg-dark ${(currrent_icon==element.icon?'selected':'')}" style="width:100%; height:width" data-selected="no" data-filename="${element.icon}"></div>`);
     //console.log(element);
   }
 }
@@ -1055,7 +1055,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 
-function SelectTileonClick(selectme){
+function SelectIcononClick(selectme){
 const tiles = document.querySelectorAll(".img-thumbnail");
 for (tile of tiles){
           tile.classList.remove("selected");
@@ -1067,8 +1067,7 @@ selectme.dataset.selected = `yes`;
 
 
 async function SaveTile() {
-
-  
+ 
     const data = {
         username: "",
         tile_id: 0,
@@ -1080,7 +1079,8 @@ async function SaveTile() {
 
 
     asyncRequest( `${APIServer}/Save_Tile/`,
-    `POST`,
-    data
+        `POST`,
+        data,
+        true
     )
 }

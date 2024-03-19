@@ -87,12 +87,15 @@ async def main():
 
 @app.post("/Save_Tile/")
 async def SaveTile(tile:Tile):
-	print(tile)
-	return dblang.SaveTile(	tile_id = tile.tile_id,
+	prnt(tile)
+	result = dblang.SaveTile(	tile_id = tile.tile_id,
 						 	user_name = tile.username,
 				  			name = tile.name,
 				   			hyperlink = tile.hyperlink,
-        					icon = tile.icon)
+        					icon = tile.icon,
+             				color = tile.color)
+	print(result)
+	return result
 
 @app.get("/GetAllUsers/{key}/")
 async def Get_All_Users(key:str):
