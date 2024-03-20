@@ -1035,7 +1035,7 @@ function DeleteIconImage(){
   console.log(GetSelectedFileName().length);
   if (GetSelectedFileName().length>0){
                                     $.ajax({
-                                                url: `/tile_delete/${GetSelectedFileName()}`,
+                                                url: `/icon_delete/${GetSelectedFileName()}`,
                                                 method: "GET",
                                                 async: false,
                                                 timeout: 0,
@@ -1044,12 +1044,20 @@ function DeleteIconImage(){
 }
 
 function GetIcons() {
-var xhr = new XMLHttpRequest();
-xhr.open("GET", "/icons_JSON/", false);
-xhr.setRequestHeader("Content-Type", "application/json");
-xhr.send();
-var jsonResponse = JSON.parse(xhr.responseText);
-return jsonResponse;
+  var jsonResponse;
+  $.ajax({
+    url: "/icons_JSON/",
+    type: "GET",
+    contentType: "application/json",
+    async: false,
+    success: function(response) {
+      jsonResponse = JSON.parse(response);
+    },
+    error: function(xhr, status, error) {
+      console.error("Error while fetching icons:", error);
+    }
+  });
+  return jsonResponse;
 }
 
 
@@ -1060,12 +1068,11 @@ let tiles = GetIcons();
 let rowcounter = 0;
 for (let row of tiles){
   rowcounter++;
-  let rowid = `tilesrowid${rowcounter}`;
+  let rowid = `iconsrowid${rowcounter}`;
   field.insertAdjacentHTML(`beforeend`,`<div class="row justify-content-center" id="${rowid}"></div>`);
   rowelement = document.querySelector(`#${rowid}`);
   for (element of row){
     rowelement.insertAdjacentHTML(`beforeend`,`<div class="col-1"><img onclick="SelectIcononClick(this);" src="/api/v1/get_asset/tiles/${element.icon}" class="img-fluid img-thumbnail bg-dark ${(currrent_icon==element.icon?'selected':'')}" style="width:100%; height:width" data-selected="no" data-filename="${element.icon}"></div>`);
-    //console.log(element);
   }
 }
 document.addEventListener("DOMContentLoaded", function() {
@@ -1078,7 +1085,6 @@ document.addEventListener("DOMContentLoaded", function() {
                                           });
                                           this.classList.add("selected");
                                           this.dataset.selected = `yes`;
-                                          //console.log(this.dataset.filename);
                                       });
                                     });
                                   });
@@ -1087,25 +1093,42 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 function GetTiles() {
-  var xhr = new XMLHttpRequest();
-  xhr.open("GET", "/tiles_JSON/", false);
-  xhr.setRequestHeader("Content-Type", "application/json");
-  xhr.send();
-  var jsonResponse = JSON.parse(xhr.responseText);
+  var jsonResponse;
+  $.ajax({
+    url: `${APIServer}/Get_Tiles/`,
+    type: "POST",
+    contentType: "application/json",
+    async: false,
+    data:JSON.stringify({ username:UserName, useruuid:UserUUID, command:'', data:'', comment:''}),
+    success: function(response) {
+      jsonResponse = response;
+    },
+    error: function(xhr, status, error) {
+      console.error("Error while fetching tiles:", error);
+    }
+  });
   return jsonResponse;
-  }
+}
+
+
 
 function FillTilesField(currrent_icon){
   field = document.querySelector('#tiles_field');
   field.innerHTML = ``;
+
   let tiles = GetTiles();
+  console.log(tiles)
   let rowcounter = 0;
   for (let row of tiles){
+    console.log(`row: `);
+    console.log(row);
     rowcounter++;
     let rowid = `tilesrowid${rowcounter}`;
     field.insertAdjacentHTML(`beforeend`,`<div class="row justify-content-center" id="${rowid}"></div>`);
     rowelement = document.querySelector(`#${rowid}`);
     for (element of row){
+      console.log(`element:`);
+      console.log(element);
       rowelement.insertAdjacentHTML(`beforeend`,`<div class="col-1"><img onclick="SelectIcononClick(this);" src="/api/v1/get_asset/tiles/${element.icon}" class="img-fluid img-thumbnail bg-dark ${(currrent_icon==element.icon?'selected':'')}" style="width:100%; height:width" data-selected="no" data-filename="${element.icon}"></div>`);
       //console.log(element);
     }

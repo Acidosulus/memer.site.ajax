@@ -679,7 +679,13 @@ class LanguageDB:
 			self.session.commit()
 			return {"status":"ok - updated"}
 
-
+	def GetTiles(self, user_name):
+		print(f'GetTiles: user_name = "{user_name}"')
+		ln_user_id = self.GetUserId(user_name)
+		tiles = self.session.query(HPTile).filter(HPTile.user_id == ln_user_id).all()
+		tiles = RowsToDictList(tiles)
+		return tiles
+  
 printer = pprint.PrettyPrinter(indent=12, width=180)
 prnt = printer.pprint
 
@@ -687,8 +693,9 @@ prnt = printer.pprint
 if True:
 	if sys.platform == 'linux':
 		dbn = LanguageDB(options.LANDDBURI, autocommit=False)
+		#dbn.GetTiles('admin')
 	else:
-		dbn = LanguageDB(options.LANDDBURI, False)
+		dbn = LanguageDB(options.LANDDBURI, autocommit=False)
 		#print(f"GetTodayReadingParagraphs: {dbn.GetTodayReadingParagraphs('admin')}")
 	#print(dbn.SavePhrase('admin',0, 'delme', 'удали меня'))
 	#prnt(dbn.GetUserBooks('admin'))

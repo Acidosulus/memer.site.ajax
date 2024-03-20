@@ -113,7 +113,7 @@ def Delete_from_String_all_Characters_Unsuitable_For_FileName(pc:str):
     return lc_result.strip()
 
 
-if True:
+if False:
     lo_wh = Wooordhunt(r'https://wooordhunt.ru/word/quench')
     open("source.html", "w", encoding='utf8').write(lo_wh.context)
     print('========================================= transcription')

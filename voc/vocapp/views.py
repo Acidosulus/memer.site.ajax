@@ -98,7 +98,7 @@ def get_user_media_path(request):
 def get_user_assets_path(request):
 	return  get_user_storage_path(request) / "assets"
 
-def get_user_tiles_path(request):
+def get_user_icons_path(request):
 	return  get_user_assets_path(request) / "tiles"
 
 
@@ -110,8 +110,8 @@ def Create_User_Storage(request):
 		os.makedirs(get_user_media_path(request))
 	if not os.path.exists(get_user_assets_path(request)):
 		os.makedirs(get_user_assets_path(request))
-	if not os.path.exists(get_user_tiles_path(request)):
-		os.makedirs(get_user_tiles_path(request))
+	if not os.path.exists(get_user_icons_path(request)):
+		os.makedirs(get_user_icons_path(request))
 
  
 
@@ -830,7 +830,7 @@ def get_user_asset(request, folder:str, file:str):
 def get_icons_lists(request):
 	icons_list = []
 	sub_list = []
-	icons_list_source = find_files_by_extension(get_user_tiles_path(request), ['.JPEG','.JPG','.GIF','.BMP','.PNG','.WEBP','.ICO','.SVG'])
+	icons_list_source = find_files_by_extension(get_user_icons_path(request), ['.JPEG','.JPG','.GIF','.BMP','.PNG','.WEBP','.ICO','.SVG'])
 	for number, icon in enumerate(icons_list_source):
 		sub_list.append({'icon':icon, 'number':(((number+1)%12)+1)})
 		if (number+1)%12==0:
@@ -850,7 +850,7 @@ def Get_files_lists_json(request):
 def select_icon(request):
 	pc_tile_id=''
 	data = {'tile_id':pc_tile_id.strip(),
-		 	'user_asset_path':get_user_tiles_path(request),
+		 	'user_asset_path':get_user_icons_path(request),
 			'icons_list':get_icons_lists(request),
 			'APIServer':settings.API_ADRESS, 'userUUID':usersDataStorage.FindDataByUserName(request.user.get_username())['uuid']}
 	return render(request, "./home_page/select_icon.html", context=data)
@@ -859,7 +859,7 @@ def select_icon(request):
 def select_tile(request):
 	pc_tile_id=''
 	data = {'tile_id':pc_tile_id.strip(),
-		 	'user_asset_path':get_user_tiles_path(request),
+		 	'user_asset_path':get_user_icons_path(request),
 			'icons_list':get_icons_lists(request),
 			'APIServer':settings.API_ADRESS, 'userUUID':usersDataStorage.FindDataByUserName(request.user.get_username())['uuid']}
 	return render(request, "./home_page/select_tile.html", context=data)
@@ -870,7 +870,7 @@ def select_tile(request):
 @login_required
 def Delete_Icon(request, file_name:str):
 	if request.method == 'GET':
-		upload_dir = get_user_tiles_path(request)
+		upload_dir = get_user_icons_path(request)
 		file_path = os.path.join(upload_dir, file_name)
 		if os.path.exists(file_path):
 			file_path = os.path.join(upload_dir, file_name)
@@ -887,7 +887,7 @@ def Delete_Icon(request, file_name:str):
 def Upload_Icons(request):
 	if request.method == 'POST':
 		uploaded_files = request.FILES.getlist('file_name')
-		upload_dir = get_user_tiles_path(request)  # Путь к папке для сохранения файлов
+		upload_dir = get_user_icons_path(request)  # Путь к папке для сохранения файлов
 		
 		for file in uploaded_files:
 			file_name = file.name

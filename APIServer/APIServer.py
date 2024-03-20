@@ -97,6 +97,23 @@ async def SaveTile(tile:Tile):
 	print(result)
 	return result
 
+@app.post("/Get_Tiles/")
+async def Get_Tiles(rq:SiteRequest):
+	printSiteRequest(inspect.currentframe().f_code.co_name, rq)
+	tiles = dblang.GetTiles(rq.username)
+	tiles_list = []
+	sub_list = []
+	for number, tile in enumerate(tiles):
+		sub_list.append(tile)
+		if (number+1)%12==0:
+			if len(sub_list)>0:
+				tiles_list.append(sub_list)
+				sub_list=[]
+	if len(sub_list)>0:
+		tiles_list.append(sub_list)
+	return JSONResponse(tiles_list)
+    
+
 @app.get("/GetAllUsers/{key}/")
 async def Get_All_Users(key:str):
 	if key == options.SECRET_KEY:
