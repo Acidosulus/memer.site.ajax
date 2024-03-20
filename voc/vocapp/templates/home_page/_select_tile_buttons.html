@@ -15,7 +15,10 @@
         <div class="col-2">
           <div class="container-fluid">
             <div class="row">
-              <button class="button_save" onclick="RunInScreenForm({form_name:`select_tile`, execute_after_load:``, request_link:`/edit_tile/`, execute_on_ok:''});; FillTilesField();">Add</button>
+              <button class="button_save"
+                      onclick="RunInScreenForm({form_name:`select_tile`, execute_after_load:``, request_link:`/edit_tile/`, execute_on_ok:'', execute_on_close:`FillTilesField();`});">
+                Add
+              </button>
             </div>
           </div>
         </div>

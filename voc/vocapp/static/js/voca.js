@@ -896,14 +896,14 @@ function getRandomInt(max) {
 
 
 // run in screen form, fill and show
-function RunInScreenForm ({form_name, execute_after_load, request_link, execute_on_ok='', ok_id, ok_title, execute_on_cancel=''}) {
+function RunInScreenForm ({form_name, execute_after_load, request_link, execute_on_ok='', ok_id, ok_title, execute_on_cancel='', execute_on_close=''}) {
   let outerRootElement = document.getElementsByTagName(`body`)[0];
   form_name = form_name + `_${getRandomInt(999999999999999)}`
   forms_zindex++;
   // console.log(forms_zindex);
   outerRootElement.insertAdjacentHTML(
     `beforeEnd`,
-    `<div id="${form_name}" style=" max-height: 90vh; overflow-y:auto; background-image: url('/static/images/background.gif');" class="dynamic-form col-12 border-5 ${border_colors[forms_zindex%9]}" data-zindex="${forms_zindex}"></div>`);
+    `<div id="${form_name}" style=" max-height: 90vh; overflow-y:auto; background-image: url('/static/images/background.gif');" class="dynamic-form col-12 border-5 ${border_colors[forms_zindex%9]}" data-zindex="${forms_zindex}" data-executeonclose="${execute_on_close}"></div>`);
 
   forms.push(form_name);
   document.getElementById(forms[forms.length-1]).setAttribute(`z-index`, forms_zindex);
@@ -990,6 +990,9 @@ function ResizeModalForms(){
 
 
 function CloseInScreenForm(form_id){
+  if (document.querySelector(`#${form_id}`).dataset.executeonclose.length>0){
+    eval(document.querySelector(`#${form_id}`).dataset.executeonclose);
+  }
   document.querySelector(`#${form_id}`).remove();
  }
 
@@ -1030,9 +1033,6 @@ function GetSelectedFileName(){
 
 
 function DeleteIconImage(){
-  console.log(`DeleteIconImage()`);
-  console.log(GetSelectedFileName());
-  console.log(GetSelectedFileName().length);
   if (GetSelectedFileName().length>0){
                                     $.ajax({
                                                 url: `/icon_delete/${GetSelectedFileName()}`,
@@ -1113,22 +1113,17 @@ function GetTiles() {
 
 
 function FillTilesField(currrent_icon){
+  console.log(`FillTilesField('${currrent_icon}')`)
   field = document.querySelector('#tiles_field');
   field.innerHTML = ``;
-
   let tiles = GetTiles();
-  console.log(tiles)
   let rowcounter = 0;
   for (let row of tiles){
-    console.log(`row: `);
-    console.log(row);
     rowcounter++;
     let rowid = `tilesrowid${rowcounter}`;
     field.insertAdjacentHTML(`beforeend`,`<div class="row justify-content-center" id="${rowid}"></div>`);
     rowelement = document.querySelector(`#${rowid}`);
     for (element of row){
-      console.log(`element:`);
-      console.log(element);
       rowelement.insertAdjacentHTML(`beforeend`,`<div class="col-1"><img onclick="SelectIcononClick(this);" src="/api/v1/get_asset/tiles/${element.icon}" class="img-fluid img-thumbnail bg-dark ${(currrent_icon==element.icon?'selected':'')}" style="width:100%; height:width" data-selected="no" data-filename="${element.icon}"></div>`);
       //console.log(element);
     }
@@ -1163,10 +1158,9 @@ selectme.dataset.selected = `yes`;
 }
 
 
-async function SaveTile() {
- 
+function SaveTile() {
     const data = {
-        username: "",
+        sername:UserName,
         tile_id: 0,
         name: document.getElementById('inputName').value,
         hyperlink: document.getElementById('inputLink').value,
@@ -1174,10 +1168,22 @@ async function SaveTile() {
         color: document.getElementById('inputColor').value
     };
 
-
-    asyncRequest( `${APIServer}/Save_Tile/`,
-        `POST`,
-        data,
-        true
-    )
+    $.ajax({
+      url: `${APIServer}/Save_Tile/`,
+      type: "POST",
+      contentType: "application/json",
+      async: false,
+      data:JSON.stringify( data ),
+      success: function(response) {
+        jsonResponse = response;
+      },
+      error: function(xhr, status, error) {
+        console.error("Error while fetching tiles:", error);
+      }
+    });
+    // await asyncRequest( `${APIServer}/Save_Tile/`,
+    //     `POST`,
+    //     data,
+    //     true
+    // )
 }
