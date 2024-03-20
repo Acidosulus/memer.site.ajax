@@ -75,5 +75,6 @@ urlpatterns = [
 	path('sentence/<str:pc_sentence>/', views.get_sentence),# для генерации mp3 по переданному предложению
 	path('edit_tile/', views.edit_tile),
 	path('select_icon/', views.select_icon),
+ 	path('select_tile/', views.select_tile),
 ]
 

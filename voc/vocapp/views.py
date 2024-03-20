@@ -855,6 +855,16 @@ def select_icon(request):
 			'APIServer':settings.API_ADRESS, 'userUUID':usersDataStorage.FindDataByUserName(request.user.get_username())['uuid']}
 	return render(request, "./home_page/select_icon.html", context=data)
 
+@login_required
+def select_tile(request):
+	pc_tile_id=''
+	data = {'tile_id':pc_tile_id.strip(),
+		 	'user_asset_path':get_user_tiles_path(request),
+			'icons_list':get_icons_lists(request),
+			'APIServer':settings.API_ADRESS, 'userUUID':usersDataStorage.FindDataByUserName(request.user.get_username())['uuid']}
+	return render(request, "./home_page/select_tile.html", context=data)
+
+
 
 @csrf_exempt
 @login_required

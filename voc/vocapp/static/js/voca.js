@@ -53,19 +53,47 @@ async function asyncRequest (uri, method, data, debug=false){
     return response_promise.json();
 }
 
-// save phrase data into DB, if link parameter not empty goes by it link
-function SavePhrase(link){
-  console.log(`SavePhrase`);
-  console.log(`${APIServer}/Save_Phrase/`);
-  console.log(`${document.querySelector(`#body_phrase_edit`).dataset.phraseid}`);
+
+function SavePhrase_(link){
   asyncRequest( `${APIServer}/Save_Phrase/`,
                 `POST`,
                 {command:`${document.querySelector(`#body_phrase_edit`).dataset.phraseid}`, comment:`${document.getElementById('phrase_text').value}`, data:`${document.getElementById('phrase_translation').value}`})
   if (link.length>0){
                      window.location.href = link;
   }
-              
 }
+
+// save phrase data into DB, if link parameter not empty goes by it link
+function SavePhrase(link) {
+  if (link.length>0){
+    showOverlay();
+  }
+  let obody = { command:`${document.querySelector(`#body_phrase_edit`).dataset.phraseid}`,
+                comment:`${document.getElementById('phrase_text').value}`,
+                username:UserName,
+                useruuid:UserUUID,
+                data:`${document.getElementById('phrase_translation').value}`};
+  console.log(`obody`, obody);
+  $.ajax({
+      url: `${APIServer}/Save_Phrase/`,
+      type: 'POST',
+      dataType: 'json',
+      contentType: 'application/json;charset=utf-8',
+      data: JSON.stringify(obody),
+      async: false,
+      success: function (data) {
+          console.log('Request successful:', data);
+      },
+      error: function (xhr, status, error) {
+          console.error('Request failed:', error);
+      }
+  });
+  if (link.length > 0) {
+      window.location.href = link;
+  }
+}
+
+
 
 
   async function Load_Phrase_in_Edit_Data(){
@@ -979,6 +1007,9 @@ function CloseInScreenForm(form_id){
   FillIconsField(currrent_icon);
 }
 
+function OnLoadTileSelect(currrent_icon){
+  FillTilesField(currrent_icon);
+}
 
 
 function SelectImage(){
@@ -1012,7 +1043,7 @@ function DeleteIconImage(){
   }
 }
 
-function GetTiles() {
+function GetIcons() {
 var xhr = new XMLHttpRequest();
 xhr.open("GET", "/icons_JSON/", false);
 xhr.setRequestHeader("Content-Type", "application/json");
@@ -1023,9 +1054,9 @@ return jsonResponse;
 
 
 function FillIconsField(currrent_icon){
-field = document.querySelector('#tiles_field');
+field = document.querySelector('#icons_field');
 field.innerHTML = ``;
-let tiles = GetTiles();
+let tiles = GetIcons();
 let rowcounter = 0;
 for (let row of tiles){
   rowcounter++;
@@ -1052,6 +1083,49 @@ document.addEventListener("DOMContentLoaded", function() {
                                     });
                                   });
 }
+
+
+
+function GetTiles() {
+  var xhr = new XMLHttpRequest();
+  xhr.open("GET", "/tiles_JSON/", false);
+  xhr.setRequestHeader("Content-Type", "application/json");
+  xhr.send();
+  var jsonResponse = JSON.parse(xhr.responseText);
+  return jsonResponse;
+  }
+
+function FillTilesField(currrent_icon){
+  field = document.querySelector('#tiles_field');
+  field.innerHTML = ``;
+  let tiles = GetTiles();
+  let rowcounter = 0;
+  for (let row of tiles){
+    rowcounter++;
+    let rowid = `tilesrowid${rowcounter}`;
+    field.insertAdjacentHTML(`beforeend`,`<div class="row justify-content-center" id="${rowid}"></div>`);
+    rowelement = document.querySelector(`#${rowid}`);
+    for (element of row){
+      rowelement.insertAdjacentHTML(`beforeend`,`<div class="col-1"><img onclick="SelectIcononClick(this);" src="/api/v1/get_asset/tiles/${element.icon}" class="img-fluid img-thumbnail bg-dark ${(currrent_icon==element.icon?'selected':'')}" style="width:100%; height:width" data-selected="no" data-filename="${element.icon}"></div>`);
+      //console.log(element);
+    }
+  }
+  document.addEventListener("DOMContentLoaded", function() {
+      const images = document.querySelectorAll(".img-thumbnail");
+      images.forEach(function(image) {
+                                        image.addEventListener("click", function() {
+                                            images.forEach(function(img) {
+                                                img.classList.remove("selected");
+                                                img.dataset.selected = `no`;
+                                            });
+                                            this.classList.add("selected");
+                                            this.dataset.selected = `yes`;
+                                            //console.log(this.dataset.filename);
+                                        });
+                                      });
+                                    });
+  }
+  
 
 
 
