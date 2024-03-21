@@ -1128,9 +1128,31 @@ function FillTilesField(currrent_icon){
     field.insertAdjacentHTML(`beforeend`,`<div class="row justify-content-center" id="${rowid}"></div>`);
     rowelement = document.querySelector(`#${rowid}`);
     for (element of row){
-      rowelement.insertAdjacentHTML(`beforeend`,`<div class="col-1"><img onclick="SelectonClick(this,'selected_tile');" src="/api/v1/get_asset/tiles/${element.icon}" class="img-fluid img-thumbnail bg-dark ${(currrent_icon==element.icon?'selected':'')}" style="width:100%; height:width" data-selected="no" data-filename="${element.tile_id}"></div>`);
-      //console.log(element);
-    }
+      
+      // rowelement.insertAdjacentHTML(`beforeend`,
+      //   `<div class="col-1">
+      //     <img onclick="SelectonClick(this,'selected_tile');"
+      //         src="/api/v1/get_asset/tiles/${element.icon}"
+      //         class="img-fluid img-thumbnail bg-dark ${(currrent_icon==element.icon?'selected':'')}"
+      //         style="width:100%; height:width"
+      //         data-selected="no" data-filename="${element.tile_id}">
+      //   </div>`);
+
+
+        rowelement.insertAdjacentHTML(`beforeend`,
+        `<div class="card bg-transparent col-1" >
+            <img  onclick="SelectonClick(this,'selected_tile');"
+                  src="/api/v1/get_asset/tiles/${element.icon}"
+                  class="card-img-top img-fluid img-thumbnail bg-dark ${(currrent_icon==element.icon?'selected':'')}">
+              <div class="card-body">
+                <h5 class="card-title text-light">${element.name}</h5>
+                   <p class="card-text text-info">${element.hyperlink}</p>
+              </div>
+          </div>
+      `);
+
+
+      }
   }
   document.addEventListener("DOMContentLoaded", function() {
       const images = document.querySelectorAll(".img-thumbnail");
