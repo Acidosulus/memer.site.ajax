@@ -685,6 +685,14 @@ class LanguageDB:
 		tiles = self.session.query(HPTile).filter(HPTile.user_id == ln_user_id).all()
 		tiles = RowsToDictList(tiles)
 		return tiles
+
+	def DeleteTiles(self, user_name, tile_id):
+		print(f'DeleteTiles: user_name = "{user_name}", tile_id = {tile_id}')
+		ln_user_id = self.GetUserId(user_name)
+		self.session.query(HPTile).filter(HPTile.user_id == ln_user_id, HPTile.tile_id == tile_id).delete()
+		self.session.commit()
+		return True
+
   
 printer = pprint.PrettyPrinter(indent=12, width=180)
 prnt = printer.pprint

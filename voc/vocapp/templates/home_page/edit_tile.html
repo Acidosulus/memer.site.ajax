@@ -14,11 +14,11 @@
     <form>
       <div class="form-group">
         <label for="inputName">Name</label>
-        <input type="text" class="form-control" id="inputName" placeholder="Input tile name">
+        <input type="text" class="form-control" id="inputName" placeholder="Input tile name" autocomplete="off">
       </div>
       <div class="form-group">
         <label for="inputLink">Link</label>
-        <input type="text" class="form-control" id="inputLink" placeholder="Input link, for example: http:// ...">
+        <input type="text" class="form-control" id="inputLink" placeholder="Input link, for example: http:// ..." autocomplete="off">
       </div>
       <div class="form-group">
         <label for="inputIcon">Icon</label>
@@ -26,7 +26,8 @@
                                                                                                                           execute_after_load:`OnLoadIconSelect('`+this.value+`');ResizeModalForms();`,
                                                                                                                           request_link:`/select_icon/`,
                                                                                                                           execute_on_ok:``,
-                                                                                                                        });">
+                                                                                                                        });"
+                autocomplete="off">
       </div>
       <div class="form-group">
         <label for="inputColor">Color</label>

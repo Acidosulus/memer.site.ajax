@@ -18,7 +18,7 @@ import pprint
 import json
 from settings import Options
 from typing import Dict, Any
-
+import datetime
 
 printer = pprint.PrettyPrinter(indent=12, width=120)
 prnt = printer.pprint
@@ -40,15 +40,25 @@ app = FastAPI()
 app.add_middleware(
 	CORSMiddleware,
 	allow_origins=["*"],
- 	allow_methods=['GET','POST'], 
- 	allow_headers=["*"]
+	allow_methods=['GET','POST'], 
+	allow_headers=["*"]
 )
 
-#@app.middleware("http")
-#async def middleware(request: Request, call_next):
-#	print("middleware:","request.headers:", request.headers)
-#	print("middleware:","request.body:", request.body)
-#	return await call_next(request)
+
+@app.middleware("http")
+async def log_request(request: Request, call_next):
+	method = request.method
+	url = request.url
+	params = request.query_params
+	current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+	body = await request.body()
+	echo(	style(text = current_time + ' ', bg = 'blue', fg = 'bright_yellow')+
+		 	style(text = method + ' ', bg = 'blue', fg = 'bright_red')+
+		 	style(text = str(url) + ' ', bg = 'blue', fg = 'bright_green')+
+		 	style(text = str(params) + ' ', bg = 'blue', fg = 'bright_white')+
+			style(text = body.decode(), bg='blue', fg='bright_cyan'))
+	response = await call_next(request)
+	return response
 
 
 if sys.platform == 'linux':
@@ -72,6 +82,7 @@ class SiteRequest(BaseModel):
 	comment:str
 	data:str
 
+
 class Tile(BaseModel):
 	username:str
 	useruuid:str
@@ -87,19 +98,17 @@ async def main():
 
 @app.post("/Save_Tile/")
 async def SaveTile(tile:Tile):
-	prnt(tile)
 	result = dblang.SaveTile(	tile_id = tile.tile_id,
 						 		user_name = tile.username,
 				  				name = tile.name,
 				   				hyperlink = tile.hyperlink,
-        						icon = tile.icon,
-             					color = tile.color)
+								icon = tile.icon,
+			 					color = tile.color)
 	print(result)
 	return result
 
 @app.post("/Get_Tiles/")
 async def Get_Tiles(rq:SiteRequest):
-	printSiteRequest(inspect.currentframe().f_code.co_name, rq)
 	tiles = dblang.GetTiles(rq.username)
 	tiles_list = []
 	sub_list = []
@@ -112,7 +121,12 @@ async def Get_Tiles(rq:SiteRequest):
 	if len(sub_list)>0:
 		tiles_list.append(sub_list)
 	return JSONResponse(tiles_list)
-    
+	
+
+@app.post("/Delete_Tile/")
+async def Delete_Tile(rq:SiteRequest):
+    dblang.DeleteTiles(rq.username, rq.data)
+    return 'ok'
 
 @app.get("/GetAllUsers/{key}/")
 async def Get_All_Users(key:str):

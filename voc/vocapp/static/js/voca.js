@@ -991,6 +991,7 @@ function ResizeModalForms(){
 
 function CloseInScreenForm(form_id){
   if (document.querySelector(`#${form_id}`).dataset.executeonclose.length>0){
+    console.log(`executeonclose: ${document.querySelector(`#${form_id}`).dataset.executeonclose}`)
     eval(document.querySelector(`#${form_id}`).dataset.executeonclose);
   }
   document.querySelector(`#${form_id}`).remove();
@@ -1014,28 +1015,31 @@ function OnLoadTileSelect(currrent_icon){
   FillTilesField(currrent_icon);
 }
 
-
-function SelectImage(){
-  document.querySelector(`#inputIcon`).value = GetSelectedFileName();
+//select icon into value property of the first parameter
+function SelectIcon(element){
+  if (element != null){
+    element.value = GetSelected(`selected_icon`);
+  }
   CloseToplevelDynamicForm();
 }
 
 
 
-function GetSelectedFileName(){
-  if (document.querySelector('.selected')==null){
+function GetSelected(style_name){
+  if (document.querySelector(`.`+style_name)==null){
     return '';
   }
   else{
-    return document.querySelector('.selected').dataset.filename;
+    return document.querySelector(`.`+style_name).dataset.filename;
   }
 }
 
 
 function DeleteIconImage(){
-  if (GetSelectedFileName().length>0){
+  console.log(`Icon for delete: `+GetSelected(`selected_icon`));
+  if (GetSelected(`selected_icon`).length>0){
                                     $.ajax({
-                                                url: `/icon_delete/${GetSelectedFileName()}`,
+                                                url: `/icon_delete/${GetSelected(`selected_icon`)}`,
                                                 method: "GET",
                                                 async: false,
                                                 timeout: 0,
@@ -1072,7 +1076,7 @@ for (let row of tiles){
   field.insertAdjacentHTML(`beforeend`,`<div class="row justify-content-center" id="${rowid}"></div>`);
   rowelement = document.querySelector(`#${rowid}`);
   for (element of row){
-    rowelement.insertAdjacentHTML(`beforeend`,`<div class="col-1"><img onclick="SelectIcononClick(this);" src="/api/v1/get_asset/tiles/${element.icon}" class="img-fluid img-thumbnail bg-dark ${(currrent_icon==element.icon?'selected':'')}" style="width:100%; height:width" data-selected="no" data-filename="${element.icon}"></div>`);
+    rowelement.insertAdjacentHTML(`beforeend`,`<div class="col-1"><img onclick="SelectonClick(this,'selected_icon');" src="/api/v1/get_asset/tiles/${element.icon}" class="img-fluid img-thumbnail bg-dark ${(currrent_icon==element.icon?'selected':'')}" style="width:100%; height:width" data-selected="no" data-filename="${element.icon}"></div>`);
   }
 }
 document.addEventListener("DOMContentLoaded", function() {
@@ -1124,7 +1128,7 @@ function FillTilesField(currrent_icon){
     field.insertAdjacentHTML(`beforeend`,`<div class="row justify-content-center" id="${rowid}"></div>`);
     rowelement = document.querySelector(`#${rowid}`);
     for (element of row){
-      rowelement.insertAdjacentHTML(`beforeend`,`<div class="col-1"><img onclick="SelectIcononClick(this);" src="/api/v1/get_asset/tiles/${element.icon}" class="img-fluid img-thumbnail bg-dark ${(currrent_icon==element.icon?'selected':'')}" style="width:100%; height:width" data-selected="no" data-filename="${element.icon}"></div>`);
+      rowelement.insertAdjacentHTML(`beforeend`,`<div class="col-1"><img onclick="SelectonClick(this,'selected_tile');" src="/api/v1/get_asset/tiles/${element.icon}" class="img-fluid img-thumbnail bg-dark ${(currrent_icon==element.icon?'selected':'')}" style="width:100%; height:width" data-selected="no" data-filename="${element.tile_id}"></div>`);
       //console.log(element);
     }
   }
@@ -1147,20 +1151,21 @@ function FillTilesField(currrent_icon){
 
 
 
-function SelectIcononClick(selectme){
+function SelectonClick(selectme, style_name){
 const tiles = document.querySelectorAll(".img-thumbnail");
 for (tile of tiles){
-          tile.classList.remove("selected");
+          tile.classList.remove(style_name);
           tile.dataset.selected = `no`;
 }
-selectme.classList.add("selected");
+selectme.classList.add(style_name);
 selectme.dataset.selected = `yes`;
 }
 
 
 function SaveTile() {
     const data = {
-        sername:UserName,
+        username:UserName,
+        useruuid:UserUUID,
         tile_id: 0,
         name: document.getElementById('inputName').value,
         hyperlink: document.getElementById('inputLink').value,
@@ -1181,9 +1186,34 @@ function SaveTile() {
         console.error("Error while fetching tiles:", error);
       }
     });
-    // await asyncRequest( `${APIServer}/Save_Tile/`,
-    //     `POST`,
-    //     data,
-    //     true
-    // )
-}
+  }
+
+  function DeleteTile(){
+    if (GetSelected(`selected_tile`).length>0){
+                                      $.ajax({
+                                                  url: `${APIServer}/Delete_Tile/`,
+                                                  method: "POST",
+                                                  contentType: "application/json",
+                                                  async: false,
+                                                  data:JSON.stringify({  command:``,
+                                                          comment:``,
+                                                          username:UserName,
+                                                          useruuid:UserUUID,
+                                                          data:`${GetSelected(`selected_tile`)}`})
+                                                  });
+    }
+  }
+
+
+
+  function GetSelectedTile(){
+    if (document.querySelector('.selected')==null){
+      return '';
+    }
+    else{
+      return document.querySelector('.selected').dataset.filename;
+    }
+  }
+  
+
+
