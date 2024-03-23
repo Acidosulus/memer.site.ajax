@@ -403,11 +403,14 @@ async function LoadSyllableFromWoordhunt(word){
         return
       }
       if (document.querySelector('#body_phrase_in_progress').dataset.phraseid=='' | Number(document.querySelector('#body_phrase_in_progress').dataset.phraseid)==0 ){
-        document.querySelector('#body_phrase_in_progress').dataset.phraseid = await LoadNextProcessingPhraseIntoBody();
+          document.querySelector('#body_phrase_in_progress').dataset.phraseid = await LoadNextProcessingPhraseIntoBody();
       }
       let answer = await asyncRequest( `${APIServer}/Get_Phrase/`,`POST`,{command:``, comment:``, data:`${document.querySelector('#body_phrase_in_progress').dataset.phraseid}`}, true)
       document.getElementById('id_class_p_my_class_p_examples').innerHTML         = answer.phrase +`&nbsp;&nbsp;&nbsp;<IMG class='img_with_backlight_on_hover' WIDTH='48' HEIGHT='48'  title = '' src='/static/images/audio.svg' onclick = 'new Audio("/sentence/`+answer.linkcode+`" ).play(); return false;'>`;
       document.getElementById('id_class_p_my_class_p_examples_russian').innerHTML = answer.translation;
+      $("#edit_phrase_link_id").click(function() {
+          window.location.href = `/phrases/add_new/${document.querySelector(`#body_phrase_in_progress`).dataset.phraseid}/`;
+        });
      }
 
     async function LoadNextProcessingPhraseIntoBody(){
