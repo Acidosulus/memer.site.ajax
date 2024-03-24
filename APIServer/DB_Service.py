@@ -686,6 +686,13 @@ class LanguageDB:
 		tiles = RowsToDictList(tiles)
 		return tiles
 
+	def GetTile(self, user_name, tile_id):
+		print(f'GetTile: user_name = "{user_name}", tile_id: {tile_id}')
+		ln_user_id = self.GetUserId(user_name)
+		tile = self.session.query(HPTile).filter(	HPTile.user_id == ln_user_id,
+                                           			HPTile.tile_id == tile_id).first()
+		return RowToDict(tile)
+  
 	def DeleteTiles(self, user_name, tile_id):
 		print(f'DeleteTiles: user_name = "{user_name}", tile_id = {tile_id}')
 		ln_user_id = self.GetUserId(user_name)

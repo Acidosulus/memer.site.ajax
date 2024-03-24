@@ -3,10 +3,22 @@
         <div class="col-1"></div>
 
 
-        <div class="col-4">
+        <div class="col-2">
           <div class="container-fluid">
             <div class="row">
-              <button class="button_save" onclick="SelectTile();" id="ok_id_for_select_icon">Select</button>
+              <button class="button_save" onclick="SelectTile();" id="ok_id_for_select_icon">
+                Select
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-2">
+          <div class="container-fluid">
+            <div class="row">
+              <button class="button_save" onclick="EditSelectedTile();" id="ok_id_for_select_icon">
+                Edit
+              </button>
             </div>
           </div>
         </div>
@@ -16,7 +28,7 @@
           <div class="container-fluid">
             <div class="row">
               <button class="button_save"
-                      onclick="RunInScreenForm({form_name:`select_tile`, execute_after_load:``, request_link:`/edit_tile/`, execute_on_ok:'', execute_on_close:`FillTilesField();`});">
+                      onclick="RunInScreenForm({form_name:`select_tile`, execute_after_load:``, request_link:`/edit_tile/0`, execute_on_ok:'', execute_on_close:`FillTilesField();`});">
                 Add
               </button>
             </div>
@@ -27,7 +39,9 @@
         <div class="col-2">
           <div class="container-fluid">
             <div class="row">
-              <button class="button_save" onclick="DeleteTile();FillTilesField();">Remove</button>
+              <button class="button_save" onclick="DeleteTile();FillTilesField();">
+                 Remove
+                </button>
             </div>
           </div>
         </div>
@@ -36,7 +50,9 @@
         <div class="col-2">
           <div class="container-fluid">
             <div class="row">
-              <button class="button_save" onclick="CloseToplevelDynamicForm();">Cancel</button>
+              <button class="button_save" onclick="CloseToplevelDynamicForm();">
+                Cancel
+              </button>
             </div>
           </div>
         </div>

@@ -73,7 +73,7 @@ urlpatterns = [
 	path('api/<str:pc_type>/<str:pc_book_id>/', views.json_response),
     path('restapi/v1/<str:pc_first>/<str:pc_second>/<str:pc_third>/', views.rest_response),
 	path('sentence/<str:pc_sentence>/', views.get_sentence),# для генерации mp3 по переданному предложению
-	path('edit_tile/', views.edit_tile),
+	path('edit_tile/<tile_id>', views.edit_tile),
 	path('select_icon/', views.select_icon),
  	path('select_tile/', views.select_tile),
 ]

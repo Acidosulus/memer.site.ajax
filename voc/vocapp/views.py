@@ -793,9 +793,11 @@ def GetDividedExamplesWH(source:str):
 
  
 @login_required
-def edit_tile(request):
-	pc_tile_id=''
-	data = {'tile_id':pc_tile_id.strip(), 'APIServer':settings.API_ADRESS, 'userUUID':usersDataStorage.FindDataByUserName(request.user.get_username())['uuid']}
+def edit_tile(request, tile_id=''):
+	data = {	'APIServer':settings.API_ADRESS,
+         		'userUUID':usersDataStorage.FindDataByUserName(request.user.get_username())['uuid'],
+           		'tile_id':tile_id}
+	print(style(text=data, fg='bright_yellow'))
 	return render(request, "./home_page/edit_tile.html", context=data)
 
 

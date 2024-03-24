@@ -114,7 +114,7 @@ async def Get_Tiles(rq:SiteRequest):
 	sub_list = []
 	for number, tile in enumerate(tiles):
 		sub_list.append(tile)
-		if (number+1)%12==0:
+		if (number+1)%6==0:
 			if len(sub_list)>0:
 				tiles_list.append(sub_list)
 				sub_list=[]
@@ -122,6 +122,10 @@ async def Get_Tiles(rq:SiteRequest):
 		tiles_list.append(sub_list)
 	return JSONResponse(tiles_list)
 	
+@app.post("/Get_Tile/")
+async def Get_Tile(rq:SiteRequest):
+    return dblang.GetTile(rq.username, rq.data)
+
 
 @app.post("/Delete_Tile/")
 async def Delete_Tile(rq:SiteRequest):
