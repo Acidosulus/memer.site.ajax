@@ -795,10 +795,10 @@ def GetDividedExamplesWH(source:str):
 @login_required
 def edit_tile(request, tile_id=''):
 	data = {	'APIServer':settings.API_ADRESS,
-         		'userUUID':usersDataStorage.FindDataByUserName(request.user.get_username())['uuid'],
-           		'tile_id':tile_id}
+		 		'userUUID':usersDataStorage.FindDataByUserName(request.user.get_username())['uuid'],
+		   		'tile_id':tile_id}
 	print(style(text=data, fg='bright_yellow'))
-	return render(request, "./home_page/edit_tile.html", context=data)
+	return render(request, "./home_page/hp_edit_tile.html", context=data)
 
 
 
@@ -845,8 +845,8 @@ def get_icons_lists(request):
 
 @login_required
 def Get_files_lists_json(request):
-    result = json.dumps(get_icons_lists(request))
-    return HttpResponse(result)
+	result = json.dumps(get_icons_lists(request))
+	return HttpResponse(result)
 
 @login_required
 def select_icon(request):
@@ -855,7 +855,7 @@ def select_icon(request):
 		 	'user_asset_path':get_user_icons_path(request),
 			'icons_list':get_icons_lists(request),
 			'APIServer':settings.API_ADRESS, 'userUUID':usersDataStorage.FindDataByUserName(request.user.get_username())['uuid']}
-	return render(request, "./home_page/select_icon.html", context=data)
+	return render(request, "./home_page/hp_select_icon.html", context=data)
 
 @login_required
 def select_tile(request):
@@ -864,7 +864,7 @@ def select_tile(request):
 		 	'user_asset_path':get_user_icons_path(request),
 			'icons_list':get_icons_lists(request),
 			'APIServer':settings.API_ADRESS, 'userUUID':usersDataStorage.FindDataByUserName(request.user.get_username())['uuid']}
-	return render(request, "./home_page/select_tile.html", context=data)
+	return render(request, "./home_page/hp_select_tile.html", context=data)
 
 
 
@@ -911,11 +911,27 @@ def Upload_Icons(request):
 	else:
 		return JsonResponse({'error': 'No files were provided'}, status=400)
 
+
+def hp_edit_rows(request):
+	data = {'user_asset_path':get_user_icons_path(request),
+			'icons_list':get_icons_lists(request),
+			'APIServer':settings.API_ADRESS, 'userUUID':usersDataStorage.FindDataByUserName(request.user.get_username())['uuid']}
+	return render(request, "./home_page/hp_row_list.html", context=data)
+
+
+def hp_edit_row(request, row_id:str):
+	data = { 	'row_id':row_id,
+	 			'user_asset_path':get_user_icons_path(request),
+				'icons_list':get_icons_lists(request),
+				'APIServer':settings.API_ADRESS, 'userUUID':usersDataStorage.FindDataByUserName(request.user.get_username())['uuid']}
+	return render(request, "./home_page/hp_row_edit.html", context=data)
+
+
+
 def generate_new_filename(upload_dir, filename):
 	base_name, extension = os.path.splitext(filename)
 	counter = 1
 	new_filename = f"{base_name}_{counter}{extension}"
-	
 	# Пока не найдем уникальное имя файла, добавляем к базовому имени счетчик
 	while os.path.exists(os.path.join(upload_dir, new_filename)):
 		counter += 1

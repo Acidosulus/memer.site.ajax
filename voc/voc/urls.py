@@ -74,6 +74,8 @@ urlpatterns = [
     path('restapi/v1/<str:pc_first>/<str:pc_second>/<str:pc_third>/', views.rest_response),
 	path('sentence/<str:pc_sentence>/', views.get_sentence),# для генерации mp3 по переданному предложению
 	path('edit_tile/<tile_id>', views.edit_tile),
+ 	path('hp_edit_rows/', views.hp_edit_rows),
+  	path('hp_edit_row/<str:row_id>', views.hp_edit_row),
 	path('select_icon/', views.select_icon),
  	path('select_tile/', views.select_tile),
 ]

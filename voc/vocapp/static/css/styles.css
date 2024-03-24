@@ -256,8 +256,6 @@ label:hover {
     background-color: Green;
     border: none;
     color: white;
-    height:48px;
-    width:60%;
     text-align: center;
     margin: 1px 25px 1px 25px;
     text-decoration: none;
@@ -268,7 +266,6 @@ label:hover {
     text-shadow: 1px 1px 2px black, 0 0 1em black;
     font-weight: bold;
     border-radius: 12px;
-    display: inline-block;
 }
 
 .button_save:hover {

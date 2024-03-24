@@ -141,6 +141,7 @@ class HPTile(Base):
     onclick = Column(Text)
     icon = Column(Text, nullable=False)
     color = Column(Text)
+    tile_index = Column(Integer)
 
 class HPPlank(Base):
     __tablename__ = 'hp_planks'
@@ -175,8 +176,8 @@ class LanguageDB:
 		self.DBuri = self.DBparh#"postgresql+psycopg2://postgres:321@185.112.225.153:35432/language"
 		self.Base = Base
 		self.engine = create_engine(self.DBuri, pool_recycle=30,
-                                      			pool_pre_ping=True,
-                                      			pool_use_lifo=True)
+							   			pool_pre_ping=True,
+							   			pool_use_lifo=True)
 		#self.meta = MetaData(self.DBuri)
 		self.connection = self.engine.connect()
 		#self.connection = psycopg2.connect("host='localhost' dbname='language' user='postgres' password='321'")
@@ -306,7 +307,7 @@ class LanguageDB:
 		print('start GetListOfSyllables:',datetime.datetime.now())
 		result = []
 		for syllable, user in self.session.query(Syllable, User).filter(and_(	User.name==user_name, 
-								       											User.user_id==Syllable.user_id, 
+									  											User.user_id==Syllable.user_id, 
 																				Syllable.ready==ready
 																		)).order_by(
 																					Syllable.last_view
@@ -348,7 +349,7 @@ class LanguageDB:
 	def GetListOfSyllablesByWordPart(self, user_name:str, ready:int, word_part:str, slice_size:int = 100, slice_number:int = 1 ):
 		result = []
 		for syllable, user in self.session.query(Syllable, User).filter(and_(	User.name==user_name, 
-								       											User.user_id==Syllable.user_id, 
+									  											User.user_id==Syllable.user_id, 
 																				Syllable.ready==ready,
 																				Syllable.word.contains(word_part)
 																		)).order_by(
@@ -375,14 +376,14 @@ class LanguageDB:
 	def GetCountOfSyllableSlices(self, user_name:str, ready:int, slice_size:int):
 		result = math.ceil(
 				self.session.query(Syllable, User).filter(and_(	User.name==user_name, 
-								       											User.user_id==Syllable.user_id, 
+									  											User.user_id==Syllable.user_id, 
 																				Syllable.ready==ready)).count()	/slice_size)
 		self.IfCommit()
 		return result
 	
 	def GetCountOfUserSyllables(self, user_name:str, ready:int):
 		result = self.session.query(Syllable, User).filter(and_(	User.name==user_name, 
-								       							User.user_id==Syllable.user_id, 
+									  							User.user_id==Syllable.user_id, 
 																Syllable.ready==ready)).count()
 		self.IfCommit()
 		return result
@@ -390,7 +391,7 @@ class LanguageDB:
 	def GetCountOfUserSyllablesWorkedOutToday(self, user_name:str):
 		#current_user_id = self.session.query(User).filter(User.name==user_name). first().user_id
 		result = self.session.query(UserWordsLog, User).filter(and_(	User.name==user_name, 
-								       									User.user_id==UserWordsLog.user_id,
+									  									User.user_id==UserWordsLog.user_id,
 																		UserWordsLog.dt>=datetime.datetime.now() - datetime.timedelta(days=1)
 																		)).count()
 		self.IfCommit()
@@ -442,7 +443,7 @@ class LanguageDB:
 
 	def GetNextSyllableForLearning(self, user_name:str):
 		syllable, user = self.session.query(Syllable, User).filter(and_(	User.name==user_name, 
-								       										User.user_id==Syllable.user_id,
+									  										User.user_id==Syllable.user_id,
 																		    Phrase.ready==0
 																			)).order_by(
 																						Syllable.last_view
@@ -473,7 +474,7 @@ class LanguageDB:
 
 	
 	def GetPhrase(self, user_name:str, phrase_id:int):
-		print(f'user_name:{user_name}       phrase_id:{phrase_id}')
+		print(f'user_name:{user_name}	  phrase_id:{phrase_id}')
 		if phrase_id>0:
 			phrase, user = self.session.execute(	select(Phrase, User).
 													where(and_(	User.name==user_name, Phrase.id_phrase==phrase_id, User.user_id==Phrase.user_id)).
@@ -484,7 +485,7 @@ class LanguageDB:
 
 	def SetPhraseStatus(self, phrase_id:int, user_name:str, status:int):
 		phrase, user = self.session.query(Phrase, User).filter(and_(		User.name==user_name, 
-								       										User.user_id==Phrase.user_id,
+									  										User.user_id==Phrase.user_id,
 																			Phrase.id_phrase == phrase_id
 																			)).first()
 		phrase.ready = status
@@ -494,7 +495,7 @@ class LanguageDB:
 
 	def SetPhraseAsViewed(self, phrase_id:int, user_name:str):
 		phrase, user = self.session.query(Phrase, User).filter(and_(		User.name==user_name, 
-								       										User.user_id==Phrase.user_id,
+									  										User.user_id==Phrase.user_id,
 																			Phrase.id_phrase == phrase_id
 																			)).first()
 		phrase.last_view = datetime.datetime.now()
@@ -504,7 +505,7 @@ class LanguageDB:
 	
 	def GetNextPhraseForLearning(self, user_name:str):
 		phrase, user = self.session.query(Phrase, User).filter(and_(	User.name==user_name, 
-								       									User.user_id==Phrase.user_id,
+									  									User.user_id==Phrase.user_id,
 																	    Phrase.ready==0
 																		)).order_by(
 																						Phrase.last_view
@@ -662,13 +663,13 @@ class LanguageDB:
 		print('SaveTile:', tile_id, user_name, name, hyperlink, icon)
 		ln_user_id = self.GetUserId(user_name)
 		tile = self.session.query(HPTile).filter(and_(	HPTile.user_id == ln_user_id,
-                                                		HPTile.tile_id == tile_id)).first()
+									   		HPTile.tile_id == tile_id)).first()
 		if tile is None:
 			self.session.add(HPTile(	user_id = ln_user_id,
-                 			name = name,
-                    		hyperlink = hyperlink,
-                      		icon = icon,
-                        	color = color))
+			  			name = name,
+						hyperlink = hyperlink,
+				  		icon = icon,
+				    	color = color))
 			self.session.commit()
 			return {"status":"ok - added"}
 		else:
@@ -690,7 +691,7 @@ class LanguageDB:
 		print(f'GetTile: user_name = "{user_name}", tile_id: {tile_id}')
 		ln_user_id = self.GetUserId(user_name)
 		tile = self.session.query(HPTile).filter(	HPTile.user_id == ln_user_id,
-                                           			HPTile.tile_id == tile_id).first()
+								   			HPTile.tile_id == tile_id).first()
 		return RowToDict(tile)
   
 	def DeleteTiles(self, user_name, tile_id):
@@ -699,6 +700,29 @@ class LanguageDB:
 		self.session.query(HPTile).filter(HPTile.user_id == ln_user_id, HPTile.tile_id == tile_id).delete()
 		self.session.commit()
 		return True
+
+	def GetRows(self, user_name:str):
+		print(f'GetRows: user_name = "{user_name}"')
+		ln_user_id = self.GetUserId(user_name)
+		rows = self.session.query(HPRow).filter(	HPRow.user_id == ln_user_id).all()
+		return RowsToDictList(rows)
+
+	def GetRow(self, user_name:str, row_id:int):
+		print(f'GetRow: user_name = "{user_name}", "{row_id}"')
+		ln_user_id = self.GetUserId(user_name)
+		rows = self.session.query(HPRow).filter(	HPRow.user_id == ln_user_id,
+								  					HPRow.row_id == int(row_id)).first()
+		return RowToDict(rows)
+
+# class HPRow(Base):
+#	__tablename__ = 'hp_rows'
+#	row_id = Column(Integer, primary_key=True)
+#	user_id = Column(Integer, nullable=False)
+#	row_name = Column(Text, nullable=False)
+#	row_type = Column(Integer, default=0, nullable=False)
+#	row_index = Column(Integer, default=0, nullable=False)
+#	plank_id = Column(Integer, ForeignKey('hp_planks.plank_id'), default=0, nullable=False)
+#	plank = relationship("HPPlank", backref="rows")
 
   
 printer = pprint.PrettyPrinter(indent=12, width=180)

@@ -221,8 +221,9 @@ def delete_non_english_alphabet_characters(lc_string:str):
 # return one row query result as dict
 def RowToDict(row):
 	result = {}
-	for column in row.__table__.columns:
-		result[column.name] = str(getattr(row, column.name))
+	if row is not None:
+		for column in row.__table__.columns:
+			result[column.name] = str(getattr(row, column.name))
 	return result
 
 # returl query result as dict list

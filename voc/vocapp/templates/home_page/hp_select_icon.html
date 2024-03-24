@@ -3,6 +3,12 @@
 <html>
 
 
+
+
+
+
+
+
 <style>
    
   @keyframes borderAnimation {
@@ -17,7 +23,7 @@
   }
 }
 
-.selected_tile
+.selected_icon
  {
   border: 10px solid yellow;
   animation: borderAnimation 1s infinite;
@@ -28,12 +34,12 @@
 
   <h1 style="color:rgb(92, 172, 13);">Icons available for selection</h1>
   <hr>
-  {% include "home_page/_select_tile_buttons.html" %} 
+  {% include "home_page/_hp_select_icon_buttons.html" %} 
   <br>
-    <div class="container" id = "tiles_field">
+    <div class="container" id = "icons_field">
     </div>
   <br>
-  {% include "home_page/_select_tile_buttons.html" %} 
+  {% include "home_page/_hp_select_icon_buttons.html" %} 
     
   
 

@@ -1593,3 +1593,88 @@ function LoadDatatoEditSelectedTile() {
   }
 }
 
+
+
+function FillRowsEdit(){
+  let parentElement = $('#id_rows_ul_group');
+  if (!(parentElement)){
+    return;
+  }
+  $.ajax({
+    url: `${APIServer}/Get_Rows/`,
+    type: "GET",
+    data: {
+        UserName: UserName,
+        UserUUID: UserUUID
+    },
+    success: function(response) {
+        parentElement.empty();
+        parentElement.attr('size',response.length);
+        for (let element of response){
+          parentElement.append(
+                `<option class="bg-transparent"  style="color: rgb(51, 255, 204);"
+                data-row_id="${element.row_id}" 
+                data-row_type="${element.row_type}" 
+                data-row_index="${element.row_index}" 
+                data-plank_id="${element.plank_id}">
+                ${element.row_name}
+                </option>`);
+        }
+     document.getElementById("id_rows_ul_group").addEventListener("change", function() {
+          RefreshElementsEditRowForm();
+      });
+    RefreshElementsEditRowForm();
+  
+    },
+});
+}
+
+
+//TO-DO need to add mock tiles into DB and add empty tiles into row for edit
+function FillEditRowForm() {
+  let parentElement = $(`#row_edit_data_container`)
+  if (!parentElement){
+    return
+  }
+  if (parentElement.data(`row_id`)>0){
+                                        $.ajax({
+                                          url: `${APIServer}/Get_Row/`,
+                                          type: "GET",
+                                          data: {
+                                              UserName: UserName,
+                                              UserUUID: UserUUID,
+                                              row_id: parentElement.data(`row_id`)
+                                          },
+                                          success: function(response) {
+                                             $(`#inputRowName`).val(response.row_name);
+                                          },
+                                      }); 
+
+                                    }
+  }
+
+function RefreshElementsEditRowForm(){
+  if (GetSelectedHomePageRowId()==0){
+    $("#RowsHomePageEditButton").prop("disabled", true);
+    $("#RowsHomePageDeleteButton").prop("disabled", true);
+  }else{
+    $("#RowsHomePageEditButton").prop("disabled", false);
+    $("#RowsHomePageDeleteButton").prop("disabled", false);
+  }
+}
+
+function GetSelectedHomePageRowId(){
+try {
+    if (!($(`#id_rows_ul_group option:selected`))){
+      return 0
+    }
+    let row_id = $(`#id_rows_ul_group option:selected`).data().row_id;
+    if (row_id>0){
+      return row_id;
+    }
+    return 0;
+}
+catch{
+    return 0;
+}
+}
