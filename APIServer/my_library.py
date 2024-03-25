@@ -244,13 +244,6 @@ def RowsToDictList(rows):
 	return result
 
 
-# returl query result as dict list
-def RowsToDictList_last(rows):
-	result = []
-	for row in rows:
-		result.append(RowToDict(row))
-	return result
-
 # divide examples str to dict list
 def GetDividedExamples(source:str):
 	#print(source)

@@ -1,7 +1,7 @@
 import sys
 from click import echo, style
 from sqlalchemy import create_engine
-from sqlalchemy import Column, Integer, Table, MetaData, and_, func, text
+from sqlalchemy import Column, Integer, Table, MetaData, and_, func, text, BigInteger
 from sqlalchemy.orm import Session
 from sqlalchemy import Integer,  ForeignKey
 from sqlalchemy.orm import relationship
@@ -10,7 +10,7 @@ from sqlalchemy.sql.sqltypes import NullType
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm import declarative_base, registry
 import pprint
-from my_library import RowToDict, RowsToDictList, RowsToDictList_last, append_if_not_exists, delete_non_english_alphabet_characters
+from my_library import RowToDict, RowsToDictList, append_if_not_exists, delete_non_english_alphabet_characters
 import math
 import datetime
 import inspect
@@ -164,6 +164,11 @@ class HPRow(Base):
 
 
 
+class HpRowTile(Base):
+    __tablename__ = 'hp_row_tiles'
+    id = Column(BigInteger, primary_key=True, autoincrement=True)
+    row_id = Column(BigInteger, nullable=False)
+    tile_id = Column(BigInteger, nullable=False)
 
 
 import psycopg2
@@ -710,9 +715,22 @@ class LanguageDB:
 	def GetRow(self, user_name:str, row_id:int):
 		print(f'GetRow: user_name = "{user_name}", "{row_id}"')
 		ln_user_id = self.GetUserId(user_name)
-		rows = self.session.query(HPRow).filter(	HPRow.user_id == ln_user_id,
-								  					HPRow.row_id == int(row_id)).first()
-		return RowToDict(rows)
+		row = RowToDict(self.session.query(HPRow).filter(	HPRow.user_id == ln_user_id,
+								  					HPRow.row_id == int(row_id)).first())
+		tiles = RowsToDictList(self.session.query(HPTile).filter(	HPRow.row_id == int(row_id),
+                                            		HPTile.tile_id == HpRowTile.tile_id).all())
+		row['tiles'] = tiles
+		return row
+
+	def GetHPRowData(self, user_name:str, row_id):
+		print(f'GetHPRowData: user_name = "{user_name}", "{row_id}"')
+		ln_user_id = self.GetUserId(user_name)
+		row = RowToDict(self.session.query(HPRow).filter(	HPRow.user_id == ln_user_id,
+								  					HPRow.row_id == int(row_id)).first())
+		tiles = RowsToDictList(self.session.query(HPTile).filter(	HPRow.row_id == int(row_id),
+                                            		HPTile.tile_id == HpRowTile.tile_id).all())
+		row['tiles'] = tiles
+		return row
 
 # class HPRow(Base):
 #	__tablename__ = 'hp_rows'
@@ -732,7 +750,7 @@ prnt = printer.pprint
 if True:
 	if sys.platform == 'linux':
 		dbn = LanguageDB(options.LANDDBURI, autocommit=False)
-		#dbn.GetTiles('admin')
+		# prnt(dbn.GetHPRowData('admin', 1))
 	else:
 		dbn = LanguageDB(options.LANDDBURI, autocommit=False)
 		#print(f"GetTodayReadingParagraphs: {dbn.GetTodayReadingParagraphs('admin')}")

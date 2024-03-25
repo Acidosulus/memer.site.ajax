@@ -140,6 +140,14 @@ async def Get_Rows(UserName, UserUUID:str):
 async def Get_Rows(UserName, UserUUID:str, row_id:int):
 	return dblang.GetRow(UserName, row_id)
 
+# @app.get("/Get_Row_Full_Information/")
+# async def Get_Row_Full_Information(UserName, UserUUID:str, row_id:int)
+
+
+
+
+
+
 @app.get("/GetAllUsers/{key}/")
 async def Get_All_Users(key:str):
 	if key == options.SECRET_KEY:
