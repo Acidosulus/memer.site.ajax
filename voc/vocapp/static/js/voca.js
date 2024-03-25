@@ -1646,6 +1646,7 @@ function FillEditRowForm() {
                                               row_id: parentElement.data(`row_id`)
                                           },
                                           success: function(response) {
+                                              console.log(response);
                                              $(`#inputRowName`).val(response.row_name);
                                           },
                                       }); 

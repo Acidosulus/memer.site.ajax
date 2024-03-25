@@ -141,8 +141,7 @@ class HPTile(Base):
     onclick = Column(Text)
     icon = Column(Text, nullable=False)
     color = Column(Text)
-    tile_index = Column(Integer)
-
+ 
 class HPPlank(Base):
     __tablename__ = 'hp_planks'
 
@@ -169,6 +168,7 @@ class HpRowTile(Base):
     id = Column(BigInteger, primary_key=True, autoincrement=True)
     row_id = Column(BigInteger, nullable=False)
     tile_id = Column(BigInteger, nullable=False)
+    tile_index = Column(BigInteger, default = 0)
 
 
 import psycopg2
