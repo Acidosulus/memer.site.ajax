@@ -962,7 +962,7 @@ function Close_Findind() {
 
 function Find_Word() {
   document.getElementById("search_result").hidden = false;
-  document.getElementById("text_for_finding").focus();
+  //document.getElementById("text_for_finding").focus();
 }
 
 async function get_finding(lc_value) {

@@ -14,8 +14,8 @@
 </div>
    
                 <div class="my_div_save">
-                    <p align = "center"><input type="submit" value="Сохранить" class="button_save" onclick="SaveSyllable('/');"></p>
-                    <p align = "center"><input type="submit" value="woordhunt =>>" class="button_save" onclick="LoadSyllableFromWoordhunt(document.getElementById(`id_word`).value);"></p>
+                    <p align = "center"><input type="submit" value="Сохранить" class="btn btn-block col-11 btn-success button_save" onclick="SaveSyllable('/');"></p>
+                    <p align = "center"><input type="submit" value="woordhunt =>>" class="btn btn-block col-11 btn-info button_save" onclick="LoadSyllableFromWoordhunt(document.getElementById(`id_word`).value);"></p>
                 </div>
 <hr>
         <table width = '100%' style="border: 0px;">
@@ -33,7 +33,7 @@
                 <IMG  onclick="AddExamplToNewSyllablePage(document.getElementById(`id_examples`),``,``,0,getRandomInt(1000000000000, 9999999999999));" class="img_with_backlight_on_hover" style="display: inline-block;box-shadow: 2px 2px 3px 4px rgba(0,0,0,0.5);text-shadow: 1px 1px 2px black, 0 0 1em black; border-radius: 12px;" WIDTH="64" HEIGHT="64"  title = "Добавить слово" src="{% static 'images/add.png' %}">
         </a>
         </div>
-            <p align = "center"><input type="submit" value="Сохранить" class="button_save" onclick="SaveSyllable('/');"></p>
+            <p align = "center"><input type="submit" value="Сохранить" class="btn btn-block col-11 btn-success button_save" onclick="SaveSyllable('/');"></p>
         
 
 
