@@ -1,4 +1,9 @@
 <head>
+    {% if is_mobile %}
+    <meta name="viewport" content="width=device-width, initial-scale=0.6, maximum-scale=0.6, user-scalable=no">
+    {% else %}
+    {% endif %}
+
     <meta charset="utf-8" />
     <link rel="stylesheet" href="/static/css/styles.css" />
     <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.min.css" />

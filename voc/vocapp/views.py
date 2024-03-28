@@ -30,6 +30,18 @@ from asgiref.sync import sync_to_async
 from django.contrib.auth.decorators import login_required
 from UsersDataStorage import UsersDataStorage
 
+import re
+
+def mobile(request):
+	"""Return True if the request comes from a mobile device."""
+
+	MOBILE_AGENT_RE=re.compile(r".*(iphone|mobile|androidtouch)",re.IGNORECASE)
+
+	if MOBILE_AGENT_RE.match(request.META['HTTP_USER_AGENT']):
+		return True
+	else:
+		return False
+
 printer = pprint.PrettyPrinter(indent=12, width=160)
 prnt = printer.pprint
 
@@ -39,12 +51,14 @@ response = requests.get(f"{settings.API_ADRESS}/GetAllUsers/{settings.SECRET_KEY
 usersDataStorage = UsersDataStorage(response.content.decode('utf-8'))
 
 
+
 # 'onchange':"document.getElementById('id_link_on_wooordhunt').href='https://wooordhunt.ru/word/'+escape(this.value)"
 class UserForm(forms.Form):
 	word = forms.CharField( label="Слово", widget=forms.TextInput(attrs={'class' : 'my_class_input_word'}))
 	transcription = forms.CharField(label="Транскрипция", widget=forms.TextInput(attrs={'class' : 'my_class_input_transcription'} ))
 	translations = forms.CharField(label="Перевод", widget=forms.Textarea(attrs={'class' : 'my_class_input_translations','rows':"7"} ))
 	examples = forms.CharField(label="Примеры", widget=forms.Textarea(attrs={'class':"my_class_input_examples",'rows':"7"} ))
+
 
 
 def load_word_to_words_db(pc_word:str):
@@ -193,9 +207,14 @@ def hoster_control_clear_all(request,sitename:str):
 
 @login_required
 def index(request):
+	if mobile(request):
+		is_mobile = True
+	else:
+		is_mobile = False
+ 
 	print(f'request.user.get_username():{request.user.get_username()}')
 	print(type(usersDataStorage.data))
-	data = {'APIServer':settings.API_ADRESS, 'userUUID':usersDataStorage.FindDataByUserName(request.user.get_username())['uuid'], 'ready':0 }
+	data = {'is_mobile': is_mobile, 'APIServer':settings.API_ADRESS, 'userUUID':usersDataStorage.FindDataByUserName(request.user.get_username())['uuid'], 'ready':0 }
 	return render(request, "index.html", context=data)
 
 @login_required
