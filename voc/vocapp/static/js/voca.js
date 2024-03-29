@@ -1646,13 +1646,48 @@ function FillEditRowForm() {
                                               row_id: parentElement.data(`row_id`)
                                           },
                                           success: function(response) {
-                                              console.log(response);
+                                             console.log(response);
                                              $(`#inputRowName`).val(response.row_name);
-                                          },
-                                      }); 
+                                             for (let tile of response.tiles){
+                                              let div_name = `div_edited_tile_${tile.tile_id}`;
+                                              $(`#${div_name}`).append(`<div class="card bg-transparent">
+                                                                            <div class="card-body">
+                                                                              <img src="/api/v1/get_asset/tiles/${tile.icon}" class="card-img-top" alt="Sample Image">
+                                                                              <span class="my_class_p_my_class_p_books mt-1">${tile.name}</span>
+                                                                              <span class="my_class_p_my_class_p_books_even mt-1">${tile.hyperlink}</span>
+                                                                            </div>
+                                                                        </div>
+                                                                        `);
+                                              
+                                              $(`#${div_name}`).get(0).dataset.hyperlink = tile.hyperlink
+                                              $(`#${div_name}`).get(0).dataset.icon = tile.icon
+                                              $(`#${div_name}`).get(0).dataset.name = tile.name
+                                              $(`#${div_name}`).get(0).dataset.tile_id = tile.tile_id
+                                              $(`#${div_name}`).get(0).dataset.tile_index = tile.tile_index
+                                             }
 
-                                    }
+                                             var divs = document.querySelectorAll('.class_edited_tile')
+                                             for (let div of divs){
+                                              console.log(div);
+                                              console.log(div.dataset.tile_id);
+                                              if (!(div.dataset.tile_id>0)){
+                                              div.innerHTML = `<div class="card bg-transparent">
+                                                              <div class="card-body">
+                                                                <img src="/static/images/add.png" class="card-img-top" alt="Sample Image">
+                                                                <span class="my_class_p_my_class_p_books mt-1"></span>
+                                                                <span class="my_class_p_my_class_p_books_even mt-1"></span>
+                                                              </div>
+                                                            </div>
+                                                      `;
+                                                }
+                                              }
+
+                                          }
+                                      });
+
+                                    
   }
+}
 
 function RefreshElementsEditRowForm(){
   if (GetSelectedHomePageRowId()==0){

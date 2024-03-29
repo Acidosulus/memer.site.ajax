@@ -198,7 +198,6 @@ def hoster_control(request,sitename:str):
 	return render(request, "hoster_control.html", context=data)
 
 def hoster_control_clear_all(request,sitename:str):
-	#lc_start_path = r'C:\voc\memer.site\voc\vocapp\static' + "\\" + sitename
 	lc_start_path = Path(__file__).resolve().parent.parent.parent / 'static' / sitename 
 	files = [f for f in os.listdir(lc_start_path) if os.path.isfile(os.path.join(lc_start_path, f))]
 	for file in files:

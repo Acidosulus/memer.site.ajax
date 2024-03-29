@@ -42,7 +42,7 @@
                 onclick="
                   RunInScreenForm({form_name:`row_edit`,
                   execute_after_load:`FillEditRowForm();ResizeModalForms();`,
-                  request_link:`/hp_edit_row/`,
+                  request_link:`/hp_edit_row/`+$('#id_rows_ul_group').find(':selected').data(`row_id`),
                   execute_on_ok:''});"
                 >
                 Edit</button>

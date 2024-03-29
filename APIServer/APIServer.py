@@ -138,7 +138,7 @@ async def Get_Rows(UserName, UserUUID:str):
 
 @app.get("/Get_Row/")
 async def Get_Rows(UserName, UserUUID:str, row_id:int):
-	return dblang.GetRow(UserName, row_id)
+	return dblang.GetHPRowData(UserName, row_id)
 
 # @app.get("/Get_Row_Full_Information/")
 # async def Get_Row_Full_Information(UserName, UserUUID:str, row_id:int)

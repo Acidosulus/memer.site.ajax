@@ -492,7 +492,7 @@ my_div_save{
         background-color: white;
         border: 1px solid #2426c2;
         border-radius: 15px;
-        top:max(20px, 7%);
+        top:max(30px, 12%);
         left:2.5%;
         overflow-y: auto;
       }

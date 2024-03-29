@@ -712,22 +712,12 @@ class LanguageDB:
 		rows = self.session.query(HPRow).filter(	HPRow.user_id == ln_user_id).all()
 		return RowsToDictList(rows)
 
-	def GetRow(self, user_name:str, row_id:int):
-		print(f'GetRow: user_name = "{user_name}", "{row_id}"')
-		ln_user_id = self.GetUserId(user_name)
-		row = RowToDict(self.session.query(HPRow).filter(	HPRow.user_id == ln_user_id,
-								  					HPRow.row_id == int(row_id)).first())
-		tiles = RowsToDictList(self.session.query(HPTile).filter(	HPRow.row_id == int(row_id),
-                                            		HPTile.tile_id == HpRowTile.tile_id).all())
-		row['tiles'] = tiles
-		return row
-
 	def GetHPRowData(self, user_name:str, row_id):
 		print(f'GetHPRowData: user_name = "{user_name}", "{row_id}"')
 		ln_user_id = self.GetUserId(user_name)
 		row = RowToDict(self.session.query(HPRow).filter(	HPRow.user_id == ln_user_id,
 								  					HPRow.row_id == int(row_id)).first())
-		tiles = RowsToDictList(self.session.query(HPTile).filter(	HPRow.row_id == int(row_id),
+		tiles = RowsToDictList(self.session.query(HPTile, HpRowTile).filter(	HPRow.row_id == int(row_id),
                                             		HPTile.tile_id == HpRowTile.tile_id).all())
 		row['tiles'] = tiles
 		return row
