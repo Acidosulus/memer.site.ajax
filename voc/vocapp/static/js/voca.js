@@ -1446,34 +1446,37 @@ function GetTiles() {
 
 function FillTilesField(currrent_icon) {
   console.log(`FillTilesField('${currrent_icon}')`);
+  
   field = document.querySelector("#tiles_field");
-  field.innerHTML = ``;
-  let tiles = GetTiles();
-  let rowcounter = 0;
-  for (let row of tiles) {
-    rowcounter++;
-    let rowid = `tilesrowid${rowcounter}`;
-    field.insertAdjacentHTML(
-      `beforeend`,
-      `<div class="row justify-content-center" id="${rowid}"></div>`
-    );
-    rowelement = document.querySelector(`#${rowid}`);
-    for (element of row) {
-      rowelement.insertAdjacentHTML(
+  if (field!=null) {
+    field.innerHTML = ``;
+    let tiles = GetTiles();
+    let rowcounter = 0;
+    for (let row of tiles) {
+      rowcounter++;
+      let rowid = `tilesrowid${rowcounter}`;
+      field.insertAdjacentHTML(
         `beforeend`,
-        `<div class="card bg-transparent col-2">
-            <img  onclick="SelectonClick(this,'selected_tile');"
-                  src="/api/v1/get_asset/tiles/${element.icon}"
-                  class="card-img-top img-fluid img-thumbnail bg-dark ${
-                    currrent_icon == element.icon ? "selected_tile" : ""
-                  }" data-tileid = "${element.tile_id}">
-              <div class="card-body">
-                <h5 class="card-title text-light">${element.name}</h5>
-                   <p class="card-text text-info">${element.hyperlink}</p>
-              </div>
-          </div>
-      `
+        `<div class="row justify-content-center" id="${rowid}"></div>`
       );
+      rowelement = document.querySelector(`#${rowid}`);
+      for (element of row) {
+        rowelement.insertAdjacentHTML(
+          `beforeend`,
+          `<div class="card bg-transparent col-2">
+              <img  onclick="SelectonClick(this,'selected_tile');"
+                    src="/api/v1/get_asset/tiles/${element.icon}"
+                    class="card-img-top img-fluid img-thumbnail bg-dark ${
+                      currrent_icon == element.icon ? "selected_tile" : ""
+                    }" data-tileid = "${element.tile_id}">
+                <div class="card-body">
+                  <h5 class="card-title text-light">${element.name}</h5>
+                     <p class="card-text text-info">${element.hyperlink}</p>
+                </div>
+            </div>
+        `
+        );
+      }
     }
   }
   document.addEventListener("DOMContentLoaded", function () {
@@ -1547,10 +1550,6 @@ function DeleteTile() {
 }
 
 function EditSelectedTile() {
-  console.log('EditSelectedTile():')
-  console.log(GetSelected(`selected_tile`));
-  console.log(GetSelected(`selected_tile`).dataset);
-  console.log(GetSelected(`selected_tile`).dataset.tileid)
   RunInScreenForm({ form_name:`select_tile`,
                     execute_after_load:``,
                     request_link:`/edit_tile/${GetSelected(`selected_tile`).dataset.tileid}`,
@@ -1650,11 +1649,29 @@ function FillEditRowForm() {
                                              $(`#inputRowName`).val(response.row_name);
                                              for (let tile of response.tiles){
                                               let div_name = `div_edited_tile_${tile.tile_id}`;
-                                              $(`#${div_name}`).append(`<div class="card bg-transparent">
-                                                                            <div class="card-body">
-                                                                              <img src="/api/v1/get_asset/tiles/${tile.icon}" class="card-img-top" alt="Sample Image">
-                                                                              <span class="my_class_p_my_class_p_books mt-1">${tile.name}</span>
-                                                                              <span class="my_class_p_my_class_p_books_even mt-1">${tile.hyperlink}</span>
+                                              $(`#${div_name}`).empty();
+                                              $(`#${div_name}`).append(`
+                                                                        <div class="card bg-transparent">
+                                                                            <div class="card-body" >
+                                                                                <div class="container">
+                                                                                  <div class="row">
+                                                                                    <div class="col-1"><img src="/static/images/move_to_left.png" class="tile_edit_small_button" title="Swap with the left"></div>
+                                                                                    <div class="col-1"><img src="/static/images/move_to_right.png" class="tile_edit_small_button" title="Swap with the right"></div>
+                                                                                    <div class="col-1"><img src="/static/images/redo.png" class="tile_edit_small_button" title="Edit tile" onclick="RunInScreenForm({ form_name:'select_tile',
+                                                                                                                                                                                                                        execute_after_load:'',
+                                                                                                                                                                                                                        request_link:'/edit_tile/${tile.tile_id}',
+                                                                                                                                                                                                                        execute_on_ok:'',
+                                                                                                                                                                                                                        execute_on_close:'FillEditRowForm();',
+                                                                                                                                                                                                                        execute_after_load:'LoadDatatoEditSelectedTile();'} );">
+                                                                                    </div>
+                                                                                    <div class="col-1"><img src="/static/images/delete.png" class="tile_edit_small_button" title="Clear tile"></div>
+                                                                                  </div>
+                                                                                </div>
+                                                                              <div class="row">
+                                                                                  <img src="/api/v1/get_asset/tiles/${tile.icon}" class="card-img-top" alt="Sample Image">
+                                                                                  <span class="my_class_p_my_class_p_books mt-1">${tile.name}</span>
+                                                                                  <span class="my_class_p_my_class_p_books_even mt-1">${tile.hyperlink}</span>
+                                                                              </div>
                                                                             </div>
                                                                         </div>
                                                                         `);

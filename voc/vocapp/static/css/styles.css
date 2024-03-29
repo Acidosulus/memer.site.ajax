@@ -497,3 +497,21 @@ my_div_save{
         overflow-y: auto;
       }
     
+
+
+      .tile_edit_bar {
+        position: absolute; /* Установка абсолютного позиционирования */
+        top: 0px; /* Отступ сверху */
+        right: 0px; /* Отступ справа */
+      }
+
+      .tile_edit_small_button{
+        max-width: 20px;
+        max-width: 20px;
+      }
+
+      .tile_edit_small_button:hover {
+        -webkit-filter: brightness(200%);
+        transition: -webkit-filter 2s;
+        }
+        
