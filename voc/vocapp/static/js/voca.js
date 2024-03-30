@@ -1741,7 +1741,7 @@ catch{
                             response = await asyncRequest(`${APIServer}/GetMessagesAfterId/`,`POST`, {  command: ``,
                                                                                                         comment: ``,
                                                                                                         data: lastMessageId});
-                            if (response.length==0){
+                            if (response.length==0 && document.getElementById("messageLogContent").children.length==0){
                               response = await asyncRequest(`${APIServer}/GetMessagesLast/`,`POST`, {  command: ``,
                                                                                                       comment: ``,
                                                                                                       data: 20});
@@ -1765,13 +1765,9 @@ catch{
       }
     }
 
-    if (collapsed) {
-      // If log is collapsed, make the toggle button blink
-      toggleButton.style.animation = 'blink 1s infinite';
-      setTimeout(() => {
-        toggleButton.style.animation = '';
-      }, 5000); // Stop blinking after 5 seconds
-    } else {
+
+    
+    if (response.length>0) {
       // If log is open, display messages
       displayMessages( response );
     }
@@ -1787,7 +1783,7 @@ catch{
   const messageLogContent = document.getElementById('messageLogContent');
   const toggleButtonImage = document.querySelector(`#toggleButtonImage`);
 
-  let collapsed = true;
+  let collapsed = false;
 
   // Function to toggle message log visibility
   function toggleMessageLog() {
@@ -1803,8 +1799,10 @@ catch{
 
   // Function to display messages
   function displayMessages(messages) {
+    let addFlag = false;
     for (message of messages){
       if (document.querySelector(`.messageRow[data-id="${message.id}"]`) == null){
+              addFlag = true;
               const messageElement = document.createElement('div');
               messageElement.className = 'messageRow';
               messageElement.dataset.id = message.id;
@@ -1812,6 +1810,15 @@ catch{
               messageLogContent.appendChild(messageElement);
       }
     }
+  
+    if (addFlag) {
+      // If log is collapsed, make the toggle button blink
+      toggleButton.style.animation = 'blink 1s infinite';
+      setTimeout(() => {
+        toggleButton.style.animation = '';
+      }, 5000); // Stop blinking after 5 seconds
+    } 
+
   }
 
   // Initial fetch of messages
