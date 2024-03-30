@@ -144,7 +144,9 @@ async def Get_Rows(UserName, UserUUID:str, row_id:int):
 # async def Get_Row_Full_Information(UserName, UserUUID:str, row_id:int)
 
 
-
+@app.post("/message_log/")
+async def message_log(rq:SiteRequest):
+    return {'messages':['First message', 'second message', 'third message']}
 
 
 

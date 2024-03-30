@@ -1731,3 +1731,65 @@ catch{
     return 0;
 }
 }
+
+
+
+
+  // Function to fetch messages from server
+  async function fetchMessages() {
+    let response;
+    response = await asyncRequest(`${APIServer}/message_log/`,`POST`, {  command: ``,
+                                                                  comment: ``,
+                                                                  data: ``});
+    if (collapsed) {
+      // If log is collapsed, make the toggle button blink
+      toggleButton.style.animation = 'blink 1s infinite';
+      setTimeout(() => {
+        toggleButton.style.animation = '';
+      }, 5000); // Stop blinking after 5 seconds
+    } else {
+      // If log is open, display messages
+      displayMessages( response );
+    }
+   
+ }
+
+
+
+
+
+  const messageLog = document.getElementById('messageLog');
+  const toggleButton = document.getElementById('toggleButton');
+  const messageLogContent = document.getElementById('messageLogContent');
+  const toggleButtonImage = document.querySelector(`#toggleButtonImage`);
+
+  let collapsed = true;
+
+  // Function to toggle message log visibility
+  function toggleMessageLog() {
+    collapsed = !collapsed;
+    messageLogContent.style.display = collapsed ? 'none' : 'block';
+    toggleButtonImage.src = collapsed ? '/static/images/arrow_up.png' : '/static/images/arrow_down.png'
+  }
+
+  // Event listener for toggle button click
+  toggleButton.addEventListener('click', toggleMessageLog);
+
+
+
+  // Function to display messages
+  function displayMessages(messages) {
+    messageLogContent.innerHTML = ''; // Clear existing messages
+    for (message of messages.messages){
+      const messageElement = document.createElement('div');
+      messageElement.textContent = message;
+      messageLogContent.appendChild(messageElement);
+
+    }
+  }
+
+  // Initial fetch of messages
+  fetchMessages();
+
+  // Poll for new messages every 10 seconds
+  setInterval(fetchMessages, 1000);

@@ -515,3 +515,36 @@ my_div_save{
         transition: -webkit-filter 2s;
         }
         
+
+        #messageLog {
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            width: 100%;
+            background-color: #000000;
+            border: 1px solid #353333;
+            color:green;
+          }
+          
+          #messageLogHeader {
+            background-color: #201f1f;
+            padding: 5px;
+          }
+          
+          #toggleButton {
+            float: right;
+            background-color: #000000;
+            font-style: oblique;
+          }
+          
+          #messageLogContent {
+            padding: 10px;
+          }
+          
+
+          /* Blink animation */
+          @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0; }
+            100% { opacity: 1; }
+          }
