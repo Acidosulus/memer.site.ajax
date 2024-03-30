@@ -124,17 +124,17 @@ async def Get_Tiles(rq:SiteRequest):
 	
 @app.post("/Get_Tile/")
 async def Get_Tile(rq:SiteRequest):
-    return dblang.GetTile(rq.username, rq.data)
+	return dblang.GetTile(rq.username, rq.data)
 
 
 @app.post("/Delete_Tile/")
 async def Delete_Tile(rq:SiteRequest):
-    dblang.DeleteTiles(rq.username, rq.data)
-    return 'ok'
+	dblang.DeleteTiles(rq.username, rq.data)
+	return 'ok'
 
-@app.get("/Get_Rows/")
-async def Get_Rows(UserName, UserUUID:str):
-    return dblang.GetRows(UserName)
+# @app.get("/Get_Rows/")
+# async def Get_Rows(UserName, UserUUID:str):
+#	 return dblang.GetRows(UserName)
 
 @app.get("/Get_Row/")
 async def Get_Rows(UserName, UserUUID:str, row_id:int):
@@ -144,10 +144,16 @@ async def Get_Rows(UserName, UserUUID:str, row_id:int):
 # async def Get_Row_Full_Information(UserName, UserUUID:str, row_id:int)
 
 
-@app.post("/message_log/")
-async def message_log(rq:SiteRequest):
-    return {'messages':['First message', 'second message', 'third message']}
+@app.post("/GetMessagesAfterId/")
+async def GetMessagesAfterId(rq:SiteRequest):
+	result = dblang.GetMessagesAfterId(rq.username, int(rq.data))
+	return result
 
+
+@app.post("/GetMessagesLast/")
+async def GetMessagesLast(rq:SiteRequest):
+	result = dblang.GetMessagesLast(rq.username, int(rq.data))
+	return result
 
 
 @app.get("/GetAllUsers/{key}/")

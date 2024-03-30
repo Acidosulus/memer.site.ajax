@@ -1738,9 +1738,18 @@ catch{
   // Function to fetch messages from server
   async function fetchMessages() {
     let response;
-    response = await asyncRequest(`${APIServer}/message_log/`,`POST`, {  command: ``,
-                                                                  comment: ``,
-                                                                  data: ``});
+    let lastMessageId = getCookie('maxLastMessageId', 0);
+    if (lastMessageId > 0){
+                            response = await asyncRequest(`${APIServer}/GetMessagesAfterId/`,`POST`, {  command: ``,
+                                                                                                        comment: ``,
+                                                                                                        data: lastMessageId});
+    }
+    else {
+                            response = await asyncRequest(`${APIServer}/GetMessagesLast/`,`POST`, {  command: ``,
+                                                                                                        comment: ``,
+                                                                                                        data: 20});
+    }
+    
     if (collapsed) {
       // If log is collapsed, make the toggle button blink
       toggleButton.style.animation = 'blink 1s infinite';
@@ -1779,12 +1788,14 @@ catch{
 
   // Function to display messages
   function displayMessages(messages) {
-    messageLogContent.innerHTML = ''; // Clear existing messages
-    for (message of messages.messages){
-      const messageElement = document.createElement('div');
-      messageElement.textContent = message;
-      messageLogContent.appendChild(messageElement);
-
+    for (message of messages){
+      if (document.querySelector(`.messageRow[data-id="${message.id}"]`) == null){
+              const messageElement = document.createElement('div');
+              messageElement.className = 'messageRow';
+              messageElement.dataset.id = message.id;
+              messageElement.textContent = message.dt+`      `+message.message;
+              messageLogContent.appendChild(messageElement);
+      }
     }
   }
 

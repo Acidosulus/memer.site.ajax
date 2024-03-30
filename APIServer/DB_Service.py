@@ -132,43 +132,54 @@ class SyllablesParagraph(Base):
 
 
 class HPTile(Base):
-    __tablename__ = 'hp_tiles'
+	__tablename__ = 'hp_tiles'
 
-    tile_id = Column(Integer, primary_key=True, autoincrement=True)
-    user_id = Column(Integer, nullable=False)
-    name = Column(Text, nullable=False)
-    hyperlink = Column(Text)
-    onclick = Column(Text)
-    icon = Column(Text, nullable=False)
-    color = Column(Text)
+	tile_id = Column(Integer, primary_key=True, autoincrement=True)
+	user_id = Column(Integer, nullable=False)
+	name = Column(Text, nullable=False)
+	hyperlink = Column(Text)
+	onclick = Column(Text)
+	icon = Column(Text, nullable=False)
+	color = Column(Text)
  
 class HPPlank(Base):
-    __tablename__ = 'hp_planks'
+	__tablename__ = 'hp_planks'
 
-    plank_id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, nullable=False)
-    plank_name = Column(Text, nullable=False)
-    index = Column(Integer, default=0, nullable=False)
+	plank_id = Column(Integer, primary_key=True)
+	user_id = Column(Integer, nullable=False)
+	plank_name = Column(Text, nullable=False)
+	index = Column(Integer, default=0, nullable=False)
 
 class HPRow(Base):
-    __tablename__ = 'hp_rows'
+	__tablename__ = 'hp_rows'
 
-    row_id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, nullable=False)
-    row_name = Column(Text, nullable=False)
-    row_type = Column(Integer, default=0, nullable=False)
-    row_index = Column(Integer, default=0, nullable=False)
-    plank_id = Column(Integer, ForeignKey('hp_planks.plank_id'), default=0, nullable=False)
-    plank = relationship("HPPlank", backref="rows")
+	row_id = Column(Integer, primary_key=True)
+	user_id = Column(Integer, nullable=False)
+	row_name = Column(Text, nullable=False)
+	row_type = Column(Integer, default=0, nullable=False)
+	row_index = Column(Integer, default=0, nullable=False)
+	plank_id = Column(Integer, ForeignKey('hp_planks.plank_id'), default=0, nullable=False)
+	plank = relationship("HPPlank", backref="rows")
 
 
 
 class HpRowTile(Base):
-    __tablename__ = 'hp_row_tiles'
-    id = Column(BigInteger, primary_key=True, autoincrement=True)
-    row_id = Column(BigInteger, nullable=False)
-    tile_id = Column(BigInteger, nullable=False)
-    tile_index = Column(BigInteger, default = 0)
+	__tablename__ = 'hp_row_tiles'
+	id = Column(BigInteger, primary_key=True, autoincrement=True)
+	row_id = Column(BigInteger, nullable=False)
+	tile_id = Column(BigInteger, nullable=False)
+	tile_index = Column(BigInteger, default = 0)
+
+class Message(Base):
+	__tablename__ = 'messages'
+	
+	id = Column(Integer, primary_key=True)
+	dt = Column(DateTime, nullable=False, server_default='now()')
+	message = Column(Text, default='', nullable=True)
+	icon = Column(Text, default='', nullable=True)
+	user_id = Column(Integer, nullable=True)
+
+
 
 
 import psycopg2
@@ -318,7 +329,7 @@ class LanguageDB:
 																					Syllable.last_view
 			  																		).offset	(
 																								slice_size*(slice_number-1
-				    																			)).limit(slice_size).all():
+																								)).limit(slice_size).all():
 			result.append({	'word':syllable.word,
 							'transcription':syllable.transcription,
 							'translations':syllable.translations,
@@ -361,7 +372,7 @@ class LanguageDB:
 																					desc(Syllable.last_view
 			  																		)).offset	(
 																								slice_size*(slice_number-1
-				    																			)).limit(slice_size).all():
+																								)).limit(slice_size).all():
 			result.append({	'word':syllable.word,
 							'transcription':syllable.transcription,
 							'translations':syllable.translations,
@@ -449,7 +460,7 @@ class LanguageDB:
 	def GetNextSyllableForLearning(self, user_name:str):
 		syllable, user = self.session.query(Syllable, User).filter(and_(	User.name==user_name, 
 									  										User.user_id==Syllable.user_id,
-																		    Phrase.ready==0
+																			Phrase.ready==0
 																			)).order_by(
 																						Syllable.last_view
 																						).first()
@@ -511,7 +522,7 @@ class LanguageDB:
 	def GetNextPhraseForLearning(self, user_name:str):
 		phrase, user = self.session.query(Phrase, User).filter(and_(	User.name==user_name, 
 									  									User.user_id==Phrase.user_id,
-																	    Phrase.ready==0
+																		Phrase.ready==0
 																		)).order_by(
 																						Phrase.last_view
 																						).first()
@@ -674,7 +685,7 @@ class LanguageDB:
 			  			name = name,
 						hyperlink = hyperlink,
 				  		icon = icon,
-				    	color = color))
+						color = color))
 			self.session.commit()
 			return {"status":"ok - added"}
 		else:
@@ -718,9 +729,34 @@ class LanguageDB:
 		row = RowToDict(self.session.query(HPRow).filter(	HPRow.user_id == ln_user_id,
 								  					HPRow.row_id == int(row_id)).first())
 		tiles = RowsToDictList(self.session.query(HPTile, HpRowTile).filter(	HPRow.row_id == int(row_id),
-                                            		HPTile.tile_id == HpRowTile.tile_id).all())
+													HPTile.tile_id == HpRowTile.tile_id).all())
 		row['tiles'] = tiles
 		return row
+
+	def GetMessagesAfterId(self, user_name, last_row_id):
+		ln_user_id = self.GetUserId(user_name)
+		rows = self.session.query(Message)\
+							.filter(	Message.user_id==ln_user_id, 
+										Message.id>last_row_id)\
+											.order_by(desc(Message.id))\
+				 							.limit(40)\
+											.all()
+		if rows!=None:
+			return RowsToDictList(rows)
+		else:
+			return []
+		
+	def GetMessagesLast(self, user_name, count):
+		ln_user_id = self.GetUserId(user_name)
+		rows = self.session.query(Message)\
+							.filter(	Message.user_id==ln_user_id,)\
+											.order_by(desc(Message.id))\
+				 							.limit(count)\
+											.all()
+		if rows!=None:
+			return RowsToDictList(rows)
+		else:
+			return []
 
 # class HPRow(Base):
 #	__tablename__ = 'hp_rows'
