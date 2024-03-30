@@ -132,9 +132,9 @@ async def Delete_Tile(rq:SiteRequest):
 	dblang.DeleteTiles(rq.username, rq.data)
 	return 'ok'
 
-# @app.get("/Get_Rows/")
-# async def Get_Rows(UserName, UserUUID:str):
-#	 return dblang.GetRows(UserName)
+@app.get("/Get_Rows/")
+async def Get_Rows(UserName, UserUUID:str):
+	 return dblang.GetRows(UserName)
 
 @app.get("/Get_Row/")
 async def Get_Rows(UserName, UserUUID:str, row_id:int):

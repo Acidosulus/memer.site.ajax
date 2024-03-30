@@ -20,6 +20,8 @@ window.addEventListener("resize", function () {
 });
 
 window.onload = async function (event) {
+  document.body.insertAdjacentHTML('beforeend','<br><br><br><br><br>');
+
   // global variables for connect to APIServer
   console.log(UserName, UserUUID, APIServer);
 
@@ -1069,10 +1071,6 @@ function getCookie(name, default_value) {
   if (result == null) {
     result = default_value;
   }
-  console.log(
-    "name:" + name + "   default_value:" + default_value + "   result:" + result
-  );
-  //console.log('matches:'+(result == null))
   return result;
 }
 
@@ -1743,6 +1741,11 @@ catch{
                             response = await asyncRequest(`${APIServer}/GetMessagesAfterId/`,`POST`, {  command: ``,
                                                                                                         comment: ``,
                                                                                                         data: lastMessageId});
+                            if (response.length==0){
+                              response = await asyncRequest(`${APIServer}/GetMessagesLast/`,`POST`, {  command: ``,
+                                                                                                      comment: ``,
+                                                                                                      data: 20});
+                            }
     }
     else {
                             response = await asyncRequest(`${APIServer}/GetMessagesLast/`,`POST`, {  command: ``,
@@ -1750,6 +1753,18 @@ catch{
                                                                                                         data: 20});
     }
     
+    if (response.length>0){
+      let maxId = lastMessageId ;
+      for (let message of response){
+        if (message.id>maxId){
+              maxId = message.id;
+        }
+      }
+      if (maxId > lastMessageId) {
+        setCookie('maxLastMessageId', maxId);
+      }
+    }
+
     if (collapsed) {
       // If log is collapsed, make the toggle button blink
       toggleButton.style.animation = 'blink 1s infinite';
@@ -1801,6 +1816,4 @@ catch{
 
   // Initial fetch of messages
   fetchMessages();
-
-  // Poll for new messages every 10 seconds
-  setInterval(fetchMessages, 1000);
+  setInterval(fetchMessages, 5000);
