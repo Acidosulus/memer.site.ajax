@@ -711,6 +711,7 @@ async function SetSyllableAsViewedAndLoadNext(word) {
   req.send(body);
   console.log(req.responseText);
   let answer = JSON.parse(req.responseText);
+  AddMessage(`Repeated world |${word}| `,`education.png`,`/word_in_progress/${word}/`);
   await LoadNextProcessingWordIntoBody();
   await Load_Word_in_Progress_Data();
   hideOverlay();
@@ -1731,8 +1732,6 @@ catch{
 }
 
 
-
-
   // Function to fetch messages from server
   async function fetchMessages() {
     let response;
@@ -1800,14 +1799,19 @@ catch{
   // Function to display messages
   function displayMessages(messages) {
     let addFlag = false;
+    messages.sort((a, b) => a.id - b.id);
     for (message of messages){
       if (document.querySelector(`.messageRow[data-id="${message.id}"]`) == null){
               addFlag = true;
-              const messageElement = document.createElement('div');
-              messageElement.className = 'messageRow';
-              messageElement.dataset.id = message.id;
-              messageElement.textContent = message.dt+`      `+message.message;
-              messageLogContent.appendChild(messageElement);
+              let text = message.message
+              if (text.includes('|')){//message include hyperlink
+                var firstStarIndex = text.indexOf('|');
+                var secondStarIndex = text.indexOf('|', firstStarIndex + 1);
+                text = text.substring(0, firstStarIndex) + `<a href='${message.hyperlink}'>` + text.substring(firstStarIndex + 1, secondStarIndex) + '</a>' + text.substring(secondStarIndex + 1);
+              }
+
+              let st = `<div data-id="${message.id}"><img src="/static/images/${message.icon.length==0?'empty_32x32.png':message.icon}" height="24" width="24"><i>${message.dt.substring(0,16)}</i> ${text}</div>`
+              messageLogContent.insertAdjacentHTML(`afterbegin`,st);
       }
     }
   
@@ -1820,6 +1824,16 @@ catch{
     } 
 
   }
+
+
+async function AddMessage(message='', icon='', hyperlink=''){
+  let response;
+  response = await asyncRequest(`${APIServer}/AddMessage/`,`POST`, {              command: hyperlink,
+                                                                                  comment: icon,
+                                                                                  data: message});
+  fetchMessages();
+  return response;
+}
 
   // Initial fetch of messages
   fetchMessages();

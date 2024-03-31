@@ -178,6 +178,8 @@ class Message(Base):
 	message = Column(Text, default='', nullable=True)
 	icon = Column(Text, default='', nullable=True)
 	user_id = Column(Integer, nullable=True)
+	hyperlink = Column(Text, default='', nullable=True)
+	action = Column(Text, default='', nullable=True)
 
 
 
@@ -758,15 +760,14 @@ class LanguageDB:
 		else:
 			return []
 
-# class HPRow(Base):
-#	__tablename__ = 'hp_rows'
-#	row_id = Column(Integer, primary_key=True)
-#	user_id = Column(Integer, nullable=False)
-#	row_name = Column(Text, nullable=False)
-#	row_type = Column(Integer, default=0, nullable=False)
-#	row_index = Column(Integer, default=0, nullable=False)
-#	plank_id = Column(Integer, ForeignKey('hp_planks.plank_id'), default=0, nullable=False)
-#	plank = relationship("HPPlank", backref="rows")
+	def AddMessage(self, user_name, message='', icon='', hyperlink=''):
+		ln_user_id = self.GetUserId(user_name)
+		self.session.add(Message(	user_id = ln_user_id,
+									message = message,
+									icon = icon,
+									hyperlink = hyperlink))
+		self.session.commit()
+		return {"status":"ok - added"}
 
   
 printer = pprint.PrettyPrinter(indent=12, width=180)

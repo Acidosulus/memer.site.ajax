@@ -57,8 +57,7 @@ async def log_request(request: Request, call_next):
 		 	style(text = str(url) + ' ', bg = 'blue', fg = 'bright_green')+
 		 	style(text = str(params) + ' ', bg = 'blue', fg = 'bright_white')+
 			style(text = body.decode(), bg='blue', fg='bright_cyan'))
-	response = await call_next(request)
-	return response
+	return await call_next(request)
 
 
 if sys.platform == 'linux':
@@ -140,9 +139,6 @@ async def Get_Rows(UserName, UserUUID:str):
 async def Get_Rows(UserName, UserUUID:str, row_id:int):
 	return dblang.GetHPRowData(UserName, row_id)
 
-# @app.get("/Get_Row_Full_Information/")
-# async def Get_Row_Full_Information(UserName, UserUUID:str, row_id:int)
-
 
 @app.post("/GetMessagesAfterId/")
 async def GetMessagesAfterId(rq:SiteRequest):
@@ -154,6 +150,11 @@ async def GetMessagesAfterId(rq:SiteRequest):
 async def GetMessagesLast(rq:SiteRequest):
 	result = dblang.GetMessagesLast(rq.username, int(rq.data))
 	return result
+
+
+@app.post("/AddMessage/")
+async def AddMessage(rq:SiteRequest):
+	return dblang.AddMessage(rq.username, rq.data, rq.comment, rq.command)
 
 
 @app.get("/GetAllUsers/{key}/")

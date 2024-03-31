@@ -12,17 +12,31 @@
 
 
 
+
 <nav  id="messageLog"
       class="navbar sticky-bottom bg-body-tertiary"
       role="navigation"
       style=" background-image: url('/static/images/background.gif');
               position: fixed;
               bottom: 0;
-              width: 100%;">
-    <div id="messageLogHeader">
-      <button id="toggleButton"><img id="toggleButtonImage" src="/static/images/arrow_down.png" height="40"></button>
-    </div>
-    <div id="messageLogContent">
+              width: 100%;
+              max-height: 100px;
+              overflow-y: auto;
+              z-index: 1;">
+    <div id="messageLogContent"  class="col">
       <!-- Message log content will be inserted here dynamically -->
     </div>
 </nav>
+
+<div id="messageLogHeader"
+      style=" 
+      position: fixed;
+      bottom: 10;
+      right: 30;
+      z-index: 2;
+      ">
+  <button id="toggleButton"><img id="toggleButtonImage" src="/static/images/arrow_down.png" height="40"></button>
+</div>
+
+
+
