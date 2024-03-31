@@ -378,7 +378,50 @@ my_div_save{
     color:cadetblue;
     }
 
+    .my_class_message_history{
+        text-shadow: 1px 1px 2px black, 0 0 1em black;
+        color:steelblue;
+        }
+    .my_class_message_history:hover {
+        color:cadetblue;
+    }
 
+    .my_class_date_history{
+        text-shadow: 1px 1px 2px black, 0 0 1em black;
+        color:deepskyblue;
+     }
+     .my_class_date_history:hover{
+        text-shadow: 1px 1px 2px black, 0 0 1em black;
+        color:rgb(160, 212, 229);
+     }
+
+
+    .my_class_a_history{
+        text-shadow: 1px 1px 2px black, 0 0 1em black;
+        color:#2e50e6;
+        }
+    .my_class_a_history:hover {
+        color:#98a5df;
+        }
+
+.my_class_book_name_history{
+    text-shadow: 1px 1px 2px black, 0 0 1em black;
+    color:#652ee6;
+    }
+.my_class_book_name_history:hover {
+    color:#8a60ec;
+    }
+    
+
+
+.book_navigation_button{
+    text-shadow: 1px 1px 2px black, 0 0 1em black;
+    color:#005a23;
+}
+.book_navigation_button:hover{
+    text-shadow: 1px 1px 2px black, 0 0 1em black;
+    color:#afa403;
+}
 
 
     .center_parent {

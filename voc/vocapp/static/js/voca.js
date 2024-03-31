@@ -1807,10 +1807,15 @@ catch{
               if (text.includes('|')){//message include hyperlink
                 var firstStarIndex = text.indexOf('|');
                 var secondStarIndex = text.indexOf('|', firstStarIndex + 1);
-                text = text.substring(0, firstStarIndex) + `<a href='${message.hyperlink}'>` + text.substring(firstStarIndex + 1, secondStarIndex) + '</a>' + text.substring(secondStarIndex + 1);
+                text = `<span class="my_class_p_my_class_p_books_even">`+ text.substring(0, firstStarIndex) + '</span>' +
+                        `<a href='${message.hyperlink}' class="my_class_a_history">` + text.substring(firstStarIndex + 1, secondStarIndex) + '</a>' + 
+                        `<span class="my_class_p_my_class_p_books_even">` + text.substring(secondStarIndex + 1) + '</span>';
               }
 
-              let st = `<div data-id="${message.id}"><img src="/static/images/${message.icon.length==0?'empty_32x32.png':message.icon}" height="24" width="24"><i>${message.dt.substring(0,16)}</i> ${text}</div>`
+              let st = `<div data-id="${message.id}">
+                        <img src="/static/images/${message.icon.length==0?'empty_32x32.png':message.icon}" height="24" width="24">
+                        <span class="my_class_date_history">${message.dt.substring(0,16)}</span> 
+                        ${text}</div>`
               messageLogContent.insertAdjacentHTML(`afterbegin`,st);
       }
     }
@@ -1820,7 +1825,7 @@ catch{
       toggleButton.style.animation = 'blink 1s infinite';
       setTimeout(() => {
         toggleButton.style.animation = '';
-      }, 5000); // Stop blinking after 5 seconds
+      }, 500); // Stop blinking after 5 seconds
     } 
 
   }

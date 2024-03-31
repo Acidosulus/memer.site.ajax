@@ -358,6 +358,10 @@ class LanguageDB:
 					 											dt = datetime.datetime.now()))
 			self.session.commit()
 			self.SaveBookReadingData( self.GetUserId(user_name), id_book, new_current_paragraph)
+			book_information = self.GetUserBookInformation(user_name, id_book)
+			# print(book_information)
+			self.AddMessage(user_name=user_name, message=f'Page <span class="my_class_book_name_history">{book_information["book_name"]}</span> turned to <span class="my_class_a_history">{new_current_paragraph}</span>', icon='opened_book.png', hyperlink='')
+			# print(f'Page {book_information["book_name"]} turned to {new_current_paragraph}')
 			result = {'data':'Ok'}
 		else:
 			result = {'data':'ERROR: New current paragraph is outside of book paragraph range.'}
