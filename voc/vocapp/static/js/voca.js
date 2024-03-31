@@ -1801,7 +1801,7 @@ catch{
     let addFlag = false;
     messages.sort((a, b) => a.id - b.id);
     for (message of messages){
-      if (document.querySelector(`.messageRow[data-id="${message.id}"]`) == null){
+      if (document.querySelector(`[data-id="${message.id}"]`) == null){
               addFlag = true;
               let text = message.message
               if (text.includes('|')){//message include hyperlink
