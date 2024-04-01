@@ -169,6 +169,7 @@ class HpRowTile(Base):
 	row_id = Column(BigInteger, nullable=False)
 	tile_id = Column(BigInteger, nullable=False)
 	tile_index = Column(BigInteger, default = 0)
+	user_id = Column(Integer, nullable=False)
 
 class Message(Base):
 	__tablename__ = 'messages'
@@ -733,11 +734,37 @@ class LanguageDB:
 		print(f'GetHPRowData: user_name = "{user_name}", "{row_id}"')
 		ln_user_id = self.GetUserId(user_name)
 		row = RowToDict(self.session.query(HPRow).filter(	HPRow.user_id == ln_user_id,
-								  					HPRow.row_id == int(row_id)).first())
+								  							HPRow.row_id == int(row_id)).first())
 		tiles = RowsToDictList(self.session.query(HPTile, HpRowTile).filter(	HPRow.row_id == int(row_id),
-													HPTile.tile_id == HpRowTile.tile_id).all())
+																				HPTile.tile_id == HpRowTile.tile_id,
+																				HpRowTile.user_id == ln_user_id).all())
 		row['tiles'] = tiles
 		return row
+
+	def AddTileToRowRelation(self, user_name, row_id, tile_id, index_id):
+		print(f'AddTileToRowRelation: user_name = "{user_name}", row_id = "{row_id}", tile_id = {tile_id}, index_id = {index_id}')
+		ln_user_id = self.GetUserId(user_name)
+		queru_exists = self.session.query(HpRowTile).filter(	HpRowTile.user_id == ln_user_id,
+											   					HpRowTile.row_id == row_id,
+																HpRowTile.tile_index == index_id)
+		if queru_exists.count()>=1:
+			queru_exists.update({'tile_id': tile_id})
+			print('Record updated')
+		else:
+			self.session.add(	HpRowTile(	user_id = ln_user_id,
+											row_id = row_id,
+											tile_id = tile_id,
+											tile_index = index_id
+								))
+			print('Record added')
+		self.session.commit()
+
+	def DeleteTileFromRow(self, user_name, id):
+		print(f'DeleteTileFromRow: user_name = "{user_name}", id = "{id}"')
+		ln_user_id = self.GetUserId(user_name)
+		self.session.query(HpRowTile).filter(	HpRowTile.user_id == ln_user_id,
+									   			HpRowTile.id == id).delete()
+
 
 	def GetMessagesAfterId(self, user_name, last_row_id):
 		ln_user_id = self.GetUserId(user_name)

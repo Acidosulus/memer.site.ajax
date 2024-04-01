@@ -28,11 +28,19 @@ table{
      width:100%}
 
 .image_little_button {
-    -webkit-transition: all 0.7s ease;
+-webkit-transition: all 0.7s ease;
 transition: all 0.7s ease;
 }
 .image_little_button:hover {
 -webkit-filter: brightness(2);
+}
+
+
+.card-img-top{
+    -webkit-transition: all 0.7s ease;
+    transition: all 0.7s ease;
+}.card-img-top:hover{
+    -webkit-filter: brightness(2);
 }
 
 .div_float_left {        float: left; /*Задаем обтекание*/    ;

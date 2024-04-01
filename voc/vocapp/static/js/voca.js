@@ -1629,25 +1629,25 @@ function FillRowsEdit(){
 
 
 //TO-DO need to add mock tiles into DB and add empty tiles into row for edit
-function FillEditRowForm() {
+async function FillEditRowForm() {
   let parentElement = $(`#row_edit_data_container`)
   if (!parentElement){
+    console.log(`parent element is not found`);
     return
   }
+  let row_id = parentElement.data(`row_id`);
   if (parentElement.data(`row_id`)>0){
-                                        $.ajax({
-                                          url: `${APIServer}/Get_Row/`,
-                                          type: "GET",
-                                          data: {
-                                              UserName: UserName,
-                                              UserUUID: UserUUID,
-                                              row_id: parentElement.data(`row_id`)
-                                          },
-                                          success: function(response) {
-                                             console.log(response);
+    response = await asyncRequest(`${APIServer}/Get_Row/`,`POST`, {   command: '',
+                                                                      comment: '',
+                                                                      data: parentElement.data(`row_id`)});
+    for (let i = 1; i <= 12; i++) {
+      let div_name = `div_edited_tile_${i}`;
+      $(`#${div_name}`).empty();
+      $(`#${div_name}`).get(0).dataset.tile_id=0;
+    }
                                              $(`#inputRowName`).val(response.row_name);
                                              for (let tile of response.tiles){
-                                              let div_name = `div_edited_tile_${tile.tile_id}`;
+                                              let div_name = `div_edited_tile_${tile.tile_index}`;
                                               $(`#${div_name}`).empty();
                                               $(`#${div_name}`).append(`
                                                                         <div class="card bg-transparent">
@@ -1661,9 +1661,13 @@ function FillEditRowForm() {
                                                                                                                                                                                                                         request_link:'/edit_tile/${tile.tile_id}',
                                                                                                                                                                                                                         execute_on_ok:'',
                                                                                                                                                                                                                         execute_on_close:'FillEditRowForm();',
-                                                                                                                                                                                                                        execute_after_load:'LoadDatatoEditSelectedTile();'} );">
+                                                                                                                                                                                                                        execute_after_load:'LoadDatatoEditSelectedTile();'});
+                                                                                                                                                                                                                        ">
                                                                                     </div>
-                                                                                    <div class="col-1"><img src="/static/images/delete.png" class="tile_edit_small_button" title="Clear tile"></div>
+                                                                                    <div class="col-1"><img src="/static/images/delete.png" class="tile_edit_small_button" title="Clear tile" onclick="
+                                                                                                                                                                                                         DeleteTileFromRow(${tile.id});
+                                                                                                                                                                                                      "
+                                                                                    ></div>
                                                                                   </div>
                                                                                 </div>
                                                                               <div class="row">
@@ -1684,12 +1688,18 @@ function FillEditRowForm() {
 
                                              var divs = document.querySelectorAll('.class_edited_tile')
                                              for (let div of divs){
-                                              console.log(div);
-                                              console.log(div.dataset.tile_id);
                                               if (!(div.dataset.tile_id>0)){
+                                              let index_id = div.dataset.index;
                                               div.innerHTML = `<div class="card bg-transparent">
                                                               <div class="card-body">
-                                                                <img src="/static/images/add.png" class="card-img-top" alt="Sample Image">
+                                                                <img  src="/static/images/add.png"
+                                                                      class="card-img-top"
+                                                                      alt="Sample Image"
+                                                                      onclick="RunInScreenForm({  form_name:'select_tile',
+                                                                                            execute_after_load:'OnLoadTileSelect();ResizeModalForms();',
+                                                                                            request_link:'/select_tile/',
+                                                                                            execute_on_close:'AddTileInRow(`+row_id+`,`+index_id+`);',
+                                                                                            execute_on_ok:''});">
                                                                 <span class="my_class_p_my_class_p_books mt-1"></span>
                                                                 <span class="my_class_p_my_class_p_books_even mt-1"></span>
                                                               </div>
@@ -1698,10 +1708,32 @@ function FillEditRowForm() {
                                                 }
                                               }
 
-                                          }
-                                      });
-
                                     
+  } else{
+    console.log('Wrong condition: parentElement.data(`row_id`)>0');
+  }
+}
+
+async function DeleteTileFromRow(id){
+  response = await asyncRequest(`${APIServer}/DeleteTileFromRow/`,`POST`, {   command: '',
+                                                                              comment: '',
+                                                                              data: id});
+  setTimeout(function() {
+      FillEditRowForm();
+    }, 1000);
+}
+
+async function AddTileInRow(row_id, index_id){
+  let tile_id = GetSelected(`selected_tile`);
+  if (tile_id !== ''){
+    tile_id = GetSelected(`selected_tile`).dataset.tileid;
+    console.log(tile_id);
+        response = await asyncRequest(`${APIServer}/AddTileToRowRelation/`,`POST`, {  command: row_id,
+                                                                                comment: tile_id,
+                                                                                data: index_id});
+  setTimeout(function() {
+      FillEditRowForm();
+    }, 1000);
   }
 }
 

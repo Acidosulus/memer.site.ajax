@@ -135,9 +135,20 @@ async def Delete_Tile(rq:SiteRequest):
 async def Get_Rows(UserName, UserUUID:str):
 	 return dblang.GetRows(UserName)
 
-@app.get("/Get_Row/")
-async def Get_Rows(UserName, UserUUID:str, row_id:int):
-	return dblang.GetHPRowData(UserName, row_id)
+@app.post("/Get_Row/")
+async def Get_Rows(rq:SiteRequest):
+	return dblang.GetHPRowData(rq.username, int(rq.data))
+
+
+@app.post("/AddTileToRowRelation/")
+async def AddTileToRowRelation(rq:SiteRequest):
+	dblang.AddTileToRowRelation(user_name = rq.username, row_id=int(rq.command), tile_id=int(rq.comment), index_id=int(rq.data))
+	return ''
+
+@app.post("/DeleteTileFromRow/")
+async def DeleteTileFromRow(rq:SiteRequest):
+	dblang.DeleteTileFromRow(rq.username, int(rq.data))
+	return ''
 
 
 @app.post("/GetMessagesAfterId/")
