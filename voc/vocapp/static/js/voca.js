@@ -1629,7 +1629,6 @@ function FillRowsEdit(){
 }
 
 
-//TO-DO need to add mock tiles into DB and add empty tiles into row for edit
 async function FillEditRowForm() {
   let parentElement = $(`#row_edit_data_container`)
   if (!parentElement){
@@ -1899,3 +1898,101 @@ async function RemoveRow(row_id, row_name){
     FillRowsEdit();
   }
 }
+
+
+async function FillPagesEdit(){
+  let parentElement = $('#id_pages_ul_group');
+  console.log(parentElement);
+  if (!(parentElement)){
+    return;
+  }
+  let response;
+  response = await asyncRequest(`${APIServer}/Get_Pages/`,`POST`, {      command: '',
+                                                                        comment: '',
+                                                                        data: ''});
+        console.log(response);
+        parentElement.empty();
+        parentElement.attr('size',response.length);
+        for (let element of  response ){
+          console.log(element);
+          parentElement.append(
+                `<option class="bg-transparent"  style="color: rgb(51, 255, 204);"
+                data-page_id="${element.page_id}" 
+                data-index="${element.index}" >
+                ${element.page_name}
+                </option>`);
+        }
+
+        RefreshElementsEditPagesForm();
+        document.getElementById("id_pages_ul_group").addEventListener("change", function() {
+          RefreshElementsEditPagesForm();
+        })
+
+}
+
+
+async function RefreshElementsEditPagesForm(){
+  if (GetSelectedHomePagePageId()==0){
+    $("#PagesHomePageEditButton").prop("disabled", true);
+    $("#PagesHomePageDeleteButton").prop("disabled", true);
+  }else{
+    $("#PagesHomePageEditButton").prop("disabled", false);
+    $("#PagesHomePageDeleteButton").prop("disabled", false);
+  }
+
+}
+
+
+function GetSelectedHomePagePageId(){
+  try {
+      if (!($(`#id_pages_ul_group option:selected`))){
+        return 0
+      }
+      let page_id = $(`#id_pages_ul_group option:selected`).data().page_id;
+      if (page_id>0){
+        return page_id;
+      }
+      return 0;
+  }
+  catch{
+      return 0;
+  }
+  }
+  
+  
+  
+async function RemovePage(page_id, page_name){
+    if (page_id<=0){
+      return
+    }
+    var answer = confirm(`Delete a page "${page_name}"?`);
+    if (answer){
+      await asyncRequest(`${APIServer}/Delete_Page/`,`POST`, {               command: '',
+                                                                             comment: '',
+                                                                             data: page_id});
+      FillPagesEdit();
+    }
+  }
+  
+
+
+
+
+  async function FillEditPageForm() {
+    let parentElement = $(`#page_edit_data_container`)
+    if (!parentElement){
+      console.log(`parent element is not found`);
+      return
+    }
+    let page_id = parentElement.data(`page_id`);
+    
+    if (page_id>0){
+      response = await asyncRequest(`${APIServer}/Get_Page/`,`POST`, {    command: '',
+                                                                          comment: '',
+                                                                          data: page_id});
+    } else{
+      console.log('Wrong condition: parentElement.data(`row_id`)>0');
+    }
+  }
+  
+

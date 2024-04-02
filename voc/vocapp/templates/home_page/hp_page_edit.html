@@ -1,0 +1,39 @@
+{% load static %}
+
+<html>
+
+  
+
+  <div class="container mt-5" id="page_edit_data_container" data-page_id="{{ page_id }}">
+    <div class="form-group">
+      <label for="inputRowName">Name</label>
+      <input type="text" class="form-control fs-3 fw-bold font-monospace" id="inputPageName" placeholder="Input page name" autocomplete="off">
+    </div>
+
+
+      <div class="container-fluid mt-5">
+          <div class="row" id="PagesList">
+          </div>
+      </div>
+
+
+ 
+      <div class="container">
+          <div class="row">
+                <div class="col-6">
+                    <button class="btn col-11 btn-primary mb-2 button_save" onclick="SavePage({{ page_id }},  document.querySelector('#inputPageName').value); CloseToplevelDynamicForm();" id="id_save_page">Save</button>
+                </div>
+                <div class="col-6">
+                    <button class="btn col-11 btn-secondary mb-2 button_save" onclick="CloseToplevelDynamicForm();" id="id_cancel_page">Cancel</button>
+                </div>
+          </div>
+      </div>
+
+
+
+
+  </div>
+
+
+</body>
+</html>

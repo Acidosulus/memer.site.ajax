@@ -62,9 +62,14 @@
     <div class="row justify-content-center border border-success color_block_blue_green">
       <span class="outline-text">Start page tools</span>
       <div class="md-8 col-12 mt-5">
-        <div class="row">
-          <div class="col-2 ml-9"><a href = '/hp_edit_pages/'><IMG class="img_with_backlight_on_hover" WIDTH="120" HEIGHT="120"  title = "Редактирование страниц" src="/static/images/pages.png"></a></div>
-          <div class="col-2 ml-9"><a href = '/hp_edit_planks/'><IMG class="img_with_backlight_on_hover" WIDTH="120" HEIGHT="120"  title = "Редактирование групп строк" src="/static/images/rows.png"></a></div>
+        <div class="row justify-content-center">
+          <div class="col-2 ml-9"><a onclick="RunInScreenForm({  form_name:`pages_edit`,
+                                                                execute_after_load:`FillPagesEdit();ResizeModalForms();`,
+                                                                request_link:`/hp_edit_pages/`,
+                                                                execute_on_ok:''});">
+                                      <IMG class="img_with_backlight_on_hover" WIDTH="120" HEIGHT="120"  title = "Pages edit" src="/static/images/rows.png">
+                                   </a>
+          </div>
           <!-- <div class="col-2 ml-9"><a href = '/hp_edit_rows/'><IMG class="img_with_backlight_on_hover" WIDTH="120" HEIGHT="120"  title = "Редактирование строк" src="/static/images/row.png"></a></div> -->
           <div class="col-2 ml-9"><a onclick="RunInScreenForm({  form_name:`rows_edit`,
                                                                 execute_after_load:`FillRowsEdit();ResizeModalForms();`,

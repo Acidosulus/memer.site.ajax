@@ -14,6 +14,7 @@ from my_library import RowToDict, RowsToDictList, append_if_not_exists, delete_n
 import math
 import datetime
 import inspect
+import decimal
 from settings import Options
 
 from sqlalchemy.dialects.postgresql import INTERVAL
@@ -26,10 +27,31 @@ mapper_registry = registry()
 Base = mapper_registry.generate_base()
 metadata = Base.metadata
 
+def get_queryresult_header_and_data(query_result):
+	result = []
+	
+	for v in query_result:
+		drow = {}
+		for count, value in enumerate(v._fields):
+			if isinstance(v[count], datetime.date):
+				drow[value] = v[count].isoformat()
+			else:
+				if isinstance(v[count], decimal.Decimal):
+					drow[value] = float(v[count])
+				else:
+					drow[value] = (v[count] if v[count]!=None else '')
+			#print(v[count], '    ->    ', type(v[count]), )
+		result.append(drow)
+	
+	headers = []
+	if len(result)>0:
+		headers = list(result[0].keys())
+	
+	return headers, result	
 
+	
 class Book(Base):
 	__tablename__ = 'books'
-
 	id_book = Column(Integer, primary_key=True, nullable=False)
 	book_name = Column(Text,  nullable=False)
 	current_paragraph = Column(Integer, nullable=True)
@@ -41,7 +63,6 @@ class Book(Base):
 
 class Sentence(Base):
 	__tablename__ = 'sentences'
-
 	sentence = Column(Text, nullable=False)
 	id_book = Column(ForeignKey('books.id_book'), nullable=False)
 	id_paragraph = Column(Integer, nullable=False)
@@ -51,7 +72,6 @@ class Sentence(Base):
 
 class ReadingJournal(Base):
 	__tablename__ = 'reading_journal'
-	
 	row_id = Column(Integer, primary_key=True, nullable=False)
 	user_id = Column(Integer, ForeignKey('users.user_id'), nullable=False)
 	id_paragraph = Column(Integer,ForeignKey('sentences.id_paragraph'), nullable=False)
@@ -61,7 +81,6 @@ class ReadingJournal(Base):
 
 class Phrase(Base):
 	__tablename__ = 'phrases'
-
 	id_phrase = Column(Integer, primary_key=True, nullable=False)
 	phrase = Column(Text, nullable=True)
 	translation = Column(Text, nullable=True)
@@ -74,7 +93,6 @@ class Phrase(Base):
 
 class UserWordsLog(Base):
 	__tablename__ = 'user_syllable_log'
-
 	user_id = Column(Integer, ForeignKey('users.user_id'), nullable=False)
 	syllable_id = Column(Integer, ForeignKey('syllables.syllable_id'), nullable=False)
 	dt = Column(DateTime, nullable=False)
@@ -83,7 +101,6 @@ class UserWordsLog(Base):
 
 class User(Base):
 	__tablename__ = 'users'
-
 	user_id = Column(Integer, primary_key=True)
 	name = Column(Text, unique=True)
 	uuid = Column(Text, unique=True)
@@ -91,7 +108,6 @@ class User(Base):
 
 class Word(Base):
 	__tablename__ = 'words'
-
 	word = Column(Text, nullable=False, unique=True)
 	transcription = Column(Text)
 	translations = Column(Text)
@@ -105,7 +121,6 @@ class Word(Base):
 
 class Syllable(Base):
 	__tablename__ = 'syllables'
-
 	word = Column(Text, nullable=False, unique=True)
 	transcription = Column(Text)
 	translations = Column(Text)
@@ -121,7 +136,6 @@ class Syllable(Base):
 
 class SyllablesParagraph(Base):
 	__tablename__ = 'syllables_paragraphs'
-
 	syllable_id = Column(ForeignKey('syllables.syllable_id'), nullable=False)
 	example = Column(Text)
 	translate = Column(Text)
@@ -133,7 +147,6 @@ class SyllablesParagraph(Base):
 
 class HPTile(Base):
 	__tablename__ = 'hp_tiles'
-
 	tile_id = Column(Integer, primary_key=True, autoincrement=True)
 	user_id = Column(Integer, nullable=False)
 	name = Column(Text, nullable=False)
@@ -142,28 +155,33 @@ class HPTile(Base):
 	icon = Column(Text, nullable=False)
 	color = Column(Text)
  
-class HPPlank(Base):
-	__tablename__ = 'hp_planks'
-
-	plank_id = Column(Integer, primary_key=True)
+class HPPage(Base):
+	__tablename__ = 'hp_pages'
+	page_id = Column(Integer, primary_key=True)
 	user_id = Column(Integer, nullable=False)
-	plank_name = Column(Text, nullable=False)
+	page_name = Column(Text, nullable=False)
 	index = Column(Integer, default=0, nullable=False)
+
+
+class HPPageRows(Base):
+    __tablename__ = 'hp_page_rows'
+    id = Column(BigInteger, primary_key=True)
+    page_id = Column(BigInteger, nullable=False)
+    row_id = Column(BigInteger, nullable=False)
+    row_index = Column(BigInteger, default=0)
+    user_id = Column(Integer, nullable=False)
+
 
 class HPRow(Base):
 	__tablename__ = 'hp_rows'
-
 	row_id = Column(Integer, primary_key=True)
 	user_id = Column(Integer, nullable=False)
 	row_name = Column(Text, nullable=False)
 	row_type = Column(Integer, default=0, nullable=False)
 	row_index = Column(Integer, default=0, nullable=False)
-	plank_id = Column(Integer, ForeignKey('hp_planks.plank_id'), default=0, nullable=False)
-	plank = relationship("HPPlank", backref="rows")
 
 
-
-class HpRowTile(Base):
+class HPRowTile(Base):
 	__tablename__ = 'hp_row_tiles'
 	id = Column(BigInteger, primary_key=True, autoincrement=True)
 	row_id = Column(BigInteger, nullable=False)
@@ -730,39 +748,81 @@ class LanguageDB:
 		rows = self.session.query(HPRow).filter(	HPRow.user_id == ln_user_id).order_by(HPRow.row_name).all()
 		return RowsToDictList(rows)
 
+	def GetPages(self, user_name:str):
+		print(f'GetPages: user_name = "{user_name}"')
+		ln_user_id = self.GetUserId(user_name)
+		rows = self.session.query(HPPage).filter(	HPPage.user_id == ln_user_id).order_by(HPPage.page_name).all()
+		return RowsToDictList(rows)
+
+
+
 	def Delete_Row(self, user_name, row_id):
 		print(f'Delete_Row: user_name = "{user_name}", row_id = "{row_id}"')
 		ln_user_id = self.GetUserId(user_name)
-		self.session.query(HpRowTile).filter(	HpRowTile.user_id == ln_user_id,
-												HpRowTile.row_id == row_id).delete()
+		self.session.query(HPRowTile).filter(	HPRowTile.user_id == ln_user_id,
+												HPRowTile.row_id == row_id).delete()
 		self.session.query(HPRow).filter(		HPRow.user_id == ln_user_id,
 												HPRow.row_id == row_id).delete()
 		self.session.commit()
 		return ''
+
+
+	def Delete_Page(self, user_name, page_id):
+		print(f'Delete_page: user_name = "{user_name}", page_id = "{page_id}"')
+		ln_user_id = self.GetUserId(user_name)
+		self.session.query(HPRowTile).filter(	HPRowTile.user_id == ln_user_id,
+												HPRowTile.page_id == page_id).delete()
+		self.session.query(HPPage).filter(		HPPage.user_id == ln_user_id,
+												HPPage.page_id == page_id).delete()
+		self.session.commit()
+		return ''
+
+
+	def GetHPPageData(self, user_name, page_id):
+		print(f'GetHPPageData: user_name = "{user_name}", page_id = "{page_id}"')
+		ln_user_id = self.GetUserId(user_name)
+
+		# the page - one record by parameter page_id
+		page = self.session.query(HPPage)	.filter(		HPPage.user_id == ln_user_id,
+															HPPage.page_id == page_id).first()
+		result = RowToDict(page)
+		# rows of this page
+		rows = self.session.query(HPRow.row_id, HPPageRows.row_index, HPRow.row_name, HPRow.row_type
+										).filter(		HPRow.user_id == ln_user_id,
+														HPPageRows.user_id == ln_user_id,
+														HPPageRows.page_id == page_id,
+														HPPageRows.row_id == HPRow.row_id
+														).all()
+		result['rows']=[]
+		for row in rows:
+			result['rows'].append( self.GetHPRowData(user_name, row['row_id']) )
+
+		return result
+
 
 	def GetHPRowData(self, user_name:str, row_id):
 		print(f'GetHPRowData: user_name = "{user_name}", "{row_id}"')
 		ln_user_id = self.GetUserId(user_name)
 		row = RowToDict(self.session.query(HPRow).filter(	HPRow.user_id == ln_user_id,
 								  							HPRow.row_id == int(row_id)).first())
-		tiles = RowsToDictList(self.session.query(HPTile, HpRowTile).filter(	HPRow.row_id == int(row_id),
-																				HPTile.tile_id == HpRowTile.tile_id,
-																				HpRowTile.user_id == ln_user_id,
-																				HpRowTile.row_id == row_id).all())
+		tiles = RowsToDictList(self.session.query(HPTile, HPRowTile).filter(	HPRow.row_id == int(row_id),
+																				HPTile.tile_id == HPRowTile.tile_id,
+																				HPRowTile.user_id == ln_user_id,
+																				HPRowTile.row_id == row_id).all())
 		row['tiles'] = tiles
 		return row
 
 	def AddTileToRowRelation(self, user_name, row_id, tile_id, index_id):
 		print(f'AddTileToRowRelation: user_name = "{user_name}", row_id = "{row_id}", tile_id = {tile_id}, index_id = {index_id}')
 		ln_user_id = self.GetUserId(user_name)
-		queru_exists = self.session.query(HpRowTile).filter(	HpRowTile.user_id == ln_user_id,
-											   					HpRowTile.row_id == row_id,
-																HpRowTile.tile_index == index_id)
+		queru_exists = self.session.query(HPRowTile).filter(	HPRowTile.user_id == ln_user_id,
+											   					HPRowTile.row_id == row_id,
+																HPRowTile.tile_index == index_id)
 		if queru_exists.count()>=1:
 			queru_exists.update({'tile_id': tile_id})
 			print('Record updated')
 		else:
-			self.session.add(	HpRowTile(	user_id = ln_user_id,
+			self.session.add(	HPRowTile(	user_id = ln_user_id,
 											row_id = row_id,
 											tile_id = tile_id,
 											tile_index = index_id
@@ -774,8 +834,8 @@ class LanguageDB:
 	def DeleteTileFromRow(self, user_name, id):
 		print(f'DeleteTileFromRow: user_name = "{user_name}", id = "{id}"')
 		ln_user_id = self.GetUserId(user_name)
-		self.session.query(HpRowTile).filter(	HpRowTile.user_id == ln_user_id,
-									   			HpRowTile.id == id).delete()
+		self.session.query(HPRowTile).filter(	HPRowTile.user_id == ln_user_id,
+									   			HPRowTile.id == id).delete()
 
 
 	def SaveRowName(self, user_name, row_id, new_row_name):
@@ -833,7 +893,7 @@ prnt = printer.pprint
 if True:
 	if sys.platform == 'linux':
 		dbn = LanguageDB(options.LANDDBURI, autocommit=False)
-		# prnt(dbn.GetHPRowData('admin', 1))
+		prnt(dbn.GetHPPageData('admin', 1))
 	else:
 		dbn = LanguageDB(options.LANDDBURI, autocommit=False)
 		#print(f"GetTodayReadingParagraphs: {dbn.GetTodayReadingParagraphs('admin')}")

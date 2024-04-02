@@ -135,17 +135,33 @@ async def Delete_Tile(rq:SiteRequest):
 async def Get_Rows(UserName, UserUUID:str):
 	 return dblang.GetRows(UserName)
 
+@app.post("/Get_Pages/")
+async def Get_Rows(rq:SiteRequest):
+	 return dblang.GetPages(rq.username)
+
+
 @app.post("/Get_Row/")
 async def Get_Row(rq:SiteRequest):
 	return dblang.GetHPRowData(rq.username, int(rq.data))
+
 
 @app.post("/Save_Row/")
 async def Save_Row(rq:SiteRequest):
 	return dblang.SaveRowName(rq.username, int(rq.data), rq.comment)
 
+
 @app.post("/Delete_Row/")
 async def Delete_Row(rq:SiteRequest):
 	return dblang.Delete_Row(rq.username, int(rq.data))
+
+
+@app.post("/Delete_Page/")
+async def Delete_Page(rq:SiteRequest):
+	return dblang.Delete_Page(rq.username, int(rq.data))
+
+@app.post("/Get_Page/")
+async def Delete_Page(rq:SiteRequest):
+	return dblang.GetHPPageData(rq.username, int(rq.data))
 
 
 @app.post("/AddTileToRowRelation/")
