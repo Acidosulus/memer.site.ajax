@@ -727,8 +727,18 @@ class LanguageDB:
 	def GetRows(self, user_name:str):
 		print(f'GetRows: user_name = "{user_name}"')
 		ln_user_id = self.GetUserId(user_name)
-		rows = self.session.query(HPRow).filter(	HPRow.user_id == ln_user_id).all()
+		rows = self.session.query(HPRow).filter(	HPRow.user_id == ln_user_id).order_by(HPRow.row_name).all()
 		return RowsToDictList(rows)
+
+	def Delete_Row(self, user_name, row_id):
+		print(f'Delete_Row: user_name = "{user_name}", row_id = "{row_id}"')
+		ln_user_id = self.GetUserId(user_name)
+		self.session.query(HpRowTile).filter(	HpRowTile.user_id == ln_user_id,
+												HpRowTile.row_id == row_id).delete()
+		self.session.query(HPRow).filter(		HPRow.user_id == ln_user_id,
+												HPRow.row_id == row_id).delete()
+		self.session.commit()
+		return ''
 
 	def GetHPRowData(self, user_name:str, row_id):
 		print(f'GetHPRowData: user_name = "{user_name}", "{row_id}"')
@@ -737,7 +747,8 @@ class LanguageDB:
 								  							HPRow.row_id == int(row_id)).first())
 		tiles = RowsToDictList(self.session.query(HPTile, HpRowTile).filter(	HPRow.row_id == int(row_id),
 																				HPTile.tile_id == HpRowTile.tile_id,
-																				HpRowTile.user_id == ln_user_id).all())
+																				HpRowTile.user_id == ln_user_id,
+																				HpRowTile.row_id == row_id).all())
 		row['tiles'] = tiles
 		return row
 
@@ -759,11 +770,25 @@ class LanguageDB:
 			print('Record added')
 		self.session.commit()
 
+
 	def DeleteTileFromRow(self, user_name, id):
 		print(f'DeleteTileFromRow: user_name = "{user_name}", id = "{id}"')
 		ln_user_id = self.GetUserId(user_name)
 		self.session.query(HpRowTile).filter(	HpRowTile.user_id == ln_user_id,
 									   			HpRowTile.id == id).delete()
+
+
+	def SaveRowName(self, user_name, row_id, new_row_name):
+		print(f'SaveRowName: user_name = "{user_name}", row_id = "{row_id}", new_row_name = "{new_row_name}"')
+		ln_user_id = self.GetUserId(user_name)
+		if row_id == 0:
+			self.session.add(HPRow(	user_id = ln_user_id,
+						  			row_name = new_row_name,
+									row_type = 1))
+		else:
+			self.session.query(HPRow).filter(	HPRow.user_id == ln_user_id,
+												HPRow.row_id == row_id).update({'row_name':new_row_name})
+		self.session.commit()
 
 
 	def GetMessagesAfterId(self, user_name, last_row_id):

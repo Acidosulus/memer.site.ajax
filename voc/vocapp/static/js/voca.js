@@ -1606,6 +1606,7 @@ function FillRowsEdit(){
         UserUUID: UserUUID
     },
     success: function(response) {
+        console.log(response);
         parentElement.empty();
         parentElement.attr('size',response.length);
         for (let element of response){
@@ -1875,3 +1876,26 @@ async function AddMessage(message='', icon='', hyperlink=''){
   // Initial fetch of messages
   fetchMessages();
   setInterval(fetchMessages, 5000);
+
+
+
+async function SaveRow(row_id, new_row_name){
+  await asyncRequest(`${APIServer}/Save_Row/`,`POST`, {               command: '',
+                                                                        comment: new_row_name,
+                                                                        data: row_id});
+
+}
+
+
+async function RemoveRow(row_id, row_name){
+  if (row_id<=0){
+    return
+  }
+  var answer = confirm(`Delete a line "${row_name}"?`);
+  if (answer){
+    await asyncRequest(`${APIServer}/Delete_Row/`,`POST`, {               command: '',
+                                                                        comment: '',
+                                                                        data: row_id});
+    FillRowsEdit();
+  }
+}

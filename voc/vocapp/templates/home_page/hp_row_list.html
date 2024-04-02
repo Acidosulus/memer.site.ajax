@@ -32,7 +32,8 @@
                   onclick="RunInScreenForm({  form_name:`row_edit`,
                     execute_after_load:`FillEditRowForm();ResizeModalForms();`,
                     request_link:`/hp_edit_row/0`,
-                    execute_on_ok:''});"
+                    execute_on_ok:'',
+                    execute_on_close:'FillRowsEdit();'});"
                   >
                   Add
                 </button>
@@ -43,12 +44,19 @@
                   RunInScreenForm({form_name:`row_edit`,
                   execute_after_load:`FillEditRowForm();ResizeModalForms();`,
                   request_link:`/hp_edit_row/`+$('#id_rows_ul_group').find(':selected').data(`row_id`),
-                  execute_on_ok:''});"
+                  execute_on_ok:'',
+                  execute_on_close:'FillRowsEdit();'});"
                 >
                 Edit</button>
               </div>
               <div class="row">
-                <button type="button" class="btn btn-danger btn-block mb-2 button_save" id="RowsHomePageDeleteButton">Remove</button>
+                <button type="button" class="btn btn-danger btn-block mb-2 button_save" id="RowsHomePageDeleteButton"
+                  onclick="
+                    RemoveRow($('#id_rows_ul_group').find(':selected').data(`row_id`), $('#id_rows_ul_group').find(':selected').val());
+                    FillRowsEdit();
+                  ">
+                    Remove
+                </button>
               </div>
             </div>
           </div>
