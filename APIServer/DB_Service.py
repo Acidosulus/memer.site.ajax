@@ -796,7 +796,7 @@ class LanguageDB:
 		result['rows']=[]
 		for row in rows:
 			result['rows'].append( self.GetHPRowData(user_name, row['row_id']) )
-
+		prnt(result)
 		return result
 
 
@@ -893,7 +893,7 @@ prnt = printer.pprint
 if True:
 	if sys.platform == 'linux':
 		dbn = LanguageDB(options.LANDDBURI, autocommit=False)
-		prnt(dbn.GetHPPageData('admin', 1))
+		# prnt(dbn.GetHPPageData('admin', 1))
 	else:
 		dbn = LanguageDB(options.LANDDBURI, autocommit=False)
 		#print(f"GetTodayReadingParagraphs: {dbn.GetTodayReadingParagraphs('admin')}")

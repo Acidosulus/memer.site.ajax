@@ -1979,17 +1979,87 @@ async function RemovePage(page_id, page_name){
 
 
   async function FillEditPageForm() {
-    let parentElement = $(`#page_edit_data_container`)
+    let pattern = `
+  <div class="row border-5 border-secondary" id="PagesList" style="border: 1px solid #2426c2;border-radius: 15px;">
+    <div class="col-2">
+       <span class="text-primary" id="row_name"><b>{ name }</b></span>
+    </div>
+    <div class="col-10">
+      <div class="container-fluid mt-1">
+        <div class="row" id="row_container">
+            <div class="col-1" >
+              <img { icon_1 }  width="32" height="32" id="img_1">
+           </div>
+            <div class="col-1">
+              <img { icon_2 }  width="32" height="32" id="img_2">
+           </div>
+            <div class="col-1">
+              <img { icon_3 }" width="32" height="32" id="img_3">
+           </div>
+            <div class="col-1">
+              <img { icon_4 }  width="32" height="32" id="img_4">
+           </div>
+            <div class="col-1">
+              <img { icon_5 }  width="32" height="32" id="img_5">
+           </div>
+            <div class="col-1">
+              <img { icon_6 }  width="32" height="32" id="img_6">
+           </div>
+            <div class="col-1">
+              <img { icon_7 }  width="32" height="32" id="img_7">
+           </div>
+            <div class="col-1">
+              <img { icon_8 }  width="32" height="32" id="img_8">
+           </div>
+            <div class="col-1">
+              <img { icon_9 }  width="32" height="32" id="img_9">
+           </div>
+            <div class="col-1">
+              <img { icon_10 } width="32" height="32" id="img_10">
+           </div>
+            <div class="col-1">
+              <img { icon_11 } width="32" height="32" id="img_11">
+           </div>
+            <div class="col-1">
+              <img { icon_12 } width="32" height="32" id="img_12">
+           </div>
+        </div>
+      </div>
+   </div>
+  </div>
+  <br>
+  `;
+    
+    
+    let parentElement = document.querySelector(`#page_edit_data_container`);
+
     if (!parentElement){
       console.log(`parent element is not found`);
       return
     }
-    let page_id = parentElement.data(`page_id`);
-    
+    let page_id = parentElement.dataset.page_id
+
     if (page_id>0){
       response = await asyncRequest(`${APIServer}/Get_Page/`,`POST`, {    command: '',
                                                                           comment: '',
                                                                           data: page_id});
+      document.querySelector(`#inputPageName`).value = response.page_name;
+
+
+      let rows_container = parentElement.querySelector('#rows_container');
+      for (let row of response.rows){
+        console.log(row);
+        rowHtml = pattern.replace('{ name }', row.row_name);
+        for (let tile of row.tiles){
+          rowHtml = rowHtml.replace(`{ icon_${tile.tile_index} }`,`src="/api/v1/get_asset/tiles/${tile.icon}"`);
+        }
+
+        for (let i = 1; i <= 12; i++) {
+          rowHtml = rowHtml.replace(`{ icon_${i} }`,`src="/static/images/empty_32x32.png"`);
+        }
+
+        rows_container.insertAdjacentHTML(`beforeend`,rowHtml);
+      }
     } else{
       console.log('Wrong condition: parentElement.data(`row_id`)>0');
     }
