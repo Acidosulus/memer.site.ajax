@@ -1975,12 +1975,19 @@ async function RemovePage(page_id, page_name){
   }
   
 
-
+async function SelectRow(element){
+  for (let row of document.querySelectorAll(`.page_rows_in_edit_form`)){
+      row.classList.remove("selected_row");
+      row.dataset.selected = `no`;
+  }
+  element.classList.add("selected_row");
+  element.dataset.selected = `yes`;
+}
 
 
   async function FillEditPageForm() {
     let pattern = `
-  <div class="row border-5 border-secondary" id="PagesList" style="border: 1px solid #2426c2;border-radius: 15px;">
+  <div class="row border-5 page_rows_in_edit_form" id="PagesList" style="border: 1px solid #cccccc; border-radius: 15px;" onclick="SelectRow(this);">
     <div class="col-2">
        <span class="text-primary" id="row_name"><b>{ name }</b></span>
     </div>

@@ -601,3 +601,21 @@ my_div_save{
             100% { opacity: 1; }
           }
 
+
+          
+          @keyframes rowborderAnimation {
+            0% {
+              border-color: red;
+            }
+            50% {
+              border-color: yellow;
+            }
+            100% {
+              border-color: lime;
+            }
+          }
+          .selected_row
+           {
+            border: 10px solid yellow;
+            animation: rowborderAnimation 1s infinite;
+          }

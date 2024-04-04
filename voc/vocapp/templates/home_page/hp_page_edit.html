@@ -1,5 +1,10 @@
 {% load static %}
 
+<style>
+   
+
+</style>
+
 <html>
 
   
@@ -9,17 +14,54 @@
       <label for="inputRowName">Name</label>
       <input type="text" class="form-control fs-3 fw-bold font-monospace" id="inputPageName" placeholder="Input page name" autocomplete="off">
     </div>
+      <div class="row">
+        <div class="col-10">
+            <div class="container-fluid mt-5" id="rows_container">
+            </div>
+        </div>
+        <div class="col-2 mt-5">
+                            <div class="container">
+                              <div class="row">
+                                <button type="button" class="btn btn-primary btn-block mb-2 button_save"
+                                  onclick="RunInScreenForm({  form_name:`page_edit`,
+                                                            execute_after_load:`FillEditPageForm();ResizeModalForms();`,
+                                                            request_link:`/hp_edit_page/0`,
+                                                            execute_on_ok:'',
+                                                            execute_on_close:'FillPagesEdit();'});"
+                                >
+                                  Add
+                                </button>
+                              </div>
+                              <div class="row">
+                                  <button type="button" class="btn btn-success btn-block mb-2 button_save" id="PagesHomePageEditButton" 
+                                onclick="
+                                  RunInScreenForm({form_name:`page_edit`,
+                                  execute_after_load:`FillEditPageForm();ResizeModalForms();`,
+                                  request_link:`/hp_edit_page/`+$('#id_pages_ul_group').find(':selected').data(`page_id`),
+                                  execute_on_ok:'',
+                                  execute_on_close:'FillPagesEdit();'});"
+                                >
+                                Edit</button>
+                              </div>
+                              <div class="row">
+                                <button type="button" class="btn btn-danger btn-block mb-2 button_save" id="PagesHomePageDeleteButton"
+                                  onclick="
+                                    RemovePage($('#id_pages_ul_group').find(':selected').data(`page_id`), $('#id_pages_ul_group').find(':selected').val());
+                                    FillPagesEdit();
+                                  ">
+                                    Remove
+                                </button>
+                              </div>
+                          </div>
 
-
-      <div class="container-fluid mt-5" id="rows_container">
+        </div>
       </div>
 
 
-
-      
-<br><br><br>
+    </div>
+      <br><br><br>
  
-      <div class="container">
+      <div class="contain er">
           <div class="row">
                 <div class="col-6">
                     <button class="btn col-11 btn-primary mb-2 button_save" onclick="SavePage({{ page_id }},  document.querySelector('#inputPageName').value); CloseToplevelDynamicForm();" id="id_save_page">Save</button>

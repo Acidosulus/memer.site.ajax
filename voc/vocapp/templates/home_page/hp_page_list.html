@@ -27,37 +27,37 @@
 
       <div class="col-md-3">
             <div class="container">
-              <div class="row">
-                <button type="button" class="btn btn-primary btn-block mb-2 button_save"
-                  onclick="RunInScreenForm({  form_name:`page_edit`,
-                                            execute_after_load:`FillEditPageForm();ResizeModalForms();`,
-                                            request_link:`/hp_edit_page/0`,
-                                            execute_on_ok:'',
-                                            execute_on_close:'FillPagesEdit();'});"
-                >
-                  Add
-                </button>
-              </div>
-              <div class="row">
-                  <button type="button" class="btn btn-success btn-block mb-2 button_save" id="PagesHomePageEditButton" 
-                onclick="
-                  RunInScreenForm({form_name:`page_edit`,
-                  execute_after_load:`FillEditPageForm();ResizeModalForms();`,
-                  request_link:`/hp_edit_page/`+$('#id_pages_ul_group').find(':selected').data(`page_id`),
-                  execute_on_ok:'',
-                  execute_on_close:'FillPagesEdit();'});"
-                >
-                Edit</button>
-              </div>
-              <div class="row">
-                <button type="button" class="btn btn-danger btn-block mb-2 button_save" id="PagesHomePageDeleteButton"
+                <div class="row">
+                  <button type="button" class="btn btn-primary btn-block mb-2 button_save"
+                    onclick="RunInScreenForm({  form_name:`page_edit`,
+                                              execute_after_load:`FillEditPageForm();ResizeModalForms();`,
+                                              request_link:`/hp_edit_page/0`,
+                                              execute_on_ok:'',
+                                              execute_on_close:'FillPagesEdit();'});"
+                  >
+                    Add
+                  </button>
+                </div>
+                <div class="row">
+                    <button type="button" class="btn btn-success btn-block mb-2 button_save" id="PagesHomePageEditButton" 
                   onclick="
-                    RemovePage($('#id_pages_ul_group').find(':selected').data(`page_id`), $('#id_pages_ul_group').find(':selected').val());
-                    FillPagesEdit();
-                  ">
-                    Remove
-                </button>
-              </div>
+                    RunInScreenForm({form_name:`page_edit`,
+                    execute_after_load:`FillEditPageForm();ResizeModalForms();`,
+                    request_link:`/hp_edit_page/`+$('#id_pages_ul_group').find(':selected').data(`page_id`),
+                    execute_on_ok:'',
+                    execute_on_close:'FillPagesEdit();'});"
+                  >
+                  Edit</button>
+                </div>
+                <div class="row">
+                  <button type="button" class="btn btn-danger btn-block mb-2 button_save" id="PagesHomePageDeleteButton"
+                    onclick="
+                      RemovePage($('#id_pages_ul_group').find(':selected').data(`page_id`), $('#id_pages_ul_group').find(':selected').val());
+                      FillPagesEdit();
+                    ">
+                      Remove
+                  </button>
+                </div>
             </div>
           </div>
     </div>
