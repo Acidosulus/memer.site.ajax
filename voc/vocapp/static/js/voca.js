@@ -1741,9 +1741,11 @@ function RefreshElementsEditRowForm(){
   if (GetSelectedHomePageRowId()==0){
     $("#RowsHomePageEditButton").prop("disabled", true);
     $("#RowsHomePageDeleteButton").prop("disabled", true);
+    $("#RowsHomePageSelectButton").prop("disabled", true);
   }else{
     $("#RowsHomePageEditButton").prop("disabled", false);
     $("#RowsHomePageDeleteButton").prop("disabled", false);
+    $("#RowsHomePageSelectButton").prop("disabled", false);
   }
 }
 
@@ -2039,7 +2041,6 @@ async function SelectRow(element){
     
     
     let parentElement = document.querySelector(`#page_edit_data_container`);
-
     if (!parentElement){
       console.log(`parent element is not found`);
       return
@@ -2054,6 +2055,7 @@ async function SelectRow(element){
 
 
       let rows_container = parentElement.querySelector('#rows_container');
+      rows_container.innerHTML=``;
       for (let row of response.rows){
         console.log(row);
         rowHtml = pattern.replace('{ name }', row.row_name);
@@ -2073,3 +2075,7 @@ async function SelectRow(element){
   }
   
 
+
+async function AddRowIntoPage(row_id){
+  console.log(row_id);
+}

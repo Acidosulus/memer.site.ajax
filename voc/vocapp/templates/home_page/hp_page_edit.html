@@ -11,23 +11,34 @@
 
   <div class="container mt-5 border-5 border-danger" id="page_edit_data_container" data-page_id="{{ page_id }}">
     <div class="form-group">
-      <label for="inputRowName">Name</label>
+      <label for="inputRowName" id="lable_for_row_name">Name</label>
       <input type="text" class="form-control fs-3 fw-bold font-monospace" id="inputPageName" placeholder="Input page name" autocomplete="off">
     </div>
       <div class="row">
+
+
         <div class="col-10">
             <div class="container-fluid mt-5" id="rows_container">
             </div>
         </div>
+
+
+
         <div class="col-2 mt-5">
                             <div class="container">
                               <div class="row">
                                 <button type="button" class="btn btn-primary btn-block mb-2 button_save"
-                                  onclick="RunInScreenForm({  form_name:`page_edit`,
-                                                            execute_after_load:`FillEditPageForm();ResizeModalForms();`,
-                                                            request_link:`/hp_edit_page/0`,
-                                                            execute_on_ok:'',
-                                                            execute_on_close:'FillPagesEdit();'});"
+                                                              onclick="RunInScreenForm({  form_name:`rows_edit`,
+                                                                                          execute_after_load:`FillRowsEdit();
+                                                                                                              ResizeModalForms();
+                                                                                                              document.querySelector('#RowsHomePageSelectButton').style.display = 'block';
+                                                                                                              document.querySelector('#RowsHomePageSelectButton').onclick=function () {
+                                                                                                                document.querySelector('#lable_for_row_name').innerHTML = $('#id_rows_ul_group').find(':selected').data('row_id');
+                                                                                                                console.log($('#id_rows_ul_group').find(':selected').data('row_id'));
+                                                                                                                console.log('SelectButton');
+                                                                                                                CloseToplevelDynamicForm();
+                                                                                                              };`,
+                                                                                          request_link:`/hp_edit_rows/`});"
                                 >
                                   Add
                                 </button>
@@ -52,16 +63,17 @@
                                     Remove
                                 </button>
                               </div>
-                          </div>
+                            </div>
 
         </div>
       </div>
 
 
     </div>
+  </div>
       <br><br><br>
  
-      <div class="contain er">
+      <div class="container-fluid">
           <div class="row">
                 <div class="col-6">
                     <button class="btn col-11 btn-primary mb-2 button_save" onclick="SavePage({{ page_id }},  document.querySelector('#inputPageName').value); CloseToplevelDynamicForm();" id="id_save_page">Save</button>
@@ -75,7 +87,7 @@
 
 
 
-  </div>
+  
 
 
 </body>
