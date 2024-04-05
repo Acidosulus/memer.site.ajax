@@ -568,15 +568,6 @@ my_div_save{
         }
         
 
-        #messageLog {
-            position: fixed;
-            bottom: 0;
-            right: 0;
-            width: 100%;
-            background-color: #000000;
-            border: 1px solid #353333;
-            color:green;
-          }
           
           #messageLogHeader {
             background-color: #201f1f;
@@ -619,3 +610,20 @@ my_div_save{
             border: 10px solid yellow;
             animation: rowborderAnimation 1s infinite;
           }
+
+  /* Стили для блока сообщений */
+  #messageLog {
+    width: 100%;
+    max-height: 100px;
+    overflow-y: auto;
+    border: 1px solid #00200f;
+    opacity: 1;
+    padding: 10px;
+    margin-top: 20px;
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    color:green;
+    /* z-index: -1; */
+    background-image: url('/static/images/background.gif');
+}

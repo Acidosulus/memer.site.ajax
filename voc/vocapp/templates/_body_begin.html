@@ -12,31 +12,32 @@
 
 
 
+<img 	src="/static/images/arrows_down.png"
+		style="position:fixed; height: 40px; width: 40px; right: 25px; bottom: 20px; z-index: 1;"
+		id="message_log_toggle_button"
+		data-state="up"
+		onclick="ToggleMessageLogUpDown();">
 
-<nav  id="messageLog"
-      class="navbar sticky-bottom bg-body-tertiary"
-      role="navigation"
-      style=" background-image: url('/static/images/background.gif');
-              position: fixed;
-              bottom: 0;
-              width: 100%;
-              max-height: 100px;
-              overflow-y: auto;
-              z-index: 1;">
+<img 	src="/static/images/fullscreen.png"
+		style="position:fixed; height: 40px; width: 40px; right: 25px; bottom: 60px; z-index: 1;"
+		id="message_log_toggle_fullscreen_button"
+		data-state="normal"
+		onclick="ToggleMessageLogFullscreen();">
+
+
+
+<div  id="messageLog"
+    >
     <div id="messageLogContent"  class="col">
       <!-- Message log content will be inserted here dynamically -->
     </div>
-</nav>
+  </div>
 
-<div id="messageLogHeader"
-      style=" 
-      position: fixed;
-      bottom: 10;
-      right: 30;
-      z-index: 2;
-      ">
-  <button id="toggleButton"><img id="toggleButtonImage" src="/static/images/arrow_down.png" height="40"></button>
-</div>
+<!-- <div id="messageLog"
+	data-state="up"
+	style="background-image: url('/static/images/empty_black.png'); background-repeat: repeat;"
+	data-firstinit="true">
+</div> -->
 
 
-
+                                                                     
