@@ -1803,6 +1803,7 @@ catch{
     if (response.length>0) {
       // If log is open, display messages
       displayMessages( response );
+      document.getElementById('messageLog').dataset.firstinit='false';
     }
    
  }
@@ -1848,6 +1849,10 @@ catch{
                         <span class="my_class_date_history">${message.dt.substring(0,16)}</span> 
                         ${text}</div>`
               messageLogContent.insertAdjacentHTML(`afterbegin`,st);
+              if (messageLog.dataset.firstinit!=='true'){
+                showPopupMessage(st);
+              }
+          
       }
     }
   
@@ -1923,7 +1928,48 @@ async function AddMessage(message='', icon='', hyperlink=''){
   }
   
 
+  function showPopupMessage(text) {
+    // Создаем элемент для всплывающего блока
+	let maxtop = 0;
+	for (let element of document.querySelectorAll(`.popup`)){
+		let top = Number(element.style.top.replace('px',''));
+		if (maxtop<top){
+			maxtop = top;
+		}
+	}
+    const popup = document.createElement('div');
+  	popup.classList.add('popup');
+    popup.innerHTML = text;
+    popup.style.position = 'fixed';
+    popup.style.top = `${maxtop+80}px`;
+    popup.style.right = '20px';
+	  popup.style.maxWidth = '80%';
+  	popup.style.width = 'auto';
+    popup.style.padding = '10px';
+    popup.style.background = 'rgba(0, 0, 0, 0.7)';
+    popup.style.color = '#fff';
+    popup.style.borderRadius = '5px';
+    popup.style.transition = 'opacity 0.5s';
+    document.body.appendChild(popup);
 
+    // Задаем начальную прозрачность блока
+    popup.style.opacity = '1';
+
+    // Устанавливаем таймер для исчезновения блока через 10 секунд
+    setTimeout(() => {
+        // Постепенно уменьшаем прозрачность до 0
+        let opacity = 1;
+        const interval = setInterval(() => {
+            opacity -= 0.1;
+            popup.style.opacity = opacity;
+            // Когда достигнута нулевая прозрачность, удаляем блок и останавливаем интервал
+            if (opacity <= 0) {
+                clearInterval(interval);
+                document.body.removeChild(popup);
+            }
+        }, 500); // Каждые 500 миллисекунд (0.5 секунды) изменяем прозрачность
+    }, 10000); // Через 10 секунд блок исчезнет
+}
 
   
 async function SaveRow(row_id, new_row_name){
@@ -2125,3 +2171,9 @@ async function SelectRow(element){
 async function AddRowIntoPage(row_id){
   console.log(row_id);
 }
+
+
+
+
+
+
