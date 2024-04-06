@@ -568,6 +568,12 @@ my_div_save{
         }
         
 
+        .messageLogTextOrange{
+            color:orange;
+        } .messageLogTextOrange:hover{
+            -webkit-filter: brightness(2);
+        }
+
           
           #messageLogHeader {
             background-color: #201f1f;

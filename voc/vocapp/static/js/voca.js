@@ -23,7 +23,7 @@ window.onload = async function (event) {
   document.body.insertAdjacentHTML('beforeend','<br><br><br><br><br>');
 
   // global variables for connect to APIServer
-  console.log(UserName, UserUUID, APIServer);
+  //console.log(UserName, UserUUID, APIServer);
 
   document.addEventListener("keydown", function (e) {
     if (e.key === "Escape") {
@@ -98,7 +98,8 @@ function SavePhrase(link) {
     useruuid: UserUUID,
     data: `${document.getElementById("phrase_translation").value}`,
   };
-  console.log(`obody`, obody);
+  AddMessage(`Pharase saved <span class="messageLogTextOrange">${obody.command}</span>`,`add_to_list.png`,``);
+  // console.log(`obody`, obody);
   $.ajax({
     url: `${APIServer}/Save_Phrase/`,
     type: "POST",
@@ -107,10 +108,10 @@ function SavePhrase(link) {
     data: JSON.stringify(obody),
     async: false,
     success: function (data) {
-      console.log("Request successful:", data);
+      // console.log("Request successful:", data);
     },
     error: function (xhr, status, error) {
-      console.error("Request failed:", error);
+      // console.error("Request failed:", error);
     },
   });
   if (link.length > 0) {
@@ -120,13 +121,13 @@ function SavePhrase(link) {
 
 async function Load_Phrase_in_Edit_Data() {
   if (!document.querySelector(`#body_phrase_edit`)) {
-    console.log("Load_Phrase_in_Edit_Data", "no phrase edit");
+    // console.log("Load_Phrase_in_Edit_Data", "no phrase edit");
     return;
   }
   if (
     !(Number(document.querySelector(`#body_phrase_edit`).dataset.phraseid) >= 0)
   ) {
-    console.log("Load_Phrase_in_Edit_Data", "no right phrase id");
+    // console.log("Load_Phrase_in_Edit_Data", "no right phrase id");
     return;
   }
   let answer = await asyncRequest(`${APIServer}/Get_Phrase/`, `POST`, {
@@ -207,7 +208,7 @@ async function Load_Book_Page() {
       },${Number(answer.current_paragraph) + 4}`,
     }
   );
-  console.log(wordlist);
+  // console.log(wordlist);
   let sentence_number = 0;
   document.getElementById(`id_div_book_body`).innerHTML = ``;
   let jresponse = await asyncRequest(`${APIServer}/Get_Paragraphs/`, `POST`, {
@@ -221,7 +222,7 @@ async function Load_Book_Page() {
       let modified_sentence = sentence.sentence;
       for (word of wordlist.words) {
         if (~sentence.sentence.toLowerCase().indexOf(word.toLowerCase())) {
-          console.log(`${word}: ${sentence.sentence}`);
+          // console.log(`${word}: ${sentence.sentence}`);
           let startindex = sentence.sentence
             .toLowerCase()
             .indexOf(word.toLowerCase());
@@ -352,7 +353,7 @@ function GetAllExamplesFromNewSyllablePage() {
       example_element.dataset.rowid === `undefined`
         ? -1
         : example_element.dataset.rowid;
-    console.log(subresult.rowid);
+    // console.log(subresult.rowid);
     result.push(subresult);
   }
   return result;
@@ -378,7 +379,7 @@ function SaveSyllable(link) {
     translations: document.getElementById(`id_translations`).value,
     examples: GetAllExamplesFromNewSyllablePage(),
   };
-  console.log(`obody`, obody);
+  AddMessage(`Word saved <span class="messageLogTextOrange">${obody.word}</span>`,`add.png`,``);
   $.ajax({
     url: "/api/v1/cross_request/",
     type: "POST",
@@ -387,10 +388,10 @@ function SaveSyllable(link) {
     data: JSON.stringify(obody),
     async: false,
     success: function (data) {
-      console.log("Request successful:", data);
+      // console.log("Request successful:", data);
     },
     error: function (xhr, status, error) {
-      console.error("Request failed:", error);
+      // console.error("Request failed:", error);
     },
   });
   if (link.length > 0) {
@@ -433,7 +434,7 @@ async function LoadSyllableFromWoordhunt(word) {
   req.send();
   req.onload = function () {
     let answer = JSON.parse(req.responseText);
-    console.log(answer);
+    // console.log(answer);
     document.querySelector(`#body_add_new_word`).dataset.syllable_id =
       answer.syllable_id;
     document.getElementById(`id_transcription`).value = answer.transcription;
@@ -452,14 +453,14 @@ async function LoadSyllableFromWoordhunt(word) {
 }
 
 async function Load_Syllable_Into_Add_New_Word() {
-  console.log("Load_Syllable_Into_Add_New_Word");
+  // console.log("Load_Syllable_Into_Add_New_Word");
   if (!document.querySelector(`#body_add_new_word`)) {
-    console.log("isn't Load_Syllable_Into_Add_New_Word");
+    // console.log("isn't Load_Syllable_Into_Add_New_Word");
     return;
   }
   if (document.querySelector(`#body_add_new_word`).dataset.word.length <= 0) {
     // for empty new word case
-    console.log("Load_Syllable_Into_Add_New_Word  word's length is zero");
+    // console.log("Load_Syllable_Into_Add_New_Word  word's length is zero");
     return;
   }
   let answer = await asyncRequest(
@@ -471,7 +472,7 @@ async function Load_Syllable_Into_Add_New_Word() {
       data: `${document.querySelector(`#body_add_new_word`).dataset.word}`,
     }
   );
-  console.log(answer);
+  // console.log(answer);
   document.querySelector(`#body_add_new_word`).dataset.syllable_id =
     answer.syllable_id;
   document.getElementById(`id_transcription`).value = answer.transcription;
@@ -585,6 +586,7 @@ async function UpdateCurrentPhraseAsViewed() {
 
 async function NextPhrase() {
   showOverlay();
+  AddMessage(`Repeated pharase <span class="messageLogTextOrange">${document.querySelector(`#id_class_p_my_class_p_examples`).innerText}</span>`,`phrases_academic_hood.png`,``);
   await UpdateCurrentPhraseAsViewed();
   document.querySelector("#body_phrase_in_progress").dataset.phraseid =
     await LoadNextProcessingPhraseIntoBody();
@@ -594,10 +596,10 @@ async function NextPhrase() {
 
 async function Load_Word_in_Progress_Data() {
   if (!document.querySelector(`#dataset`)) {
-    console.log("no Load_Word_in_Progress_Data");
+    // console.log("no Load_Word_in_Progress_Data");
     return;
   }
-  console.log("Load_Word_in_Progress_Data");
+  // console.log("Load_Word_in_Progress_Data");
   if (
     document.querySelector(`#dataset`).dataset.word.replaceAll(" ", "") == ""
   ) {
@@ -615,7 +617,7 @@ async function Load_Word_in_Progress_Data() {
     true
   );
 
-  console.log(answer);
+  // console.log(answer);
   document.title = `${answer.word}`;
   document.getElementById(
     "id_link_on_wooordhunt"
@@ -679,7 +681,7 @@ async function LoadNextProcessingWordIntoBody() {
     `POST`,
     { command: ``, comment: ``, data: `` }
   );
-  console.log(answer);
+  // console.log(answer);
   document.querySelector(`#dataset`).dataset.word = answer.data;
   document.querySelector(
     `#link_on_word_redo`
@@ -687,12 +689,12 @@ async function LoadNextProcessingWordIntoBody() {
   document.querySelector(
     `#img_into_link_on_word_redo`
   ).title = `Редактировать слово ${answer.data}`;
-  console.log(document.querySelector(`#dataset`).dataset.word);
+  // console.log(document.querySelector(`#dataset`).dataset.word);
 }
 
 async function SetSyllableAsViewedAndLoadNext(word) {
   showOverlay();
-  console.log(`send: ${word}`);
+  // console.log(`send: ${word}`);
   let req = new XMLHttpRequest();
   let body =
     `{"username":"` +
@@ -709,7 +711,7 @@ async function SetSyllableAsViewedAndLoadNext(word) {
     `}`;
   req.open(`POST`, `/api/v1/cross_request/`, false);
   req.send(body);
-  console.log(req.responseText);
+  // console.log(req.responseText);
   let answer = JSON.parse(req.responseText);
   AddMessage(`Repeated world |${word}| `,`education.png`,`/word_in_progress/${word}/`);
   await LoadNextProcessingWordIntoBody();
@@ -1196,10 +1198,10 @@ function handleFileUpload(list_of_file_types, url, callback) {
       xhr.open("POST", url, false);
       xhr.onload = function () {
         if (xhr.status === 200) {
-          console.log("Файл успешно загружен на сервер.");
+          // console.log("Файл успешно загружен на сервер.");
           callback();
         } else {
-          console.error("Произошла ошибка при загрузке файла на сервер.");
+          // console.error("Произошла ошибка при загрузке файла на сервер.");
         }
       };
       xhr.send(formData);
@@ -1372,7 +1374,7 @@ function GetIcons() {
       jsonResponse = JSON.parse(response);
     },
     error: function (xhr, status, error) {
-      console.error("Error while fetching icons:", error);
+      // console.error("Error while fetching icons:", error);
     },
   });
   return jsonResponse;
@@ -1437,14 +1439,14 @@ function GetTiles() {
       jsonResponse = response;
     },
     error: function (xhr, status, error) {
-      console.error("Error while fetching tiles:", error);
+      // console.error("Error while fetching tiles:", error);
     },
   });
   return jsonResponse;
 }
 
 function FillTilesField(currrent_icon) {
-  console.log(`FillTilesField('${currrent_icon}')`);
+  // console.log(`FillTilesField('${currrent_icon}')`);
   
   field = document.querySelector("#tiles_field");
   if (field!=null) {
@@ -1525,7 +1527,7 @@ function SaveTile() {
       jsonResponse = response;
     },
     error: function (xhr, status, error) {
-      console.error("Error while fetching tiles:", error);
+      // console.error("Error while fetching tiles:", error);
     },
   });
 }
@@ -1559,15 +1561,15 @@ function EditSelectedTile() {
 }
 
 function LoadDatatoEditSelectedTile() {
-  console.log(`LoadDatatoEditSelectedTile()`);
+  // console.log(`LoadDatatoEditSelectedTile()`);
   if (!document.querySelector(`#edit_tile_form_main_div`)) {
     return;
   }
-  console.log(`LoadDatatoEditSelectedTile() --> go body`);
+  // console.log(`LoadDatatoEditSelectedTile() --> go body`);
   let maindiv = document.querySelector(`#edit_tile_form_main_div`);
-  console.log(`LoadDatatoEditSelectedTile() --> maindiv = ${maindiv}`);
-  console.log(maindiv)
-  console.log(`LoadDatatoEditSelectedTile() --> maindiv = ${maindiv.dataset.tileid}`);
+  // console.log(`LoadDatatoEditSelectedTile() --> maindiv = ${maindiv}`);
+  // console.log(maindiv)
+  // console.log(`LoadDatatoEditSelectedTile() --> maindiv = ${maindiv.dataset.tileid}`);
   if (maindiv) {
     $.ajax({
       url: `${APIServer}/Get_Tile/`,
@@ -1606,7 +1608,7 @@ function FillRowsEdit(){
         UserUUID: UserUUID
     },
     success: function(response) {
-        console.log(response);
+        // console.log(response);
         parentElement.empty();
         parentElement.attr('size',response.length);
         for (let element of response){
@@ -1727,7 +1729,7 @@ async function AddTileInRow(row_id, index_id){
   let tile_id = GetSelected(`selected_tile`);
   if (tile_id !== ''){
     tile_id = GetSelected(`selected_tile`).dataset.tileid;
-    console.log(tile_id);
+    // console.log(tile_id);
         response = await asyncRequest(`${APIServer}/AddTileToRowRelation/`,`POST`, {  command: row_id,
                                                                                 comment: tile_id,
                                                                                 data: index_id});
@@ -1932,7 +1934,7 @@ async function AddMessage(message='', icon='', hyperlink=''){
     // Создаем элемент для всплывающего блока
 	let maxtop = 0;
 	for (let element of document.querySelectorAll(`.popup`)){
-		let top = Number(element.style.top.replace('px',''));
+		let top = Number(element.style.top.replace('%',''));
 		if (maxtop<top){
 			maxtop = top;
 		}
@@ -1941,7 +1943,7 @@ async function AddMessage(message='', icon='', hyperlink=''){
   	popup.classList.add('popup');
     popup.innerHTML = text;
     popup.style.position = 'fixed';
-    popup.style.top = `${maxtop+80}px`;
+    popup.style.top = `${maxtop+10}%`;
     popup.style.right = '20px';
 	  popup.style.maxWidth = '80%';
   	popup.style.width = 'auto';
@@ -1996,7 +1998,7 @@ async function RemoveRow(row_id, row_name){
 
 async function FillPagesEdit(){
   let parentElement = $('#id_pages_ul_group');
-  console.log(parentElement);
+  // console.log(parentElement);
   if (!(parentElement)){
     return;
   }
@@ -2004,11 +2006,11 @@ async function FillPagesEdit(){
   response = await asyncRequest(`${APIServer}/Get_Pages/`,`POST`, {      command: '',
                                                                         comment: '',
                                                                         data: ''});
-        console.log(response);
+        // console.log(response);
         parentElement.empty();
         parentElement.attr('size',response.length);
         for (let element of  response ){
-          console.log(element);
+          // console.log(element);
           parentElement.append(
                 `<option class="bg-transparent"  style="color: rgb(51, 255, 204);"
                 data-page_id="${element.page_id}" 
@@ -2076,12 +2078,14 @@ async function SelectRow(element){
   }
   element.classList.add("selected_row");
   element.dataset.selected = `yes`;
+  document.querySelector("#RowsHomePageEditButton").disabled = false;
+  document.querySelector("#RowsHomePageDeleteButton").disabled = false;
 }
 
 
   async function FillEditPageForm() {
     let pattern = `
-  <div class="row border-5 page_rows_in_edit_form" id="PagesList" style="border: 1px solid #cccccc; border-radius: 15px;" onclick="SelectRow(this);">
+  <div class="row border-5 page_rows_in_edit_form" id="row_list" style="border: 1px solid #cccccc; border-radius: 15px;" onclick="SelectRow(this);" data-row_id="{ row_id }">
     <div class="col-2">
        <span class="text-primary" id="row_name"><b>{ name }</b></span>
     </div>
@@ -2151,6 +2155,7 @@ async function SelectRow(element){
       for (let row of response.rows){
         console.log(row);
         rowHtml = pattern.replace('{ name }', row.row_name);
+        rowHtml = rowHtml.replace('{ row_id }', row.row_id);
         for (let tile of row.tiles){
           rowHtml = rowHtml.replace(`{ icon_${tile.tile_index} }`,`src="/api/v1/get_asset/tiles/${tile.icon}"`);
         }
@@ -2164,12 +2169,16 @@ async function SelectRow(element){
     } else{
       console.log('Wrong condition: parentElement.data(`row_id`)>0');
     }
+
+    document.querySelector("#RowsHomePageEditButton").disabled = true;
+    document.querySelector("#RowsHomePageDeleteButton").disabled = true;
+    
   }
   
 
 
 async function AddRowIntoPage(row_id){
-  console.log(row_id);
+  // console.log(row_id);
 }
 
 

@@ -1,2 +1,5 @@
+.git
+.idea
+.vscode
 __pycache__
 Storage
