@@ -66,8 +66,12 @@
                                         class="btn btn-danger btn-block mb-2 button_save"
                                         id="RowsHomePageDeleteButton"
                                         onclick="
-                                                RemovePage($('#id_pages_ul_group').find(':selected').data(`page_id`), $('#id_pages_ul_group').find(':selected').val());
-                                                FillPagesEdit();
+                                                RemoveRowFromPage(
+                                                    document.querySelector(`#row_name_${document.querySelector(`#row_list[data-selected='yes']`).dataset.row_id}`).textContent,
+                                                    document.querySelector(`#page_edit_data_container`).dataset.page_id,
+                                                    document.querySelector(`#row_list[data-selected='yes']`).dataset.row_id
+                                                );
+                                                FillEditPageForm();
                                                 ">
                                     Remove
                                 </button>

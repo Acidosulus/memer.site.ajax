@@ -967,7 +967,7 @@ function Close_Findind() {
 
 function Find_Word() {
   document.getElementById("search_result").hidden = false;
-  //document.getElementById("text_for_finding").focus();
+  document.getElementById("text_for_finding").focus();
 }
 
 async function get_finding(lc_value) {
@@ -1779,13 +1779,13 @@ catch{
                             if (response.length==0 && document.getElementById("messageLogContent").children.length==0){
                               response = await asyncRequest(`${APIServer}/GetMessagesLast/`,`POST`, {  command: ``,
                                                                                                       comment: ``,
-                                                                                                      data: 20});
+                                                                                                      data: 60});
                             }
     }
     else {
                             response = await asyncRequest(`${APIServer}/GetMessagesLast/`,`POST`, {  command: ``,
                                                                                                         comment: ``,
-                                                                                                        data: 20});
+                                                                                                        data: 60});
     }
     
     if (response.length>0){
@@ -1941,8 +1941,10 @@ async function AddMessage(message='', icon='', hyperlink=''){
 	}
     const popup = document.createElement('div');
   	popup.classList.add('popup');
+    popup.style.zIndex = "1000";
     popup.innerHTML = text;
     popup.style.position = 'fixed';
+    
     popup.style.top = `${maxtop+10}%`;
     popup.style.right = '20px';
 	  popup.style.maxWidth = '80%';
@@ -2056,14 +2058,26 @@ function GetSelectedHomePagePageId(){
   }
   
   
+async function RemoveRowFromPage(row_name, page_id, row_id){
+  showPopupMessage(`page_id = ${page_id}<br>row_id = ${row_id}<br>${row_name}`);
+  var answer = confirm(`Delete the row "${row_name}"?`);
+  if (answer){
+    await asyncRequest(`${APIServer}/Delete_Page/`,`DELETE`, {               command: '',
+                                                                           comment: '',
+                                                                           data: page_id});
+    FillPagesEdit();
+  }
+
+}
+
   
 async function RemovePage(page_id, page_name){
     if (page_id<=0){
       return
     }
-    var answer = confirm(`Delete a page "${page_name}"?`);
+    var answer = confirm(`Delete the page "${page_name}"?`);
     if (answer){
-      await asyncRequest(`${APIServer}/Delete_Page/`,`POST`, {               command: '',
+      await asyncRequest(`${APIServer}/Delete_Page/`,`DELETE`, {               command: '',
                                                                              comment: '',
                                                                              data: page_id});
       FillPagesEdit();
@@ -2087,7 +2101,7 @@ async function SelectRow(element){
     let pattern = `
   <div class="row border-5 page_rows_in_edit_form" id="row_list" style="border: 1px solid #cccccc; border-radius: 15px;" onclick="SelectRow(this);" data-row_id="{ row_id }">
     <div class="col-2">
-       <span class="text-primary" id="row_name"><b>{ name }</b></span>
+       <span class="text-primary" id="row_name_{ row_id }"><b>{ name }</b></span>
     </div>
     <div class="col-10">
       <div class="container-fluid mt-1">
@@ -2155,7 +2169,7 @@ async function SelectRow(element){
       for (let row of response.rows){
         console.log(row);
         rowHtml = pattern.replace('{ name }', row.row_name);
-        rowHtml = rowHtml.replace('{ row_id }', row.row_id);
+        rowHtml = rowHtml.replaceAll('{ row_id }', row.row_id);
         for (let tile of row.tiles){
           rowHtml = rowHtml.replace(`{ icon_${tile.tile_index} }`,`src="/api/v1/get_asset/tiles/${tile.icon}"`);
         }

@@ -155,14 +155,27 @@ async def Delete_Row(rq:SiteRequest):
 	return dblang.Delete_Row(rq.username, int(rq.data))
 
 
-@app.post("/Delete_Page/")
+@app.delete("/Delete_Page/")
 async def Delete_Page(rq:SiteRequest):
+	"""
+	Delete page\n
+	data - page id\n
+	"""
 	return dblang.Delete_Page(rq.username, int(rq.data))
 
 @app.post("/Get_Page/")
 async def Delete_Page(rq:SiteRequest):
 	return dblang.GetHPPageData(rq.username, int(rq.data))
 
+
+@app.delete("/Remove_Row_From_Page/")
+async def Remove_Row_From_Page(rq:SiteRequest):
+	"""
+	Remove row from page\n
+	data - page id\n
+	comment - row_id\n
+	"""
+	return dblang.Remove_Row_From_Page(rq.username, int(rq.data), int(rq.comment))
 
 @app.post("/AddTileToRowRelation/")
 async def AddTileToRowRelation(rq:SiteRequest):
