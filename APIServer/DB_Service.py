@@ -777,6 +777,28 @@ class LanguageDB:
 		self.session.commit()
 		return ''
 
+	def Remove_Row_From_Page(self, user_name, page_id, row_id):
+		print(f'Remove_Row_From_Page: user_name = "{user_name}", page_id = "{page_id}", row_id = "{row_id}"')
+		ln_user_id = self.GetUserId(user_name)
+		self.session.query(HPPageRows).filter(	HPPageRows.user_id == ln_user_id,
+												HPPageRows.page_id == page_id,
+												HPPageRows.row_id == row_id).delete()
+		self.session.commit()
+		self.Reorder_Index_Field_Page_Row(user_name, page_id)
+
+	def Reorder_Index_Field_Page_Row(self, user_name, page_id):
+		print(f'Reorder_Index_Field_Page_Row: user_name = "{user_name}", page_id = "{page_id}"')
+		ln_user_id = self.GetUserId(user_name)
+		rows = RowsToDictList(self.session.query(HPPageRows).filter(	HPPageRows.user_id == ln_user_id,
+																		HPPageRows.page_id == page_id).order_by(HPPageRows.row_index).all()
+		)
+		counter = 0
+		for row in rows:
+			counter += 1
+			self.session.query(HPPageRows).filter(HPPageRows.id==row.id).update({'row_index':counter})
+		self.session.commit
+
+
 
 	def GetHPPageData(self, user_name, page_id):
 		print(f'GetHPPageData: user_name = "{user_name}", page_id = "{page_id}"')
