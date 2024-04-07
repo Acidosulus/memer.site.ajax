@@ -2062,12 +2062,11 @@ async function RemoveRowFromPage(row_name, page_id, row_id){
   showPopupMessage(`page_id = ${page_id}<br>row_id = ${row_id}<br>${row_name}`);
   var answer = confirm(`Delete the row "${row_name}"?`);
   if (answer){
-    await asyncRequest(`${APIServer}/Delete_Page/`,`DELETE`, {               command: '',
-                                                                           comment: '',
-                                                                           data: page_id});
+    await asyncRequest(`${APIServer}/Remove_Row_From_Page/`,`DELETE`, {                command: '',
+                                                                                       comment: row_id,
+                                                                                       data:    page_id});
     FillPagesEdit();
   }
-
 }
 
   
@@ -2077,9 +2076,9 @@ async function RemovePage(page_id, page_name){
     }
     var answer = confirm(`Delete the page "${page_name}"?`);
     if (answer){
-      await asyncRequest(`${APIServer}/Delete_Page/`,`DELETE`, {               command: '',
-                                                                             comment: '',
-                                                                             data: page_id});
+      await asyncRequest(`${APIServer}/Delete_Page/`,`DELETE`, {                command: '',
+                                                                                comment: '',
+                                                                                data: page_id});
       FillPagesEdit();
     }
   }
