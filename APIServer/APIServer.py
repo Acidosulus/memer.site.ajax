@@ -19,8 +19,7 @@ import json
 from settings import Options
 from typing import Dict, Any
 import datetime
-import asyncio
-from aiogram import Bot, Dispatcher, types
+# from  notifier_bot import Telegram_Notifier
 
 printer = pprint.PrettyPrinter(indent=12, width=120)
 prnt = printer.pprint
@@ -35,6 +34,7 @@ options = Options("options.ini")
 
 
 db = FileInformationDB.VolumeDB(base_storage_path.parent)
+# tnotifier = Telegram_Notifier()
 app = FastAPI()
 #allow_origins=[options.SELF_ADRESS, options.API_ADRESS],
 
