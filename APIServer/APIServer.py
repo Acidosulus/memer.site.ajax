@@ -19,6 +19,8 @@ import json
 from settings import Options
 from typing import Dict, Any
 import datetime
+import asyncio
+from aiogram import Bot, Dispatcher, types
 
 printer = pprint.PrettyPrinter(indent=12, width=120)
 prnt = printer.pprint
