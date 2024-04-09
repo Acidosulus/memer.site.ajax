@@ -1,5 +1,5 @@
 {
-	"workbench.colorTheme": "Default Light+",
+	"workbench.colorTheme": "Default Dark Modern",
 	"python.REPL.enableREPLSmartSend": false,
 	"python.analysis.typeCheckingMode": "off",
 	"python.analysis.autoImportCompletions": true

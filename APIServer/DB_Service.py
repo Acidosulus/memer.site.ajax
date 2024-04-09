@@ -815,9 +815,9 @@ class LanguageDB:
 														HPPageRows.page_id == page_id,
 														HPPageRows.row_id == HPRow.row_id
 														).all()
-		result['rows']=[]
+		result['rows'] = []
 		for row in rows:
-			result['rows'].append( self.GetHPRowData(user_name, RowToDict(row['row_id']) ))
+			result['rows'].append( self.GetHPRowData(user_name,  row.row_id) )
 		return result
 
 
@@ -826,8 +826,8 @@ class LanguageDB:
 		ln_user_id = self.GetUserId(user_name)
 		row = RowToDict(self.session.query(HPRow).filter(	HPRow.user_id == ln_user_id,
 								  							HPRow.row_id == int(row_id)).first())
-		tiles = RowsToDictList(self.session.query(HPTile, HPRowTile).filter(	HPRow.row_id == int(row_id),
-																				HPTile.tile_id == HPRowTile.tile_id,
+		tiles = RowsToDictList(self.session.query(HPTile, HPRowTile).filter(	
+																				HPTile.tile_id == HPRowTile.tile_id, #HPRow.row_id == int(row_id),
 																				HPRowTile.user_id == ln_user_id,
 																				HPRowTile.row_id == row_id).all())
 		row['tiles'] = tiles
