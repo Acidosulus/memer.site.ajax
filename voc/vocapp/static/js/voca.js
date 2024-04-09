@@ -1775,17 +1775,17 @@ catch{
     if (lastMessageId > 0){
                             response = await asyncRequest(`${APIServer}/GetMessagesAfterId/`,`POST`, {  command: ``,
                                                                                                         comment: ``,
-                                                                                                        data: lastMessageId});
+                                                                                                        data: lastMessageId}, true);
                             if (response.length==0 && document.getElementById("messageLogContent").children.length==0){
                               response = await asyncRequest(`${APIServer}/GetMessagesLast/`,`POST`, {  command: ``,
                                                                                                       comment: ``,
-                                                                                                      data: 60});
+                                                                                                      data: `60`}, true);
                             }
     }
     else {
                             response = await asyncRequest(`${APIServer}/GetMessagesLast/`,`POST`, {  command: ``,
                                                                                                         comment: ``,
-                                                                                                        data: 60});
+                                                                                                        data: `60`}, true);
     }
     
     if (response.length>0){
@@ -1795,6 +1795,7 @@ catch{
               maxId = message.id;
         }
       }
+      console.log(`maxId:${maxId}  lastMessageId:${lastMessageId}`);
       if (maxId > lastMessageId) {
         setCookie('maxLastMessageId', maxId);
       }
@@ -1946,15 +1947,17 @@ async function AddMessage(message='', icon='', hyperlink=''){
     popup.style.position = 'fixed';
     
     popup.style.top = `${maxtop+10}%`;
-    popup.style.right = '20px';
+    popup.style.right = '50px';
 	  popup.style.maxWidth = '80%';
-  	popup.style.width = 'auto';
+  	popup.style.width = '80%';
+    // popup.style.height = '10%';
     popup.style.padding = '10px';
     popup.style.background = 'rgba(0, 0, 0, 0.7)';
     popup.style.color = '#fff';
     popup.style.borderRadius = '5px';
     popup.style.transition = 'opacity 0.5s';
-    document.body.appendChild(popup);
+    popup.style.transform = 'scale(1.5)';
+    document.querySelector(`#messages_anchor`).appendChild(popup);
 
     // Задаем начальную прозрачность блока
     popup.style.opacity = '1';
@@ -1969,7 +1972,7 @@ async function AddMessage(message='', icon='', hyperlink=''){
             // Когда достигнута нулевая прозрачность, удаляем блок и останавливаем интервал
             if (opacity <= 0) {
                 clearInterval(interval);
-                document.body.removeChild(popup);
+                document.querySelector(`#messages_anchor`).removeChild(popup);
             }
         }, 100); // Каждые 500 миллисекунд (0.5 секунды) изменяем прозрачность
     }, 3000); // Через 10 секунд блок исчезнет
