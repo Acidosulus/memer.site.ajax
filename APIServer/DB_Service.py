@@ -817,8 +817,7 @@ class LanguageDB:
 														).all()
 		result['rows']=[]
 		for row in rows:
-			result['rows'].append( self.GetHPRowData(user_name, row['row_id']) )
-		prnt(result)
+			result['rows'].append( self.GetHPRowData(user_name, RowToDict(row['row_id']) ))
 		return result
 
 

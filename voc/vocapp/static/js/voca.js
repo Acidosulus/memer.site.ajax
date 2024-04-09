@@ -68,9 +68,9 @@ async function asyncRequest(uri, method, data, debug = false) {
     console.log(uuid, method, uri, "SEND DATA:", data);
   }
   let response_promise = await fetch(uri, {
-    method: method,
-    headers: { "Content-Type": "application/json;charset=utf-8" },
-    body: JSON.stringify(data),
+                                            method: method,
+                                            headers: { "Content-Type": "application/json;charset=utf-8" },
+                                            body: JSON.stringify(data),
   });
   return response_promise.json();
 }
@@ -1287,7 +1287,7 @@ function RunInScreenForm({
     // let new_form_height = document.getElementById(`${forms[forms.length-1]}_dialog_escape_button`).getBoundingClientRect().top +
     //                       document.getElementById(`${forms[forms.length-1]}_dialog_escape_button`).getBoundingClientRect().height + 50;
     //document.getElementById(`${forms[forms.length-1]}`).style.height=`${document.getElementById(`${forms[forms.length-1]}`).querySelector('#id_anchor_end').getBoundingClientRect().top + 50 + 24}px`;
-
+    console.log(execute_after_load);
     eval(execute_after_load);
     ResizeModalForms();
   };
@@ -1775,17 +1775,17 @@ catch{
     if (lastMessageId > 0){
                             response = await asyncRequest(`${APIServer}/GetMessagesAfterId/`,`POST`, {  command: ``,
                                                                                                         comment: ``,
-                                                                                                        data: lastMessageId}, true);
+                                                                                                        data: lastMessageId});
                             if (response.length==0 && document.getElementById("messageLogContent").children.length==0){
                               response = await asyncRequest(`${APIServer}/GetMessagesLast/`,`POST`, {  command: ``,
                                                                                                       comment: ``,
-                                                                                                      data: `60`}, true);
+                                                                                                      data: `60`});
                             }
     }
     else {
                             response = await asyncRequest(`${APIServer}/GetMessagesLast/`,`POST`, {  command: ``,
                                                                                                         comment: ``,
-                                                                                                        data: `60`}, true);
+                                                                                                        data: `60`});
     }
     
     if (response.length>0){
@@ -1795,7 +1795,7 @@ catch{
               maxId = message.id;
         }
       }
-      console.log(`maxId:${maxId}  lastMessageId:${lastMessageId}`);
+      // console.log(`maxId:${maxId}  lastMessageId:${lastMessageId}`);
       if (maxId > lastMessageId) {
         setCookie('maxLastMessageId', maxId);
       }
