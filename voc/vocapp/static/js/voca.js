@@ -1948,15 +1948,15 @@ async function AddMessage(message='', icon='', hyperlink=''){
     
     popup.style.top = `${maxtop+10}%`;
     popup.style.right = '50px';
-	  popup.style.maxWidth = '80%';
-  	popup.style.width = '80%';
+	  popup.style.maxWidth = '50%';
+  	popup.style.width = '50%';
     // popup.style.height = '10%';
-    popup.style.padding = '10px';
+    popup.style.margin = '10px';
     popup.style.background = 'rgba(0, 0, 0, 0.7)';
     popup.style.color = '#fff';
     popup.style.borderRadius = '5px';
     popup.style.transition = 'opacity 0.5s';
-    popup.style.transform = 'scale(1.5)';
+    popup.style.zoom = '150%'
     document.querySelector(`#messages_anchor`).appendChild(popup);
 
     // Задаем начальную прозрачность блока
