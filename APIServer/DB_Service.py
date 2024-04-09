@@ -40,7 +40,7 @@ def get_queryresult_header_and_data(query_result):
 					drow[value] = float(v[count])
 				else:
 					drow[value] = (v[count] if v[count]!=None else '')
-			#print(v[count], '    ->    ', type(v[count]), )
+			#print(v[count], '	->	', type(v[count]), )
 		result.append(drow)
 	
 	headers = []
@@ -164,12 +164,12 @@ class HPPage(Base):
 
 
 class HPPageRows(Base):
-    __tablename__ = 'hp_page_rows'
-    id = Column(BigInteger, primary_key=True)
-    page_id = Column(BigInteger, nullable=False)
-    row_id = Column(BigInteger, nullable=False)
-    row_index = Column(BigInteger, default=0)
-    user_id = Column(Integer, nullable=False)
+	__tablename__ = 'hp_page_rows'
+	id = Column(BigInteger, primary_key=True)
+	page_id = Column(BigInteger, nullable=False)
+	row_id = Column(BigInteger, nullable=False)
+	row_index = Column(BigInteger, default=0)
+	user_id = Column(Integer, nullable=False)
 
 
 class HPRow(Base):
@@ -831,7 +831,6 @@ class LanguageDB:
 																				HPRowTile.user_id == ln_user_id,
 																				HPRowTile.row_id == row_id).all())
 		row['tiles'] = tiles
-		prnt(row)
 		return row
 
 	def AddTileToRowRelation(self, user_name, row_id, tile_id, index_id):
@@ -907,7 +906,14 @@ class LanguageDB:
 		self.session.commit()
 		return {"status":"ok - added"}
 
-  
+	def GetPhrasesCountRepeatedToday(self, user_name):
+		return self.session.execute(text(f"""--sql
+													SELECT count(*)
+													FROM public.phrases
+													WHERE 	last_view >= NOW() - INTERVAL '1 day' and
+								   							user_id = {self.GetUserId(user_name)}
+														;""")).one()[0]
+	  
 printer = pprint.PrettyPrinter(indent=12, width=180)
 prnt = printer.pprint
 
@@ -915,7 +921,7 @@ prnt = printer.pprint
 if True:
 	if sys.platform == 'linux':
 		dbn = LanguageDB(options.LANDDBURI, autocommit=False)
-		# prnt(dbn.GetHPPageData('admin', 1))
+		# prnt(dbn.GetPhrasesCountRepeatedToday('admin'))
 	else:
 		dbn = LanguageDB(options.LANDDBURI, autocommit=False)
 		#print(f"GetTodayReadingParagraphs: {dbn.GetTodayReadingParagraphs('admin')}")
