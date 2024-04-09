@@ -1641,13 +1641,15 @@ async function FillEditRowForm() {
   if (parentElement.data(`row_id`)>0){
     response = await asyncRequest(`${APIServer}/Get_Row/`,`POST`, {   command: '',
                                                                       comment: '',
-                                                                      data: parentElement.data(`row_id`)});
+                                                                      data: `${parentElement.data(`row_id`)}`});
+    console.log(response);
     for (let i = 1; i <= 12; i++) {
       let div_name = `div_edited_tile_${i}`;
       $(`#${div_name}`).empty();
       $(`#${div_name}`).get(0).dataset.tile_id=0;
     }
                                              $(`#inputRowName`).val(response.row_name);
+                                             
                                              for (let tile of response.tiles){
                                               let div_name = `div_edited_tile_${tile.tile_index}`;
                                               $(`#${div_name}`).empty();

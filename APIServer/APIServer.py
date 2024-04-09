@@ -147,7 +147,7 @@ async def Get_Rows(UserName, UserUUID:str):
 	 return dblang.GetRows(UserName)
 
 @app.post("/Get_Pages/")
-async def Get_Rows(rq:SiteRequest):
+async def Get_Pages(rq:SiteRequest):
 	 return dblang.GetPages(rq.username)
 
 
