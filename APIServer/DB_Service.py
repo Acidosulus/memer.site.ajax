@@ -58,7 +58,6 @@ class Book(Base):
 	user_id = Column(Integer, ForeignKey('users.user_id'), nullable=False)
 	dt = Column(DateTime, nullable=True)
 
-	user = relationship('User')
 
 
 class Sentence(Base):
@@ -68,7 +67,6 @@ class Sentence(Base):
 	id_paragraph = Column(Integer, nullable=False)
 	id_sentence = Column(Integer, primary_key=True, nullable=False)
 
-	book = relationship('Book')
 
 class ReadingJournal(Base):
 	__tablename__ = 'reading_journal'
@@ -131,7 +129,6 @@ class Syllable(Base):
 	syllable_id = Column(Integer, primary_key=True)
 	user_id = Column(ForeignKey('users.user_id'))
 
-	user = relationship('User')
 
 
 class SyllablesParagraph(Base):
@@ -142,7 +139,6 @@ class SyllablesParagraph(Base):
 	sequence = Column(Integer)
 	rowid = Column(Integer, primary_key=True, unique=True)
 
-	syllable = relationship('Syllable')
 
 
 class HPTile(Base):
