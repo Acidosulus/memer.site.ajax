@@ -1741,10 +1741,15 @@ async function AddTileInRow(row_id, index_id){
 function RefreshElementsEditRowForm(){
   if (GetSelectedHomePageRowId()==0){
     $("#RowsHomePageEditButton").prop("disabled", true);
+    $("#RowsHomePageMoveUpButton").prop("disabled", true);
+    $("#RowsHomePageMoveDownButton").prop("disabled", true);
+    $("#RowsHomePageEditButton").prop("disabled", true);
     $("#RowsHomePageDeleteButton").prop("disabled", true);
     $("#RowsHomePageSelectButton").prop("disabled", true);
   }else{
     $("#RowsHomePageEditButton").prop("disabled", false);
+    $("#RowsHomePageMoveUpButton").prop("disabled", false);
+    $("#RowsHomePageMoveDownButton").prop("disabled", false);
     $("#RowsHomePageDeleteButton").prop("disabled", false);
     $("#RowsHomePageSelectButton").prop("disabled", false);
   }
@@ -2094,6 +2099,8 @@ async function SelectRow(element){
   element.classList.add("selected_row");
   element.dataset.selected = `yes`;
   document.querySelector("#RowsHomePageEditButton").disabled = false;
+  document.querySelector("#RowsHomePageMoveUpButton").disabled = false;
+  document.querySelector("#RowsHomePageMoveDownButton").disabled = false;
   document.querySelector("#RowsHomePageDeleteButton").disabled = false;
 }
 
@@ -2186,6 +2193,8 @@ async function SelectRow(element){
     }
 
     document.querySelector("#RowsHomePageEditButton").disabled = true;
+    document.querySelector("#RowsHomePageMoveUpButton").disabled = true;
+    document.querySelector("#RowsHomePageMoveDownButton").disabled = true;
     document.querySelector("#RowsHomePageDeleteButton").disabled = true;
     
   }

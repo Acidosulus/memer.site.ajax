@@ -61,6 +61,41 @@
                                 >
                                 Edit</button>
                               </div>
+
+                              <div class="row">
+                                <button type="button"
+                                        class="btn btn-info btn-block mb-2 button_save"
+                                        id="RowsHomePageMoveUpButton"
+                                        onclick="
+                                          console.log('===**====');
+                                          console.log(document.querySelector(`#row_list[data-selected='yes']`).dataset.row_id);
+                                          RunInScreenForm({form_name:`page_edit`,
+                                                                      execute_after_load:`FillEditRowForm();ResizeModalForms();`,
+                                                                      request_link:`/hp_edit_row/`+document.querySelector(`#row_list[data-selected='yes']`).dataset.row_id,
+                                                                      execute_on_ok:'',
+                                                                      execute_on_close:'FillEditPageForm();'});
+                                                "
+                              >
+                              Move Up</button>
+                            </div>
+
+                            <div class="row">
+                              <button type="button"
+                                      class="btn btn-info btn-block mb-2 button_save"
+                                      id="RowsHomePageMoveDownButton"
+                                      onclick="
+                                        console.log('===**====');
+                                        console.log(document.querySelector(`#row_list[data-selected='yes']`).dataset.row_id);
+                                        RunInScreenForm({form_name:`page_edit`,
+                                                                    execute_after_load:`FillEditRowForm();ResizeModalForms();`,
+                                                                    request_link:`/hp_edit_row/`+document.querySelector(`#row_list[data-selected='yes']`).dataset.row_id,
+                                                                    execute_on_ok:'',
+                                                                    execute_on_close:'FillEditPageForm();'});
+                                              "
+                            >
+                            Move Down</button>
+                          </div>
+
                               <div class="row">
                                 <button type="button"
                                         class="btn btn-danger btn-block mb-2 button_save"
