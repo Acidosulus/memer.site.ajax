@@ -1984,7 +1984,7 @@ async function AddMessage(message='', icon='', hyperlink=''){
 
   
 async function SaveRow(row_id, new_row_name){
-  await asyncRequest(`${APIServer}/Save_Row/`,`POST`, {               command: '',
+  await asyncRequest(`${APIServer}/Save_Row/`,`POST`, {                 command: '',
                                                                         comment: new_row_name,
                                                                         data: row_id});
 
@@ -2206,6 +2206,19 @@ async function AddRowIntoPage(row_id){
 }
 
 
+
+async function MoveInPageRowUp({
+                                  direction = '',
+                                  page_id = 0,
+                                  row_id = 0
+                                })
+{
+  await asyncRequest(`${APIServer}/Move_In_Page_Row_Up/`,`POST`, {    command: direction,
+                                                                      comment: `${row_id}`,// row_id
+                                                                      data: `${page_id}` //page_id
+                                                                  });
+  FillEditPageForm();
+}
 
 
 

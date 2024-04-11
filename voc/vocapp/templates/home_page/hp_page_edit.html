@@ -66,14 +66,11 @@
                                 <button type="button"
                                         class="btn btn-info btn-block mb-2 button_save"
                                         id="RowsHomePageMoveUpButton"
-                                        onclick="
-                                          console.log('===**====');
-                                          console.log(document.querySelector(`#row_list[data-selected='yes']`).dataset.row_id);
-                                          RunInScreenForm({form_name:`page_edit`,
-                                                                      execute_after_load:`FillEditRowForm();ResizeModalForms();`,
-                                                                      request_link:`/hp_edit_row/`+document.querySelector(`#row_list[data-selected='yes']`).dataset.row_id,
-                                                                      execute_on_ok:'',
-                                                                      execute_on_close:'FillEditPageForm();'});
+                                        onclick="MoveInPageRowUp({
+                                                          direction:  'up',
+                                                          page_id:     document.querySelector(`#row_list[data-selected='yes']`).dataset.row_id,
+                                                          row_id:      document.querySelector(`#page_edit_data_container`).dataset.page_id
+                                                        })
                                                 "
                               >
                               Move Up</button>
@@ -83,14 +80,12 @@
                               <button type="button"
                                       class="btn btn-info btn-block mb-2 button_save"
                                       id="RowsHomePageMoveDownButton"
-                                      onclick="
-                                        console.log('===**====');
-                                        console.log(document.querySelector(`#row_list[data-selected='yes']`).dataset.row_id);
-                                        RunInScreenForm({form_name:`page_edit`,
-                                                                    execute_after_load:`FillEditRowForm();ResizeModalForms();`,
-                                                                    request_link:`/hp_edit_row/`+document.querySelector(`#row_list[data-selected='yes']`).dataset.row_id,
-                                                                    execute_on_ok:'',
-                                                                    execute_on_close:'FillEditPageForm();'});
+                                        onclick="MoveInPageRowUp({
+                                                          direction:  'down',
+                                                          page_id:    document.querySelector(`#row_list[data-selected='yes']`).dataset.row_id,
+                                                          row_id:     document.querySelector(`#page_edit_data_container`).dataset.page_id
+                                                        })
+
                                               "
                             >
                             Move Down</button>

@@ -825,7 +825,11 @@ class LanguageDB:
 			self.session.query(HPPageRows).filter(HPPageRows.id==row.id).update({'row_index':counter})
 		self.session.commit
 
+	def Move_In_Page_Row_Up(self, user_name:str, direction:str, page_id:int, row_id:int):
+		print(f'Move_In_Page_Row_Up: user_name="{user_name}", direction="{direction}", page_id={page_id}, row_id=row_id')
+		ln_user_id = self.GetUserId(user_name)
 
+		return 
 
 	def GetHPPageData(self, user_name, page_id):
 		print(f'GetHPPageData: user_name = "{user_name}", page_id = "{page_id}"')
@@ -890,13 +894,16 @@ class LanguageDB:
 		print(f'SaveRowName: user_name = "{user_name}", row_id = "{row_id}", new_row_name = "{new_row_name}"')
 		ln_user_id = self.GetUserId(user_name)
 		if row_id == 0:
-			self.session.add(HPRow(	user_id = ln_user_id,
+			updated_row = HPRow(	user_id = ln_user_id,
 						  			row_name = new_row_name,
-									row_type = 1))
+									row_type = 1)
+			self.session.add(updated_row)
 		else:
-			self.session.query(HPRow).filter(	HPRow.user_id == ln_user_id,
-												HPRow.row_id == row_id).update({'row_name':new_row_name})
+			updated_row = self.session.query(HPRow).filter(	HPRow.user_id == ln_user_id,
+												HPRow.row_id == row_id).first()
+			updated_row.update({'row_name':new_row_name})
 		self.session.commit()
+		print(f'    {"add new" if row_id==0 else "update "} row {updated_row.row_id}')
 
 
 	def GetMessagesAfterId(self, user_name, last_row_id):

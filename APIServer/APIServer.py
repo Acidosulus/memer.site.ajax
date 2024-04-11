@@ -158,6 +158,7 @@ async def Get_Row(rq:SiteRequest):
 
 @app.post("/Save_Row/")
 async def Save_Row(rq:SiteRequest):
+	print('we are here')
 	return dblang.SaveRowName(rq.username, int(rq.data), rq.comment)
 
 
@@ -170,7 +171,7 @@ async def Delete_Row(rq:SiteRequest):
 async def Delete_Page(rq:SiteRequest):
 	"""
 	Delete page\n
-	data - page id\n
+		data - page id\n
 	"""
 	return dblang.Delete_Page(rq.username, int(rq.data))
 
@@ -183,10 +184,22 @@ async def Delete_Page(rq:SiteRequest):
 async def Remove_Row_From_Page(rq:SiteRequest):
 	"""
 	Remove row from page\n
-	data - page id\n
-	comment - row_id\n
+		data - page id\n
+		comment - row_id\n
 	"""
 	return dblang.Remove_Row_From_Page(rq.username, int(rq.data), int(rq.comment))
+
+@app.post("/Move_In_Page_Row_Up/")
+async def Move_In_Page_Row_Up(rq:SiteRequest):
+	"""
+	Move row up or down into the page\n
+		command: direction, 'up'|'down'\n
+		comment:  row_id\n
+		data: page_id\n
+	"""
+	#dblang.AddTileToRowRelation(user_name = rq.username, row_id=int(rq.command), tile_id=int(rq.comment), index_id=int(rq.data))
+	return ''
+
 
 @app.post("/AddTileToRowRelation/")
 async def AddTileToRowRelation(rq:SiteRequest):
