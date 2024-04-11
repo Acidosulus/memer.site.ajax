@@ -375,7 +375,10 @@ class LanguageDB:
 			self.SaveBookReadingData( self.GetUserId(user_name), id_book, new_current_paragraph)
 			book_information = self.GetUserBookInformation(user_name, id_book)
 			# print(book_information)
-			self.AddMessage(user_name=user_name, message=f'Page <span class="my_class_book_name_history">{book_information["book_name"]}</span> turned to <span class="my_class_a_history">{new_current_paragraph}</span>', icon='opened_book.png', hyperlink='')
+			self.AddMessage(user_name=user_name,
+				   			message=f'Page <span class="my_class_book_name_history">{book_information["book_name"]}</span> turned to <span class="my_class_a_history">{new_current_paragraph}</span>',
+							icon='opened_book.png',
+							hyperlink='')
 			# print(f'Page {book_information["book_name"]} turned to {new_current_paragraph}')
 			result = {'data':'Ok'}
 		else:
@@ -473,15 +476,18 @@ class LanguageDB:
 									syllable_id=syllable.syllable_id,
 									dt=view_time)
 		self.session.add(wordslog)
-
 		self.session.commit()
+		self.AddMessage(	user_name=user_name,
+		 					message=f"""Repeated world |{word}| """,
+							icon='education.png',
+							hyperlink=f'/word_in_progress/{word}/')
 		return {'data':'ok'}
 
 
 	def GetNextSyllableForLearning(self, user_name:str):
 		syllable, user = self.session.query(Syllable, User).filter(and_(	User.name==user_name, 
 									  										User.user_id==Syllable.user_id,
-																			Phrase.ready==0
+																			Syllable.ready==0
 																			)).order_by(
 																						Syllable.last_view
 																						).first()
@@ -494,6 +500,10 @@ class LanguageDB:
 																			)).first()
 		syllable.ready = status
 		self.session.commit()
+		self.AddMessage(	user_name=user_name,
+							message=f"""Word  status change <span class="messageLogTextOrange">{syllable.word}</span>""",
+							icon='ready.png',
+							hyperlink=f'/word_in_progress/{word}/')
 		return {'data':'ok'}
 	
 
@@ -526,6 +536,10 @@ class LanguageDB:
 																			Phrase.id_phrase == phrase_id
 																			)).first()
 		phrase.ready = status
+		self.AddMessage(	user_name=user_name,
+							message=f"""Phrase  status change <span class="messageLogTextOrange">{phrase.phrase}</span>""",
+							icon='ready.png',
+							hyperlink='')
 		self.session.commit()
 		return {'data':'ok'}
 
@@ -538,6 +552,10 @@ class LanguageDB:
 		phrase.last_view = datetime.datetime.now()
 		phrase.show_count = phrase.show_count + 1
 		self.session.commit()
+		self.AddMessage(	user_name=user_name,
+		 					message=f"""Repeated phrase <span class="messageLogTextOrange">{phrase.phrase}</span>""",
+							icon='phrases_academic_hood.png',
+							hyperlink='')
 		return {'data':'ok'}
 	
 	def GetNextPhraseForLearning(self, user_name:str):
@@ -562,6 +580,11 @@ class LanguageDB:
 					phrase.translation = translate
 					phrase.last_view = datetime.datetime.now()
 					self.session.commit()
+					self.AddMessage(	user_name=user_name,
+					 					message=f"""Phrase saved <span class="messageLogTextOrange">{text}</span>""",
+										icon='add_to_list.png',
+										hyperlink='')
+
 					return {"status":"ok"}
 				except:
 					return {"status":"error - data has not saved"}
@@ -569,6 +592,10 @@ class LanguageDB:
 				try:
 					self.session.add(Phrase(phrase=text, translation = translate, user_id = ln_user_id, last_view = datetime.datetime.now(), dt=datetime.datetime.now(), ready=0, show_count=0))
 					self.session.commit()
+					self.AddMessage(	user_name=user_name,
+					 					message=f"""Phrase added <span class="messageLogTextOrange">{text}</span>""",
+										icon='add_to_list.png',
+										hyperlink='')
 					return {"status":"ok"}
 				except: return {"status":"error - data has not added"}
 		else:
@@ -647,6 +674,10 @@ class LanguageDB:
 					self.session.refresh(paragraph)
 					print(f'new paragraph: {RowToDict(paragraph)}')
 		self.session.commit()
+		self.AddMessage(user_name=rq.username,
+				  		message=f"""Word saved <span class="messageLogTextOrange">{rq.word}</span>""",
+						icon='add.png',
+						hyperlink='')
 		return {'data':'ok'}
 	# return user ID by user name		
 	def GetUserId(self, user_name:str):
@@ -895,10 +926,13 @@ class LanguageDB:
 
 	def AddMessage(self, user_name, message='', icon='', hyperlink=''):
 		ln_user_id = self.GetUserId(user_name)
-		self.session.add(Message(	user_id = ln_user_id,
+		message_row = 	Message(	user_id = ln_user_id,
 									message = message,
 									icon = icon,
-									hyperlink = hyperlink))
+									hyperlink = hyperlink)
+		print('AddMessage:')
+		prnt(RowToDict(message_row))
+		self.session.add(message_row)
 		self.session.commit()
 		return {"status":"ok - added"}
 

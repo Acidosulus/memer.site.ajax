@@ -98,8 +98,7 @@ function SavePhrase(link) {
     useruuid: UserUUID,
     data: `${document.getElementById("phrase_translation").value}`,
   };
-  AddMessage(`Pharase saved <span class="messageLogTextOrange">${obody.command}</span>`,`add_to_list.png`,``);
-  // console.log(`obody`, obody);
+   // console.log(`obody`, obody);
   $.ajax({
     url: `${APIServer}/Save_Phrase/`,
     type: "POST",
@@ -379,7 +378,7 @@ function SaveSyllable(link) {
     translations: document.getElementById(`id_translations`).value,
     examples: GetAllExamplesFromNewSyllablePage(),
   };
-  AddMessage(`Word saved <span class="messageLogTextOrange">${obody.word}</span>`,`add.png`,``);
+  
   $.ajax({
     url: "/api/v1/cross_request/",
     type: "POST",
@@ -586,7 +585,6 @@ async function UpdateCurrentPhraseAsViewed() {
 
 async function NextPhrase() {
   showOverlay();
-  AddMessage(`Repeated pharase <span class="messageLogTextOrange">${document.querySelector(`#id_class_p_my_class_p_examples`).innerText}</span>`,`phrases_academic_hood.png`,``);
   await UpdateCurrentPhraseAsViewed();
   document.querySelector("#body_phrase_in_progress").dataset.phraseid =
     await LoadNextProcessingPhraseIntoBody();
@@ -713,7 +711,6 @@ async function SetSyllableAsViewedAndLoadNext(word) {
   req.send(body);
   // console.log(req.responseText);
   let answer = JSON.parse(req.responseText);
-  AddMessage(`Repeated world |${word}| `,`education.png`,`/word_in_progress/${word}/`);
   await LoadNextProcessingWordIntoBody();
   await Load_Word_in_Progress_Data();
   hideOverlay();
