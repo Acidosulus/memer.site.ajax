@@ -65,7 +65,8 @@ async def log_request(request: Request, call_next):
 
 
 logger = logging.getLogger("uvicorn")
-logger.setLevel(logging.ERROR)
+#logger.setLevel(logging.ERROR)
+logger.setLevel(logging.INFO)
 handler = logging.StreamHandler()
 logger.addHandler(handler)
 
@@ -158,7 +159,6 @@ async def Get_Row(rq:SiteRequest):
 
 @app.post("/Save_Row/")
 async def Save_Row(rq:SiteRequest):
-	print('we are here')
 	return dblang.SaveRowName(rq.username, int(rq.data), rq.comment)
 
 

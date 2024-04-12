@@ -1986,7 +1986,7 @@ async function AddMessage(message='', icon='', hyperlink=''){
 async function SaveRow(row_id, new_row_name){
   await asyncRequest(`${APIServer}/Save_Row/`,`POST`, {                 command: '',
                                                                         comment: new_row_name,
-                                                                        data: row_id});
+                                                                        data: `${row_id}`});
 
 }
 
@@ -1999,7 +1999,7 @@ async function RemoveRow(row_id, row_name){
   if (answer){
     await asyncRequest(`${APIServer}/Delete_Row/`,`POST`, {               command: '',
                                                                         comment: '',
-                                                                        data: row_id});
+                                                                        data: `${row_id}`});
     FillRowsEdit();
   }
 }
@@ -2070,8 +2070,8 @@ async function RemoveRowFromPage(row_name, page_id, row_id){
   var answer = confirm(`Delete the row "${row_name}"?`);
   if (answer){
     await asyncRequest(`${APIServer}/Remove_Row_From_Page/`,`DELETE`, {                command: '',
-                                                                                       comment: row_id,
-                                                                                       data:    page_id});
+                                                                                       comment: `${row_id}`,
+                                                                                       data:    `${page_id}`});
     FillPagesEdit();
   }
 }
@@ -2085,7 +2085,7 @@ async function RemovePage(page_id, page_name){
     if (answer){
       await asyncRequest(`${APIServer}/Delete_Page/`,`DELETE`, {                command: '',
                                                                                 comment: '',
-                                                                                data: page_id});
+                                                                                data: `${page_id}`});
       FillPagesEdit();
     }
   }
@@ -2168,7 +2168,7 @@ async function SelectRow(element){
     if (page_id>0){
       response = await asyncRequest(`${APIServer}/Get_Page/`,`POST`, {    command: '',
                                                                           comment: '',
-                                                                          data: page_id});
+                                                                          data: `${page_id}`});
       document.querySelector(`#inputPageName`).value = response.page_name;
 
 
@@ -2209,8 +2209,8 @@ async function AddRowIntoPage(row_id){
 
 async function MoveInPageRowUp({
                                   direction = '',
-                                  page_id = 0,
-                                  row_id = 0
+                                  page_id = `0`,
+                                  row_id = `0`
                                 })
 {
   await asyncRequest(`${APIServer}/Move_In_Page_Row_Up/`,`POST`, {    command: direction,
