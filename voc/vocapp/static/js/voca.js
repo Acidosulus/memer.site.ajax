@@ -1987,7 +1987,7 @@ async function SaveRow(row_id, new_row_name){
   await asyncRequest(`${APIServer}/Save_Row/`,`POST`, {                 command: '',
                                                                         comment: new_row_name,
                                                                         data: `${row_id}`});
-
+  FillRowsEdit();
 }
 
 
