@@ -1241,7 +1241,7 @@ function RunInScreenForm({
   // console.log(forms_zindex);
   outerRootElement.insertAdjacentHTML(
     `beforeEnd`,
-    `<div id="${form_name}" style=" max-height: 90vh; overflow-y:auto; background-image: url('/static/images/background.gif');" class="dynamic-form col-12 border-5 ${
+    `<div id="${form_name}" style=" max-height: 90vh; overflow-y:auto; " class="dynamic-form col-12 border-5 color_block_modal_form ${
       border_colors[forms_zindex % 9]
     }" data-zindex="${forms_zindex}" data-executeonclose="${execute_on_close}"></div>`
   );
