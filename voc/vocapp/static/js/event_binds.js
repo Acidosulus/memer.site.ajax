@@ -63,13 +63,7 @@ const EventsBindener = {
 		execute_after_load:`  
 							  (async () => { {eval('FillRowsEdit();')} })();
 							  ResizeModalForms();
-							//   document.querySelector('#RowsHomePageSelectButton').style.display = 'block';
-							//   document.querySelector('#RowsHomePageSelectButton').onclick=function () {
-							//   document.querySelector('#lable_for_row_name').innerHTML = $('#id_rows_ul_group').find(':selected').data('row_id');
-							//   console.log($('#id_rows_ul_group').find(':selected').data('row_id'));
-							//   console.log('SelectButton');
-							//   CloseToplevelDynamicForm();}
-
+							  RefreshElementsEditRowForm();
 							;`,
 		request_link:`/hp_edit_rows/`});
 	},

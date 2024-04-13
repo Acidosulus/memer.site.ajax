@@ -1185,6 +1185,8 @@ function hideOverlay() {
   document.getElementById("overlay").style.display = "none";
 }
 
+
+
 //'image/jpeg, image/png, image/bmp, image/x-icon, image/webp'
 //handleFileUpload(`image/jpeg, image/png, image/bmp, image/x-icon, image/webp`, `/tiles_upload/`)
 function handleFileUpload(list_of_file_types, url, callback) {
@@ -1616,6 +1618,7 @@ async function FillRowsEdit(){
         for (let element of response){
           parentElement.append(
                 `<option class="bg-transparent"  style="color: rgb(51, 255, 204);"
+                id="row_row_id"
                 data-row_id="${element.row_id}" 
                 data-row_type="${element.row_type}" 
                 data-row_index="${element.row_index}" 
@@ -1625,9 +1628,29 @@ async function FillRowsEdit(){
         }
       document.getElementById("id_rows_list").addEventListener("change", function() {
           RefreshElementsEditRowForm();
-
 });
 }
+
+function RefreshElementsEditRowForm(){
+  console.log(GetSelectedHomeRowId());
+  document.getElementById("hp_rows_list_RowsHomePageEditButton").disabled = (GetSelectedHomeRowId()==0);
+  document.getElementById("hp_rows_list_RowsHomePageDeleteButton").disabled = (GetSelectedHomeRowId()==0);
+}
+
+function GetSelectedHomeRowId(){
+  try {
+      let selectElement = document.getElementById("id_rows_list");
+      let selectedIndex = selectElement.selectedIndex;
+      let selectedOption = selectElement.options[selectedIndex];
+      // let selectedText = selectedOption.text;
+      let selectedRowId = selectedOption.getAttribute("data-row_id");
+      return selectedRowId;
+      }
+  catch{
+      return 0;
+  }
+  }
+  
 
 async function FillEditRowForm() {
   let parentElement = $(`#row_edit_data_container`)
@@ -1740,7 +1763,7 @@ async function AddTileInRow(row_id, index_id){
   }
 }
 
-function RefreshElementsEditRowForm(){
+function RefreshElementsEditRowsInPageForm(){
     $("#hp_page_edit_EditButton").prop("disabled", GetSelectedHomePageRowId()==0);
     $("#hp_page_edit_MoveUpButton").prop("disabled", GetSelectedHomePageRowId()==0);
     $("#hp_page_edit_MoveDownButton").prop("disabled", GetSelectedHomePageRowId()==0);
@@ -2081,7 +2104,7 @@ async function SelectRow(element){
   }
   element.classList.add("selected_row");
   element.dataset.selected = `yes`;
-  RefreshElementsEditRowForm();
+  RefreshElementsEditRowsInPageForm();
 }
 
 
@@ -2176,7 +2199,7 @@ async function SelectRow(element){
     // document.querySelector("#RowsHomePageMoveUpButton").disabled = true;
     // document.querySelector("#RowsHomePageMoveDownButton").disabled = true;
     // document.querySelector("#RowsHomePageDeleteButton").disabled = true;
-    RefreshElementsEditRowForm();
+    RefreshElementsEditRowsInPageForm();
   }
   
 
