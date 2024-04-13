@@ -1,3 +1,5 @@
+
+
 var selection_state = 1;
 
 // arrays of modal form IDs
@@ -1285,7 +1287,9 @@ function RunInScreenForm({
     //                       document.getElementById(`${forms[forms.length-1]}_dialog_escape_button`).getBoundingClientRect().height + 50;
     //document.getElementById(`${forms[forms.length-1]}`).style.height=`${document.getElementById(`${forms[forms.length-1]}`).querySelector('#id_anchor_end').getBoundingClientRect().top + 50 + 24}px`;
     console.log(execute_after_load);
-    eval(execute_after_load);
+    (async () => { {eval(execute_after_load)} })();
+    
+    EventsBindener.assignOnClickToMatchingElement();
     ResizeModalForms();
   };
 }
@@ -1622,8 +1626,7 @@ function FillRowsEdit(){
           RefreshElementsEditRowForm();
       });
     RefreshElementsEditRowForm();
-  
-    },
+      },
 });
 }
 
@@ -1635,6 +1638,7 @@ async function FillEditRowForm() {
     return
   }
   let row_id = parentElement.data(`row_id`);
+  console.log(parentElement.data(`row_id`));
   if (parentElement.data(`row_id`)>0){
     response = await asyncRequest(`${APIServer}/Get_Row/`,`POST`, {   command: '',
                                                                       comment: '',
@@ -2222,4 +2226,5 @@ async function MoveInPageRowUp({
 
 
 
+EventsBindener.assignOnClickToMatchingElement();
 

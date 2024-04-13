@@ -934,14 +934,14 @@ def hp_edit_rows(request):
 	data = {'user_asset_path':get_user_icons_path(request),
 			'icons_list':get_icons_lists(request),
 			'APIServer':settings.API_ADRESS, 'userUUID':usersDataStorage.FindDataByUserName(request.user.get_username())['uuid']}
-	return render(request, "./home_page/hp_row_list.html", context=data)
+	return render(request, "./home_page/hp_rows_list.html", context=data)
 
 
 def hp_edit_pages(request):
 	data = {'user_asset_path':get_user_icons_path(request),
 			'icons_list':get_icons_lists(request),
 			'APIServer':settings.API_ADRESS, 'userUUID':usersDataStorage.FindDataByUserName(request.user.get_username())['uuid']}
-	return render(request, "./home_page/hp_page_list.html", context=data)
+	return render(request, "./home_page/hp_pages_list.html", context=data)
 
 
 

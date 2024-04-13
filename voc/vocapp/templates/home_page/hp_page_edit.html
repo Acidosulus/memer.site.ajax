@@ -29,84 +29,39 @@
                               <div class="row">
                                 <button type="button"
                                         class="btn btn-primary btn-block mb-2 button_save"
-                                        onclick="RunInScreenForm({  form_name:`rows_edit`,
-                                                                    execute_after_load:`  
-                                                                                          FillRowsEdit();
-                                                                                          ResizeModalForms();
-                                                                                          document.querySelector('#RowsHomePageSelectButton').style.display = 'block';
-                                                                                          document.querySelector('#RowsHomePageSelectButton').onclick=function () {
-                                                                                          document.querySelector('#lable_for_row_name').innerHTML = $('#id_rows_ul_group').find(':selected').data('row_id');
-                                                                                          console.log($('#id_rows_ul_group').find(':selected').data('row_id'));
-                                                                                          console.log('SelectButton');
-                                                                                          CloseToplevelDynamicForm();
-                                                                                        };`,
-                                                                    request_link:`/hp_edit_rows/`});"
-                                >
+                                        id="hp_page_edit_add_button">
                                   Add
                                 </button>
                               </div>
                               <div class="row">
                                   <button type="button"
                                           class="btn btn-success btn-block mb-2 button_save"
-                                          id="RowsHomePageEditButton"
-                                          onclick="
-                                            console.log('===**====');
-                                            console.log(document.querySelector(`#row_list[data-selected='yes']`).dataset.row_id);
-                                            RunInScreenForm({form_name:`page_edit`,
-                                                                        execute_after_load:`FillEditRowForm();ResizeModalForms();`,
-                                                                        request_link:`/hp_edit_row/`+document.querySelector(`#row_list[data-selected='yes']`).dataset.row_id,
-                                                                        execute_on_ok:'',
-                                                                        execute_on_close:'FillEditPageForm();'});
-                                                  "
-                                >
+                                          id="hp_page_edit_EditButton">
                                 Edit</button>
                               </div>
 
                               <div class="row">
                                 <button type="button"
                                         class="btn btn-info btn-block mb-2 button_save"
-                                        id="RowsHomePageMoveUpButton"
-                                        onclick="MoveInPageRowUp({
-                                                          direction:  'up',
-                                                          page_id:     document.querySelector(`#row_list[data-selected='yes']`).dataset.row_id,
-                                                          row_id:      document.querySelector(`#page_edit_data_container`).dataset.page_id
-                                                        })
-                                                "
-                              >
+                                        id="hp_page_edit_MoveUpButton">
                               Move Up</button>
                             </div>
 
                             <div class="row">
                               <button type="button"
                                       class="btn btn-info btn-block mb-2 button_save"
-                                      id="RowsHomePageMoveDownButton"
-                                        onclick="MoveInPageRowUp({
-                                                          direction:  'down',
-                                                          page_id:    document.querySelector(`#row_list[data-selected='yes']`).dataset.row_id,
-                                                          row_id:     document.querySelector(`#page_edit_data_container`).dataset.page_id
-                                                        })
-
-                                              "
-                            >
+                                      id="hp_page_edit_MoveDownButton">
                             Move Down</button>
                           </div>
 
-                              <div class="row">
-                                <button type="button"
-                                        class="btn btn-danger btn-block mb-2 button_save"
-                                        id="RowsHomePageDeleteButton"
-                                        onclick="
-                                                RemoveRowFromPage(
-                                                    document.querySelector(`#row_name_${document.querySelector(`#row_list[data-selected='yes']`).dataset.row_id}`).textContent,
-                                                    document.querySelector(`#page_edit_data_container`).dataset.page_id,
-                                                    document.querySelector(`#row_list[data-selected='yes']`).dataset.row_id
-                                                );
-                                                FillEditPageForm();
-                                                ">
-                                    Remove
-                                </button>
-                              </div>
-                            </div>
+                          <div class="row">
+                            <button type="button"
+                                    class="btn btn-danger btn-block mb-2 button_save"
+                                    id="hp_page_edit_DeleteRowButton">
+                                Remove
+                            </button>
+                          </div>
+                        </div>
 
         </div>
       </div>
@@ -119,10 +74,20 @@
       <div class="container-fluid">
           <div class="row">
                 <div class="col-6">
-                    <button class="btn col-11 btn-primary mb-2 button_save" onclick="SavePage({{ page_id }},  document.querySelector('#inputPageName').value); CloseToplevelDynamicForm();" id="id_save_page">Save</button>
+                    <button 
+                      class="btn col-11 btn-primary mb-2 button_save"
+                      onclick="SavePage({{ page_id }},  document.querySelector('#inputPageName').value); CloseToplevelDynamicForm();"
+                      id="id_save_page">
+                      Save
+                    </button>
                 </div>
                 <div class="col-6">
-                    <button class="btn col-11 btn-secondary mb-2 button_save" onclick="CloseToplevelDynamicForm();" id="id_cancel_page">Cancel</button>
+                    <button 
+                      class="btn col-11 btn-secondary mb-2 button_save"
+                      onclick="CloseToplevelDynamicForm();"
+                      id="id_cancel_page">
+                      Cancel
+                    </button>
                 </div>
           </div>
       </div>
