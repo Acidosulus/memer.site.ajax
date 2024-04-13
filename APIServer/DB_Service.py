@@ -822,7 +822,7 @@ class LanguageDB:
 		counter = 0
 		for row in rows:
 			counter += 1
-			self.session.query(HPPageRows).filter(HPPageRows.id==row.id).update({'row_index':counter})
+			self.session.query(HPPageRows).filter(HPPageRows.id==row['id']).update({'row_index':counter})
 		self.session.commit
 
 	def Move_In_Page_Row_Up(self, user_name:str, direction:str, page_id:int, row_id:int):
@@ -863,6 +863,30 @@ class LanguageDB:
 																				HPRowTile.row_id == row_id).all())
 		row['tiles'] = tiles
 		return row
+
+	def AddRowIntoPage(self,user_name:str, page_id, row_id:int):
+		print(f'AddRowIntoPage: user_name = "{user_name}", page_id = "{page_id}", row_id = "{row_id}"')
+		ln_user_id = self.GetUserId(user_name)
+
+		existing_row_in_page = self.session.query(HPPageRows).\
+										filter(	HPPageRows.user_id == ln_user_id,
+													HPPageRows.page_id == page_id,
+													HPPageRows.row_id == row_id).first()
+		
+		if existing_row_in_page!=None:
+			return 'Error:Row is already exist into page'
+
+		new_row = HPPageRows(	page_id = page_id,
+								row_id = row_id,
+								row_index = 9999,
+								user_id = ln_user_id)
+		self.session.add(new_row)
+		self.session.commit()
+		self.Reorder_Index_Field_Page_Row(user_name, page_id)
+		return 'Success:Row is added into page'
+
+
+
 
 	def AddTileToRowRelation(self, user_name, row_id, tile_id, index_id):
 		print(f'AddTileToRowRelation: user_name = "{user_name}", row_id = "{row_id}", tile_id = {tile_id}, index_id = {index_id}')

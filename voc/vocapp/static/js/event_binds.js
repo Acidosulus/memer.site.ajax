@@ -30,7 +30,6 @@ const EventsBindener = {
 			document.querySelector(`#page_edit_data_container`).dataset.page_id,
 			document.querySelector(`#row_list[data-selected='yes']`).dataset.row_id
 		);
-		FillEditPageForm();
 	},
 
 	hp_page_edit_MoveDownButton: function() {
@@ -63,11 +62,20 @@ const EventsBindener = {
 		execute_after_load:`  
 							  (async () => { {eval('FillRowsEdit();')} })();
 							  ResizeModalForms();
+							  document.querySelector('#hp_rows_list_RowsHomePageSelectButton').style.display = "block";
 							  RefreshElementsEditRowForm();
 							;`,
 		request_link:`/hp_edit_rows/`});
 	},
 
+	hp_rows_list_RowsHomePageSelectButton: function() {
+		//add row into page
+		AddRowIntoPage(
+				GetSelectedHomeRowId(), //row_id
+				GetSelectedHomePagePageId()//page_id
+			);
+		CloseToplevelDynamicForm();
+	},
 
 
 	hp_row_edit_id_save_row: function() {

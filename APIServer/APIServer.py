@@ -43,7 +43,7 @@ app = FastAPI()
 app.add_middleware(
 	CORSMiddleware,
 	allow_origins=["*"],
-	allow_methods=['GET','POST'], 
+	allow_methods=['*'], 
 	allow_headers=["*"]
 )
 
@@ -187,7 +187,20 @@ async def Remove_Row_From_Page(rq:SiteRequest):
 		data - page id\n
 		comment - row_id\n
 	"""
-	return dblang.Remove_Row_From_Page(rq.username, int(rq.data), int(rq.comment))
+	return dblang.Remove_Row_From_Page(user_name=rq.username, page_id=int(rq.data), row_id=int(rq.comment))
+
+
+@app.post("/Add_Row_Into_Page/")
+async def Add_Row_Into_Page(rq:SiteRequest):
+	"""
+	Add row into the page\n
+		comment:  row_id\n
+		data: page_id\n
+	"""
+	return dblang.AddRowIntoPage(user_name = rq.username, page_id=int(rq.data), row_id=int(rq.comment))
+	
+
+
 
 @app.post("/Move_In_Page_Row_Up/")
 async def Move_In_Page_Row_Up(rq:SiteRequest):

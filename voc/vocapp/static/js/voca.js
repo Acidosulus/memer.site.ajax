@@ -1634,6 +1634,7 @@ async function FillRowsEdit(){
 function RefreshElementsEditRowForm(){
   document.getElementById("hp_rows_list_RowsHomePageEditButton").disabled = (GetSelectedHomeRowId()==0);
   document.getElementById("hp_rows_list_RowsHomePageDeleteButton").disabled = (GetSelectedHomeRowId()==0);
+  document.getElementById("hp_rows_list_RowsHomePageSelectButton").disabled = (GetSelectedHomeRowId()==0);
 }
 
 function GetSelectedHomeRowId(){
@@ -2071,13 +2072,13 @@ function GetSelectedHomePagePageId(){
   
   
 async function RemoveRowFromPage(row_name, page_id, row_id){
-  showPopupMessage(`page_id = ${page_id}<br>row_id = ${row_id}<br>${row_name}`);
+  //showPopupMessage(`page_id = ${page_id}<br>row_id = ${row_id}<br>${row_name}`);
   var answer = confirm(`Delete the row "${row_name}"?`);
   if (answer){
     await asyncRequest(`${APIServer}/Remove_Row_From_Page/`,`DELETE`, {                command: '',
                                                                                        comment: `${row_id}`,
                                                                                        data:    `${page_id}`});
-    FillPagesEdit();
+    FillEditPageForm();
   }
 }
 
@@ -2203,8 +2204,13 @@ async function SelectRow(element){
   
 
 
-async function AddRowIntoPage(row_id){
-  // console.log(row_id);
+async function AddRowIntoPage(row_id, page_id){
+  let response_text = await asyncRequest(`${APIServer}/Add_Row_Into_Page/`,`POST`, {    command: ``,
+                                                                                      comment: `${row_id}`,// row_id
+                                                                                      data: `${page_id}` //page_id
+                                                                                    });
+  showPopupMessage(response_text);
+  FillEditPageForm();
 }
 
 
