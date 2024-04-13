@@ -144,8 +144,8 @@ async def Delete_Tile(rq:SiteRequest):
 	return 'ok'
 
 @app.get("/Get_Rows/")
-async def Get_Rows(UserName, UserUUID:str):
-	 return dblang.GetRows(UserName)
+async def Get_Rows(username, useruuid:str):
+	 return dblang.GetRows(username)
 
 @app.post("/Get_Pages/")
 async def Get_Pages(rq:SiteRequest):

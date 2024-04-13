@@ -69,11 +69,19 @@ async function asyncRequest(uri, method, data, debug = false) {
   if (debug) {
     console.log(uuid, method, uri, "SEND DATA:", data);
   }
-  let response_promise = await fetch(uri, {
-                                            method: method,
-                                            headers: { "Content-Type": "application/json;charset=utf-8" },
-                                            body: JSON.stringify(data),
-  });
+  let response_promise
+  if (method!='GET'){
+         response_promise = await fetch(uri, {
+                                                  method: method,
+                                                  headers: { "Content-Type": "application/json;charset=utf-8" },
+                                                  body: JSON.stringify(data),
+        });
+  }else{
+        response_promise = await fetch(`${uri}?${new URLSearchParams(data)}`, {
+                                                  method: method,
+                                                  headers: { "Content-Type": "application/json;charset=utf-8" },
+        });
+  }
   return response_promise.json();
 }
 
@@ -1286,7 +1294,7 @@ function RunInScreenForm({
     // let new_form_height = document.getElementById(`${forms[forms.length-1]}_dialog_escape_button`).getBoundingClientRect().top +
     //                       document.getElementById(`${forms[forms.length-1]}_dialog_escape_button`).getBoundingClientRect().height + 50;
     //document.getElementById(`${forms[forms.length-1]}`).style.height=`${document.getElementById(`${forms[forms.length-1]}`).querySelector('#id_anchor_end').getBoundingClientRect().top + 50 + 24}px`;
-    console.log(execute_after_load);
+    // console.log(execute_after_load);
     (async () => { {eval(execute_after_load)} })();
     
     EventsBindener.assignOnClickToMatchingElement();
@@ -1596,20 +1604,13 @@ function LoadDatatoEditSelectedTile() {
 
 
 
-function FillRowsEdit(){
-  let parentElement = $('#id_rows_ul_group');
+async function FillRowsEdit(){
+  let parentElement = $('#id_rows_list');
   if (!(parentElement)){
     return;
   }
-  $.ajax({
-    url: `${APIServer}/Get_Rows/`,
-    type: "GET",
-    data: {
-        UserName: UserName,
-        UserUUID: UserUUID
-    },
-    success: function(response) {
-        // console.log(response);
+   
+    response = await asyncRequest(`${APIServer}/Get_Rows/`,`GET`, {});
         parentElement.empty();
         parentElement.attr('size',response.length);
         for (let element of response){
@@ -1622,28 +1623,25 @@ function FillRowsEdit(){
                 ${element.row_name}
                 </option>`);
         }
-     document.getElementById("id_rows_ul_group").addEventListener("change", function() {
+      document.getElementById("id_rows_list").addEventListener("change", function() {
           RefreshElementsEditRowForm();
-      });
-    RefreshElementsEditRowForm();
-      },
+
 });
 }
-
 
 async function FillEditRowForm() {
   let parentElement = $(`#row_edit_data_container`)
   if (!parentElement){
-    console.log(`parent element is not found`);
+    // console.log(`parent element is not found`);
     return
   }
   let row_id = parentElement.data(`row_id`);
-  console.log(parentElement.data(`row_id`));
+  // console.log(parentElement.data(`row_id`));
   if (parentElement.data(`row_id`)>0){
     response = await asyncRequest(`${APIServer}/Get_Row/`,`POST`, {   command: '',
                                                                       comment: '',
                                                                       data: `${parentElement.data(`row_id`)}`});
-    console.log(response);
+    // console.log(response);
     for (let i = 1; i <= 12; i++) {
       let div_name = `div_edited_tile_${i}`;
       $(`#${div_name}`).empty();
@@ -1743,32 +1741,19 @@ async function AddTileInRow(row_id, index_id){
 }
 
 function RefreshElementsEditRowForm(){
-  if (GetSelectedHomePageRowId()==0){
-    $("#RowsHomePageEditButton").prop("disabled", true);
-    $("#RowsHomePageMoveUpButton").prop("disabled", true);
-    $("#RowsHomePageMoveDownButton").prop("disabled", true);
-    $("#RowsHomePageEditButton").prop("disabled", true);
-    $("#RowsHomePageDeleteButton").prop("disabled", true);
-    $("#RowsHomePageSelectButton").prop("disabled", true);
-  }else{
-    $("#RowsHomePageEditButton").prop("disabled", false);
-    $("#RowsHomePageMoveUpButton").prop("disabled", false);
-    $("#RowsHomePageMoveDownButton").prop("disabled", false);
-    $("#RowsHomePageDeleteButton").prop("disabled", false);
-    $("#RowsHomePageSelectButton").prop("disabled", false);
-  }
+    $("#hp_page_edit_EditButton").prop("disabled", GetSelectedHomePageRowId()==0);
+    $("#hp_page_edit_MoveUpButton").prop("disabled", GetSelectedHomePageRowId()==0);
+    $("#hp_page_edit_MoveDownButton").prop("disabled", GetSelectedHomePageRowId()==0);
+    $("#hp_page_edit_DeleteRowButton").prop("disabled", GetSelectedHomePageRowId()==0);
 }
 
 function GetSelectedHomePageRowId(){
 try {
-    if (!($(`#id_rows_ul_group option:selected`))){
-      return 0
-    }
-    let row_id = $(`#id_rows_ul_group option:selected`).data().row_id;
-    if (row_id>0){
-      return row_id;
-    }
-    return 0;
+  if (document.querySelector('#row_list.selected_row')){
+    return document.querySelector('#row_list.selected_row').dataset.row_id
+  }else{
+    return 0
+  }
 }
 catch{
     return 0;
@@ -2041,14 +2026,8 @@ async function FillPagesEdit(){
 
 
 async function RefreshElementsEditPagesForm(){
-  if (GetSelectedHomePagePageId()==0){
-    $("#PagesHomePageEditButton").prop("disabled", true);
-    $("#PagesHomePageDeleteButton").prop("disabled", true);
-  }else{
-    $("#PagesHomePageEditButton").prop("disabled", false);
-    $("#PagesHomePageDeleteButton").prop("disabled", false);
-  }
-
+  $("#hp_pages_list_PagesHomePageEditButton").prop("disabled", GetSelectedHomePagePageId()==0);
+  $("#hp_page_list_PagesHomePageDeleteButton").prop("disabled", GetSelectedHomePagePageId()==0);
 }
 
 
@@ -2102,10 +2081,7 @@ async function SelectRow(element){
   }
   element.classList.add("selected_row");
   element.dataset.selected = `yes`;
-  document.querySelector("#RowsHomePageEditButton").disabled = false;
-  document.querySelector("#RowsHomePageMoveUpButton").disabled = false;
-  document.querySelector("#RowsHomePageMoveDownButton").disabled = false;
-  document.querySelector("#RowsHomePageDeleteButton").disabled = false;
+  RefreshElementsEditRowForm();
 }
 
 
@@ -2164,7 +2140,7 @@ async function SelectRow(element){
     
     let parentElement = document.querySelector(`#page_edit_data_container`);
     if (!parentElement){
-      console.log(`parent element is not found`);
+      // console.log(`parent element is not found`);
       return
     }
     let page_id = parentElement.dataset.page_id
@@ -2179,7 +2155,7 @@ async function SelectRow(element){
       let rows_container = parentElement.querySelector('#rows_container');
       rows_container.innerHTML=``;
       for (let row of response.rows){
-        console.log(row);
+        // console.log(row);
         rowHtml = pattern.replace('{ name }', row.row_name);
         rowHtml = rowHtml.replaceAll('{ row_id }', row.row_id);
         for (let tile of row.tiles){
@@ -2196,11 +2172,11 @@ async function SelectRow(element){
       console.log('Wrong condition: parentElement.data(`row_id`)>0');
     }
 
-    document.querySelector("#RowsHomePageEditButton").disabled = true;
-    document.querySelector("#RowsHomePageMoveUpButton").disabled = true;
-    document.querySelector("#RowsHomePageMoveDownButton").disabled = true;
-    document.querySelector("#RowsHomePageDeleteButton").disabled = true;
-    
+    // document.querySelector("#RowsHomePageEditButton").disabled = true;
+    // document.querySelector("#RowsHomePageMoveUpButton").disabled = true;
+    // document.querySelector("#RowsHomePageMoveDownButton").disabled = true;
+    // document.querySelector("#RowsHomePageDeleteButton").disabled = true;
+    RefreshElementsEditRowForm();
   }
   
 

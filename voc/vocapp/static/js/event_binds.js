@@ -61,15 +61,16 @@ const EventsBindener = {
 	hp_page_edit_add_button: function() {
 		RunInScreenForm({  form_name:`rows_edit`,
 		execute_after_load:`  
-							  FillRowsEdit();
+							  (async () => { {eval('FillRowsEdit();')} })();
 							  ResizeModalForms();
-							  document.querySelector('#RowsHomePageSelectButton').style.display = 'block';
-							  document.querySelector('#RowsHomePageSelectButton').onclick=function () {
-							  document.querySelector('#lable_for_row_name').innerHTML = $('#id_rows_ul_group').find(':selected').data('row_id');
-							  console.log($('#id_rows_ul_group').find(':selected').data('row_id'));
-							  console.log('SelectButton');
-							  CloseToplevelDynamicForm();
-							};`,
+							//   document.querySelector('#RowsHomePageSelectButton').style.display = 'block';
+							//   document.querySelector('#RowsHomePageSelectButton').onclick=function () {
+							//   document.querySelector('#lable_for_row_name').innerHTML = $('#id_rows_ul_group').find(':selected').data('row_id');
+							//   console.log($('#id_rows_ul_group').find(':selected').data('row_id'));
+							//   console.log('SelectButton');
+							//   CloseToplevelDynamicForm();}
+
+							;`,
 		request_link:`/hp_edit_rows/`});
 	},
 
@@ -101,14 +102,14 @@ const EventsBindener = {
     },
 	
 	hp_rows_list_RowsHomePageDeleteButton: function() {
-        RemoveRow($('#id_rows_ul_group').find(':selected').data('row_id'), $('#id_rows_ul_group').find(':selected').val());
+        RemoveRow($('#id_rows_list').find(':selected').data('row_id'), $('#id_rows_list').find(':selected').val());
     },
 
     hp_rows_list_RowsHomePageEditButton: function() {
         RunInScreenForm({
             form_name: 'row_edit',
             execute_after_load: 'FillEditRowForm();ResizeModalForms();',
-            request_link: '/hp_edit_row/' + $('#id_rows_ul_group').find(':selected').data('row_id'),
+            request_link: '/hp_edit_row/' + $('#id_rows_list').find(':selected').data('row_id'),
             execute_on_ok: '',
             execute_on_close: 'FillRowsEdit();'
         });
@@ -126,7 +127,6 @@ const EventsBindener = {
             if (typeof this[methodName] === 'function') {
                 const element = document.getElementById(methodName);
                 if (element) {
-					console.log(`element.onclick: ${element.id} `+(element.onclick==='function'));
                     element.onclick = this[methodName].bind(this);
                 }
             }
