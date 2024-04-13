@@ -1632,7 +1632,6 @@ async function FillRowsEdit(){
 }
 
 function RefreshElementsEditRowForm(){
-  console.log(GetSelectedHomeRowId());
   document.getElementById("hp_rows_list_RowsHomePageEditButton").disabled = (GetSelectedHomeRowId()==0);
   document.getElementById("hp_rows_list_RowsHomePageDeleteButton").disabled = (GetSelectedHomeRowId()==0);
 }
