@@ -2215,13 +2215,13 @@ async function AddRowIntoPage(row_id, page_id){
 
 
 
-async function MoveInPageRowUp({
+async function MoveInPageRow({
                                   direction = '',
+                                  row_id = `0`,
                                   page_id = `0`,
-                                  row_id = `0`
                                 })
 {
-  await asyncRequest(`${APIServer}/Move_In_Page_Row_Up/`,`POST`, {    command: direction,
+  await asyncRequest(`${APIServer}/Move_In_Page_Row/`,`POST`, {    command: direction,
                                                                       comment: `${row_id}`,// row_id
                                                                       data: `${page_id}` //page_id
                                                                   });

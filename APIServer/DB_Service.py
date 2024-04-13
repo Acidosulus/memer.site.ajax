@@ -825,11 +825,32 @@ class LanguageDB:
 			self.session.query(HPPageRows).filter(HPPageRows.id==row['id']).update({'row_index':counter})
 		self.session.commit
 
-	def Move_In_Page_Row_Up(self, user_name:str, direction:str, page_id:int, row_id:int):
-		print(f'Move_In_Page_Row_Up: user_name="{user_name}", direction="{direction}", page_id={page_id}, row_id=row_id')
+	def Move_In_Page_Row(self, user_name:str, direction:str, page_id:int, row_id:int):
+		print(f'Move_In_Page_Row_Up: user_name="{user_name}", direction="{direction}", page_id={page_id}, row_id={row_id}')
 		ln_user_id = self.GetUserId(user_name)
+		if direction=='up':
+			current_record = self.session.query(HPPageRows).\
+								filter(	HPPageRows.user_id == ln_user_id,
+										HPPageRows.page_id == page_id,
+										HPPageRows.row_id == row_id ).first()
+			upper_record =  self.session.query(HPPageRows).\
+								filter(	HPPageRows.user_id == ln_user_id,
+										HPPageRows.page_id == page_id,
+										HPPageRows.row_id == row_id,
+										HPPageRows.row_index < current_record.row_index).first()
+			if upper_record == None: #
+				pass
 
 		return 
+
+# class HPPageRows(Base):
+# 	__tablename__ = 'hp_page_rows'
+# 	id = Column(BigInteger, primary_key=True)
+# 	page_id = Column(BigInteger, nullable=False)
+# 	row_id = Column(BigInteger, nullable=False)
+# 	row_index = Column(BigInteger, default=0)
+# 	user_id = Column(Integer, nullable=False)
+
 
 	def GetHPPageData(self, user_name, page_id):
 		print(f'GetHPPageData: user_name = "{user_name}", page_id = "{page_id}"')

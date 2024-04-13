@@ -202,16 +202,16 @@ async def Add_Row_Into_Page(rq:SiteRequest):
 
 
 
-@app.post("/Move_In_Page_Row_Up/")
-async def Move_In_Page_Row_Up(rq:SiteRequest):
+@app.post("/Move_In_Page_Row/")
+async def Move_In_Page_Row(rq:SiteRequest):
 	"""
 	Move row up or down into the page\n
 		command: direction, 'up'|'down'\n
 		comment:  row_id\n
 		data: page_id\n
 	"""
-	#dblang.AddTileToRowRelation(user_name = rq.username, row_id=int(rq.command), tile_id=int(rq.comment), index_id=int(rq.data))
-	return ''
+	return dblang.Move_In_Page_Row(user_name=rq.username, direction=rq.command, page_id=int(rq.data), row_id=int(rq.comment))
+
 
 
 @app.post("/AddTileToRowRelation/")

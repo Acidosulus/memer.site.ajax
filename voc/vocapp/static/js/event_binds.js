@@ -33,17 +33,17 @@ const EventsBindener = {
 	},
 
 	hp_page_edit_MoveDownButton: function() {
-		MoveInPageRowDown({
+		MoveInPageRow({
 			direction:  'down',
-			page_id:    document.querySelector(`#row_list[data-selected='yes']`).dataset.row_id,
-			row_id:     document.querySelector(`#page_edit_data_container`).dataset.page_id
+			page_id:    document.querySelector(`#page_edit_data_container`).dataset.page_id,
+			row_id:     document.querySelector(`#row_list[data-selected='yes']`).dataset.row_id
 		  })	},
 
 	hp_page_edit_MoveUpButton: function() {
-		MoveInPageRowUp({
+		MoveInPageRow({
 			direction:  'up',
-			page_id:     document.querySelector(`#row_list[data-selected='yes']`).dataset.row_id,
-			row_id:      document.querySelector(`#page_edit_data_container`).dataset.page_id
+			page_id:     document.querySelector(`#page_edit_data_container`).dataset.page_id,
+			row_id:      document.querySelector(`#row_list[data-selected='yes']`).dataset.row_id
 		  });
 	},
 
