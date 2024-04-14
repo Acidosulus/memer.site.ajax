@@ -37,7 +37,8 @@ const EventsBindener = {
 			direction:  'down',
 			page_id:    document.querySelector(`#page_edit_data_container`).dataset.page_id,
 			row_id:     document.querySelector(`#row_list[data-selected='yes']`).dataset.row_id
-		  })	},
+		  });
+	},
 
 	hp_page_edit_MoveUpButton: function() {
 		MoveInPageRow({
@@ -65,7 +66,8 @@ const EventsBindener = {
 							  document.querySelector('#hp_rows_list_RowsHomePageSelectButton').style.display = "block";
 							  RefreshElementsEditRowForm();
 							;`,
-		request_link:`/hp_edit_rows/`});
+		request_link:`/hp_edit_rows/`,
+		execute_on_close:'FillEditPageForm();'});
 	},
 
 	hp_rows_list_RowsHomePageSelectButton: function() {
