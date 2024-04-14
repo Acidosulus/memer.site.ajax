@@ -837,7 +837,7 @@ class LanguageDB:
 			current_record.row_index = current_record.row_index - 15
 		if direction=='down':
 			current_record.row_index = current_record.row_index + 15
-		self.session.commit()
+		# self.session.commit()
 		self.Reorder_Index_Field_Page_Row(user_name, page_id)
 		return 
 
