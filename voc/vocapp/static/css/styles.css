@@ -641,9 +641,19 @@ my_div_save{
     background-image: url('/static/images/background.gif');
 }
 
-
 .golden-border {
-    border: 2px solid transparent;
     border-image: linear-gradient(to right, #ffd700, #ffaf00, #ffd700) 1;
-    border-image-slice: 1;
+    position: relative;
+    padding: 10px; /* Добавим немного отступа для видимости штриховки */
+   /* background: linear-gradient(to right, #ffd700, #ffaf00, #ffd700);*/
+}
+
+.golden-border::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 1px dashed rgba(255, 255, 255, 0.5); /* Здесь устанавливаем стиль для штриховки */
 }

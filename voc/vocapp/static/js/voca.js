@@ -2032,9 +2032,10 @@ async function FillPagesEdit(){
         parentElement.attr('size',response.length);
         for (let element of  response ){
           // console.log(element);
-          // (element.defailt==1?" golden-border":"")+
+          // 
           parentElement.append(
                 `<option class="bg-transparent`+
+                (element.default==1?" golden-border":"")+
                 `"  style="color: rgb(51, 255, 204);"
                 data-page_id="${element.page_id}" 
                 data-index="${element.index}" >
