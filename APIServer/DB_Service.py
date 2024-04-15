@@ -157,7 +157,7 @@ class HPPage(Base):
 	user_id = Column(Integer, nullable=False)
 	page_name = Column(Text, nullable=False)
 	index = Column(Integer, default=0, nullable=False)
-
+	default = Column(Integer, default=0, nullable=True)
 
 class HPPageRows(Base):
 	__tablename__ = 'hp_page_rows'

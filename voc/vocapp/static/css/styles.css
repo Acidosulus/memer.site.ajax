@@ -640,3 +640,10 @@ my_div_save{
     /* z-index: -1; */
     background-image: url('/static/images/background.gif');
 }
+
+
+.golden-border {
+    border: 2px solid transparent;
+    border-image: linear-gradient(to right, #ffd700, #ffaf00, #ffd700) 1;
+    border-image-slice: 1;
+}

@@ -149,6 +149,9 @@ async def Get_Rows(username, useruuid:str):
 
 @app.post("/Get_Pages/")
 async def Get_Pages(rq:SiteRequest):
+	 """
+	 return list of current user pages
+	 """
 	 return dblang.GetPages(rq.username)
 
 
@@ -171,12 +174,16 @@ async def Delete_Row(rq:SiteRequest):
 async def Delete_Page(rq:SiteRequest):
 	"""
 	Delete page\n
-		data - page id\n
+		data - page_id\n
 	"""
 	return dblang.Delete_Page(rq.username, int(rq.data))
 
 @app.post("/Get_Page/")
 async def Delete_Page(rq:SiteRequest):
+	"""
+	Get page information\n
+		data - page_id\n
+	"""
 	return dblang.GetHPPageData(rq.username, int(rq.data))
 
 
