@@ -606,7 +606,6 @@ my_div_save{
           }
 
 
-          
           @keyframes rowborderAnimation {
             0% {
               border-color: red;
@@ -644,10 +643,8 @@ my_div_save{
 .golden-border {
     border-image: linear-gradient(to right, #ffd700, #ffaf00, #ffd700) 1;
     position: relative;
-    padding: 10px; /* Добавим немного отступа для видимости штриховки */
-   /* background: linear-gradient(to right, #ffd700, #ffaf00, #ffd700);*/
+    padding: 10px; 
 }
-
 .golden-border::after {
     content: '';
     position: absolute;
@@ -655,5 +652,5 @@ my_div_save{
     left: 0;
     right: 0;
     bottom: 0;
-    border: 1px dashed rgba(255, 255, 255, 0.5); /* Здесь устанавливаем стиль для штриховки */
+    border: 1px dashed rgba(255, 255, 255, 0.5);
 }

@@ -781,6 +781,17 @@ class LanguageDB:
 		rows = self.session.query(HPPage).filter(	HPPage.user_id == ln_user_id).order_by(HPPage.page_name).all()
 		return RowsToDictList(rows)
 
+	def SetPageAsDefault(self, user_name, page_id):
+		print(f'SetPageAsDefault: user_name = "{user_name}", page_id = "{page_id}"')
+		ln_user_id = self.GetUserId(user_name)
+
+		self.session.query(HPPage).filter(	HPPage.user_id == ln_user_id ).update({'default':0})
+
+		self.session.query(HPPage).filter(	HPPage.user_id == ln_user_id,
+											HPPage.page_id == page_id).update({'default':1})
+
+		self.session.commit()
+		return 'ok'
 
 
 	def Delete_Row(self, user_name, row_id):

@@ -2,7 +2,11 @@
 
 const EventsBindener = {
 
-	hp_page_list_PagesHomePageDeleteButton: function() {
+	hp_pages_list_PagesHomePageSetAsDefaultButton: function(){
+		SetPageAsDefault($('#id_pages_ul_group').find(':selected').data(`page_id`), $('#id_pages_ul_group').find(':selected').val());
+	},
+
+	hp_pages_list_PagesHomePageDeleteButton: function() {
 		RemovePage($('#id_pages_ul_group').find(':selected').data(`page_id`), $('#id_pages_ul_group').find(':selected').val());
 		FillPagesEdit();
 	},

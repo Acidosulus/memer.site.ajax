@@ -149,10 +149,19 @@ async def Get_Rows(username, useruuid:str):
 
 @app.post("/Get_Pages/")
 async def Get_Pages(rq:SiteRequest):
-	 """
-	 return list of current user pages
-	 """
-	 return dblang.GetPages(rq.username)
+	"""
+	return list of current user pages
+	"""
+	return dblang.GetPages(rq.username)
+
+
+@app.put("/Set_Page_As_Default/")
+async def Get_Pages(rq:SiteRequest):
+	"""
+	set page as default\n
+		data - page_id
+	"""
+	return dblang.SetPageAsDefault(user_name = rq.username, page_id = int(rq.data))
 
 
 @app.post("/Get_Row/")

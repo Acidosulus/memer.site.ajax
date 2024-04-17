@@ -2209,8 +2209,8 @@ async function SelectRow(element){
 
 async function AddRowIntoPage(row_id, page_id){
   let response_text = await asyncRequest(`${APIServer}/Add_Row_Into_Page/`,`POST`, {    command: ``,
-                                                                                      comment: `${row_id}`,// row_id
-                                                                                      data: `${page_id}` //page_id
+                                                                                        comment: `${row_id}`,// row_id
+                                                                                        data: `${page_id}` //page_id
                                                                                     });
   showPopupMessage(response_text);
   FillEditPageForm();
@@ -2224,13 +2224,21 @@ async function MoveInPageRow({
                                   page_id = `0`,
                                 })
 {
-  await asyncRequest(`${APIServer}/Move_In_Page_Row/`,`POST`, {    command: direction,
+  await asyncRequest(`${APIServer}/Move_In_Page_Row/`,`POST`, {       command: direction,
                                                                       comment: `${row_id}`,// row_id
                                                                       data: `${page_id}` //page_id
                                                                   });
   FillEditPageForm();
 }
 
+
+async function SetPageAsDefault(page_id) {
+  await asyncRequest(`${APIServer}/Set_Page_As_Default/`,`PUT`, {     command: ``,
+                                                                      comment: ``,
+                                                                      data: `${page_id}` //page_id
+                                                                  });
+  FillPagesEdit();
+}
 
 
 EventsBindener.assignOnClickToMatchingElement();
