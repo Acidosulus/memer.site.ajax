@@ -1628,10 +1628,12 @@ async function FillRowsEdit(){
         }
       document.getElementById("id_rows_list").addEventListener("change", function() {
           RefreshElementsEditRowForm();
-});
+      });
+    RefreshElementsEditRowForm();
 }
 
 function RefreshElementsEditRowForm(){
+  //console.log(`RefreshElementsEditRowForm: ${GetSelectedHomeRowId()}`);
   document.getElementById("hp_rows_list_RowsHomePageEditButton").disabled = (GetSelectedHomeRowId()==0);
   document.getElementById("hp_rows_list_RowsHomePageDeleteButton").disabled = (GetSelectedHomeRowId()==0);
   document.getElementById("hp_rows_list_RowsHomePageSelectButton").disabled = (GetSelectedHomeRowId()==0);
@@ -2053,7 +2055,8 @@ async function FillPagesEdit(){
 
 async function RefreshElementsEditPagesForm(){
   $("#hp_pages_list_PagesHomePageEditButton").prop("disabled", GetSelectedHomePagePageId()==0);
-  $("#hp_page_list_PagesHomePageDeleteButton").prop("disabled", GetSelectedHomePagePageId()==0);
+  $("#hp_pages_list_PagesHomePageDeleteButton").prop("disabled", GetSelectedHomePagePageId()==0);
+  $("#hp_pages_list_PagesHomePageSetAsDefaultButton").prop("disabled", GetSelectedHomePagePageId()==0);
 }
 
 
