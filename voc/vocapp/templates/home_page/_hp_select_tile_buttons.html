@@ -6,7 +6,10 @@
         <div class="col-2">
           <div class="container-fluid">
             <div class="row">
-              <button class="btn btn-info btn-block mb-2 button_save" onclick="CloseToplevelDynamicForm();" id="ok_id_for_select_icon">
+              <button class="btn btn-info btn-block mb-2 button_save"
+                      onclick="CloseToplevelDynamicForm();"
+                      id="edit_tiles_select_button_id"
+                      disabled>
                 Select
               </button>
             </div>
@@ -16,7 +19,10 @@
         <div class="col-2">
           <div class="container-fluid">
             <div class="row">
-              <button class="btn btn-success btn-block mb-2 button_save" onclick="EditSelectedTile();" id="ok_id_for_select_icon">
+              <button class="btn btn-success btn-block mb-2 button_save"
+                      onclick="EditSelectedTile();"
+                      id="edit_tiles_edit_button_id"
+                      disabled>
                 Edit
               </button>
             </div>
@@ -28,6 +34,7 @@
           <div class="container-fluid">
             <div class="row">
               <button class="btn btn-primary btn-block mb-2 button_save"
+                      id = "edit_tiles_add_button_id"
                       onclick="RunInScreenForm({form_name:`select_tile`, execute_after_load:``, request_link:`/edit_tile/0`, execute_on_ok:'', execute_on_close:`FillTilesField();`});">
                 Add
               </button>
@@ -39,7 +46,10 @@
         <div class="col-2">
           <div class="container-fluid">
             <div class="row">
-              <button class="btn btn-danger btn-block mb-2 button_save" onclick="DeleteTile();FillTilesField();">
+              <button class="btn btn-danger btn-block mb-2 button_save"
+                      onclick="DeleteTile();FillTilesField();"
+                      id = "edit_tiles_remove_button_id"
+                      disabled>
                  Remove
                 </button>
             </div>
@@ -51,6 +61,7 @@
           <div class="container-fluid">
             <div class="row">
               <button class="btn btn-secondary btn-block mb-2 button_save"
+                      id = "edit_tiles_cancel_button_id"
                       onclick="  const tiles = document.querySelectorAll('.img-thumbnail');
                                   for (tile of tiles) {
                                     tile.classList.remove('selected_tile');

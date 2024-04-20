@@ -1457,8 +1457,6 @@ function GetTiles() {
 }
 
 function FillTilesField(currrent_icon) {
-  // console.log(`FillTilesField('${currrent_icon}')`);
-  
   field = document.querySelector("#tiles_field");
   if (field!=null) {
     field.innerHTML = ``;
@@ -1572,15 +1570,10 @@ function EditSelectedTile() {
 }
 
 function LoadDatatoEditSelectedTile() {
-  // console.log(`LoadDatatoEditSelectedTile()`);
   if (!document.querySelector(`#edit_tile_form_main_div`)) {
     return;
   }
-  // console.log(`LoadDatatoEditSelectedTile() --> go body`);
   let maindiv = document.querySelector(`#edit_tile_form_main_div`);
-  // console.log(`LoadDatatoEditSelectedTile() --> maindiv = ${maindiv}`);
-  // console.log(maindiv)
-  // console.log(`LoadDatatoEditSelectedTile() --> maindiv = ${maindiv.dataset.tileid}`);
   if (maindiv) {
     $.ajax({
       url: `${APIServer}/Get_Tile/`,
