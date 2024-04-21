@@ -959,6 +959,14 @@ def hp_edit_page(request, page_id:str):
 				'APIServer':settings.API_ADRESS, 'userUUID':usersDataStorage.FindDataByUserName(request.user.get_username())['uuid']}
 	return render(request, "./home_page/hp_page_edit.html", context=data)
 
+def start_page_render(request, page_id:str):
+	data = { 	'page_id':page_id,
+	 			'user_asset_path':get_user_icons_path(request),
+				'icons_list':get_icons_lists(request),
+				'APIServer':settings.API_ADRESS, 'userUUID':usersDataStorage.FindDataByUserName(request.user.get_username())['uuid']}
+	return render(request, "./home_page/hp_page_edit.html", context=data)
+
+
 
 def generate_new_filename(upload_dir, filename):
 	base_name, extension = os.path.splitext(filename)

@@ -1406,8 +1406,8 @@ function FillIconsField(currrent_icon) {
     rowelement = document.querySelector(`#${rowid}`);
     for (element of row) {
       rowelement.insertAdjacentHTML(
-        `beforeend`,
-        `<div class="col-1"><img onclick="SelectonClick(this,'selected_icon');" src="/api/v1/get_asset/tiles/${
+        `beforeend`, 
+        `<div class="col-1"><img onclick="TileSelectClick(this,'selected_icon'); UnDisabledButtonsIconSelect();" src="/api/v1/get_asset/tiles/${
           element.icon
         }" class="img-fluid img-thumbnail bg-dark ${
           currrent_icon == element.icon ? "selected" : ""
@@ -1430,6 +1430,15 @@ function FillIconsField(currrent_icon) {
       });
     });
   });
+}
+
+function UnDisabledButtonsIconSelect(){
+    for (let element of document.querySelectorAll(`#ok_id_for_select_icon`)){
+      element.disabled = false
+    }
+    for (let element of document.querySelectorAll(`#remove_id_for_select_icon`)){
+      element.disabled = false
+    }
 }
 
 function GetTiles() {
@@ -1474,7 +1483,7 @@ function FillTilesField(currrent_icon) {
         rowelement.insertAdjacentHTML(
           `beforeend`,
           `<div class="card bg-transparent col-2">
-              <img  onclick="SelectonClick(this,'selected_tile');"
+              <img  onclick="TileSelectClick(this,'selected_tile'); UndisableButtonsTilesForm();"
                     src="/api/v1/get_asset/tiles/${element.icon}"
                     class="card-img-top img-fluid img-thumbnail bg-dark ${
                       currrent_icon == element.icon ? "selected_tile" : ""
@@ -1499,13 +1508,26 @@ function FillTilesField(currrent_icon) {
         });
         this.classList.add("selected");
         this.dataset.selected = `yes`;
-        //console.log(this.dataset.filename);
+        console.log('tile select')
       });
     });
   });
 }
 
-function SelectonClick(selectme, style_name) {
+function UndisableButtonsTilesForm() {
+  for (let element of document.querySelectorAll(`#edit_tiles_select_button_id`)){
+    element.disabled = false;
+  }
+  for (let element of document.querySelectorAll(`#edit_tiles_edit_button_id`)){
+    element.disabled = false;
+  }
+  for (let element of document.querySelectorAll(`#edit_tiles_remove_button_id`)){
+    element.disabled = false;
+  }
+}
+
+function TileSelectClick(selectme, style_name) {
+  console.log(`${TileSelectClick.caller}  ->  TileSelectClick: (${selectme}), (${style_name})`);
   const tiles = document.querySelectorAll(".img-thumbnail");
   for (tile of tiles) {
     tile.classList.remove(style_name);
@@ -1738,7 +1760,7 @@ async function FillEditRowForm() {
 async function DeleteTileFromRow(id){
   response = await asyncRequest(`${APIServer}/DeleteTileFromRow/`,`POST`, {   command: '',
                                                                               comment: '',
-                                                                              data: id});
+                                                                              data: `${id}`});
   setTimeout(function() {
       FillEditRowForm();
     }, 1000);
@@ -1749,9 +1771,9 @@ async function AddTileInRow(row_id, index_id){
   if (tile_id !== ''){
     tile_id = GetSelected(`selected_tile`).dataset.tileid;
     // console.log(tile_id);
-        response = await asyncRequest(`${APIServer}/AddTileToRowRelation/`,`POST`, {  command: row_id,
-                                                                                comment: tile_id,
-                                                                                data: index_id});
+        response = await asyncRequest(`${APIServer}/AddTileToRowRelation/`,`POST`, {    command: `${row_id}`,
+                                                                                        comment: `${tile_id}`,
+                                                                                        data: `${index_id}`});
   setTimeout(function() {
       FillEditRowForm();
     }, 1000);
@@ -1786,7 +1808,7 @@ catch{
     if (lastMessageId > 0){
                             response = await asyncRequest(`${APIServer}/GetMessagesAfterId/`,`POST`, {  command: ``,
                                                                                                         comment: ``,
-                                                                                                        data: lastMessageId});
+                                                                                                        data:`${lastMessageId}`  });
                             if (response.length==0 && document.getElementById("messageLogContent").children.length==0){
                               response = await asyncRequest(`${APIServer}/GetMessagesLast/`,`POST`, {  command: ``,
                                                                                                       comment: ``,
@@ -1879,9 +1901,9 @@ catch{
 
 async function AddMessage(message='', icon='', hyperlink=''){
   let response;
-  response = await asyncRequest(`${APIServer}/AddMessage/`,`POST`, {              command: hyperlink,
-                                                                                  comment: icon,
-                                                                                  data: message});
+  response = await asyncRequest(`${APIServer}/AddMessage/`,`POST`, {              command: `${hyperlink}`,
+                                                                                  comment: `${icon}`,
+                                                                                  data: `${message}` });
   fetchMessages();
   return response;
 }

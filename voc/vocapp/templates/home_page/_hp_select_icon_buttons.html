@@ -6,7 +6,13 @@
         <div class="col-4">
           <div class="container-fluid">
             <div class="row">
-              <button class="btn btn-success btn-block mb-2 button_save" onclick="SelectIcon(document.querySelector(`#inputIcon`));" id="ok_id_for_select_icon">Select</button>
+              <button
+                class="btn btn-success btn-block mb-2 button_save"
+                onclick="SelectIcon(document.querySelector(`#inputIcon`));"
+                id="ok_id_for_select_icon"
+                disabled
+                >Select
+              </button>
             </div>
           </div>
         </div>
@@ -15,7 +21,11 @@
         <div class="col-2">
           <div class="container-fluid">
             <div class="row">
-              <button class="btn btn-primary btn-block mb-2 button_save" onclick="handleFileUpload(`image/jpeg, image/png, image/bmp, image/x-icon, image/webp`, `/icons_upload/`, FillIconsField);">Add</button>
+              <button
+                  class="btn btn-primary btn-block mb-2 button_save"
+                  onclick="handleFileUpload(`image/jpeg, image/png, image/bmp, image/x-icon, image/webp`, `/icons_upload/`, FillIconsField);"
+              >Add
+            </button>
             </div>
           </div>
         </div>
@@ -24,7 +34,13 @@
         <div class="col-2">
           <div class="container-fluid">
             <div class="row">
-              <button class="btn btn-danger btn-block mb-2 button_save" onclick="DeleteIconImage();FillIconsField();">Remove</button>
+              <button 
+                class="btn btn-danger btn-block mb-2 button_save"
+                onclick="DeleteIconImage();FillIconsField();"
+                id="remove_id_for_select_icon"
+                disabled
+                >Remove
+              </button>
             </div>
           </div>
         </div>
@@ -33,7 +49,11 @@
         <div class="col-2">
           <div class="container-fluid">
             <div class="row">
-              <button class="btn btn-secondary btn-block mb-2 button_save" onclick="CloseToplevelDynamicForm();">Cancel</button>
+              <button
+                class="btn btn-secondary btn-block mb-2 button_save"
+                onclick="CloseToplevelDynamicForm();"
+                >Cancel
+              </button>
             </div>
           </div>
         </div>

@@ -80,5 +80,6 @@ urlpatterns = [
 	path('hp_edit_page/<str:page_id>', views.hp_edit_page),
 	path('select_icon/', views.select_icon),
  	path('select_tile/', views.select_tile),
+	path('start_page_render/<str:page_id>', views.start_page_render),
 ]
 

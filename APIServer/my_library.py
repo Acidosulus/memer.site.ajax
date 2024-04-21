@@ -222,8 +222,6 @@ def RowToDict(row):
 	return result
 
 # returl query result as dict list
-
-
 def RowsToDictList(rows):
 	if rows is None:
 		return [{}]
