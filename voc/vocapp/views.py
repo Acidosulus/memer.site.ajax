@@ -964,7 +964,7 @@ def start_page_render(request, page_id:str):
 	 			'user_asset_path':get_user_icons_path(request),
 				'icons_list':get_icons_lists(request),
 				'APIServer':settings.API_ADRESS, 'userUUID':usersDataStorage.FindDataByUserName(request.user.get_username())['uuid']}
-	return render(request, "./home_page/hp_page_edit.html", context=data)
+	return render(request, "./home_page/hp_page_reneder.html", context=data)
 
 
 

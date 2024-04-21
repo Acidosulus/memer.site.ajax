@@ -60,6 +60,12 @@ window.onload = async function (event) {
       Number(document.getElementById("index_table_of_phrases").dataset.ready)
     );
   }
+
+  if (document.querySelector('#page_home_page_data_container')){
+    FillHomePage();
+  }
+
+
 };
 
 async function asyncRequest(uri, method, data, debug = false) {
@@ -2259,5 +2265,184 @@ async function SetPageAsDefault(page_id) {
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+function HomePageGoLink(      {
+                                hyperlink = "",
+                                tile_id = "",
+                              }
+                            )
+{
+  if (hyperlink.startsWith('http')){
+    window.open(hyperlink, '_black');
+  }else{
+    window.open(`https://${hyperlink}`, '_black');
+  }
+  
+}
+
+
+
+
+
+
+async function FillHomePage() {
+  let pattern = `
+<div class="row border-5 page_rows_in_edit_form" id="row_list" style="border: 1px solid #cccccc; border-radius: 15px;" data-row_id="{ row_id }">
+  <div class="col-12">
+    <div class="container-fluid mt-1">
+      <div class="row" id="row_container">
+          <div class="col-1" >
+            <a onclick="HomePageGoLink({hyperlink:'{ hyperlink_1 }', tile_id:'{ tile_id_1 }'});" >
+              <img { icon_1 }  width="64" height="64" id="img_1">
+            </a>
+         </div>
+
+          <div class="col-1">
+          <a onclick="HomePageGoLink({hyperlink:'{ hyperlink_1 }', tile_id:'{ tile_id_1 }'});" >
+            <img { icon_2 }  width="64" height="64" id="img_2">
+          </a>
+         </div>
+
+          <div class="col-1">
+          <a onclick="HomePageGoLink({hyperlink:'{ hyperlink_1 }', tile_id:'{ tile_id_1 }'});" >
+            <img { icon_3 }" width="64" height="64" id="img_3">
+          </a>
+         </div>
+
+          <div class="col-1">
+          <a onclick="HomePageGoLink({hyperlink:'{ hyperlink_1 }', tile_id:'{ tile_id_1 }'});" >
+            <img { icon_4 }  width="64" height="64" id="img_4">
+          </a>
+         </div>
+
+          <div class="col-1">
+          <a onclick="HomePageGoLink({hyperlink:'{ hyperlink_1 }', tile_id:'{ tile_id_1 }'});" >
+            <img { icon_5 }  width="64" height="64" id="img_5">
+          </a>
+         </div>
+
+          <div class="col-1">
+          <a onclick="HomePageGoLink({hyperlink:'{ hyperlink_1 }', tile_id:'{ tile_id_1 }'});" >
+            <img { icon_6 }  width="64" height="64" id="img_6">
+          </a>
+         </div>
+
+          <div class="col-1">
+          <a onclick="HomePageGoLink({hyperlink:'{ hyperlink_1 }', tile_id:'{ tile_id_1 }'});" >
+            <img { icon_7 }  width="64" height="64" id="img_7">
+          </a>
+         </div>
+
+          <div class="col-1">
+          <a onclick="HomePageGoLink({hyperlink:'{ hyperlink_1 }', tile_id:'{ tile_id_1 }'});" >
+            <img { icon_8 }  width="64" height="64" id="img_8">
+          </a>
+         </div>
+
+          <div class="col-1">
+          <a onclick="HomePageGoLink({hyperlink:'{ hyperlink_1 }', tile_id:'{ tile_id_1 }'});" >
+            <img { icon_9 }  width="64" height="64" id="img_9">
+          </a>
+         </div>
+
+          <div class="col-1">
+          <a onclick="HomePageGoLink({hyperlink:'{ hyperlink_1 }', tile_id:'{ tile_id_1 }'});" >
+            <img { icon_10 } width="64" height="64" id="img_10">
+          </a>
+         </div>
+
+          <div class="col-1">
+          <a onclick="HomePageGoLink({hyperlink:'{ hyperlink_1 }', tile_id:'{ tile_id_1 }'});" >
+            <img { icon_11 } width="64" height="64" id="img_11">
+         </div>
+         
+          <div class="col-1">
+          <a onclick="HomePageGoLink({hyperlink:'{ hyperlink_1 }', tile_id:'{ tile_id_1 }'});" >
+            <img { icon_12 } width="64" height="64" id="img_12">
+          </a>
+         </div>
+
+      </div>
+    </div>
+ </div>
+</div>
+<br>
+`;
+  let parentElement = document.querySelector(`#page_home_page_data_container`);
+  if (!parentElement){
+    // console.log(`parent element is not found`);
+    return
+  }
+  let page_id = parentElement.dataset.page_id
+
+  if (page_id>0){
+    response = await asyncRequest(`${APIServer}/Get_Page/`,`POST`, {    command: '',
+                                                                        comment: '',
+                                                                        data: `${page_id}`});
+    console.log(response);    
+    let rows_container = parentElement.querySelector('#rows_container');
+    rows_container.innerHTML=``;
+    for (let row of response.rows){
+      rowHtml = pattern.replace('{ name }', row.row_name);
+      rowHtml = rowHtml.replaceAll('{ row_id }', row.row_id);
+      for (let tile of row.tiles){
+        rowHtml = rowHtml.replace(  `{ icon_${tile.tile_index} }`,
+                                    `src="/api/v1/get_asset/tiles/${tile.icon}"`);
+        rowHtml = rowHtml.replace(  `{ hyperlink_${tile.tile_index} }`,
+                                    tile.hyperlink);
+        rowHtml = rowHtml.replace(  `{ tile_id_${tile.tile_index} }`,
+                                    tile.tile_id);
+      }
+
+      for (let i = 1; i <= 12; i++) {
+        rowHtml = rowHtml.replace(`{ icon_${i} }`,`src="/static/images/empty_32x32.png"`);
+      }
+
+      rows_container.insertAdjacentHTML(`beforeend`,rowHtml);
+    }
+  } else{
+    console.log('Wrong condition: parentElement.data(`row_id`)>0');
+  }
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 EventsBindener.assignOnClickToMatchingElement();
+
+
+
+
+
 
