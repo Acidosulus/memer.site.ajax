@@ -2297,9 +2297,7 @@ function HomePageGoLink(      {
 
 async function FillHomePage() {
   let pattern = `
-<div class="row page_rows_in_edit_form" id="row_list" style="border: 1px solid #cccccc; border-radius: 15px;" data-row_id="{ row_id }">
-  <div class="col-12">
-    <div class="container mt-1">
+    <div class="container-fluid" id="page_rows_in_edit_form" style="border: 1px solid #cccccc; border-radius: 5px;" data-row_id="{ row_id }">
       <div class="row" id="row_container">
 
 
@@ -2377,8 +2375,6 @@ async function FillHomePage() {
 
       </div>
     </div>
- </div>
-</div>
 <br>
 `;
   let parentElement = document.querySelector(`#page_home_page_data_container`);
@@ -2393,12 +2389,12 @@ async function FillHomePage() {
                                                                         comment: '',
                                                                         data: `${page_id}`});
     console.log(response);    
-    let rows_container = parentElement.querySelector('#rows_container');
+    let rows_container = document.querySelector('#page_home_page_data_container');
     rows_container.innerHTML=``;
     for (let row of response.rows){
       rowHtml = pattern.replace('{ name }', row.row_name);
       rowHtml = rowHtml.replaceAll('{ row_id }', row.row_id);
-      rowHtml = rowHtml.replaceAll(`{ icon_size }`,`86`);
+      rowHtml = rowHtml.replaceAll(`{ icon_size }`,`64`);
       for (let tile of row.tiles){
         rowHtml = rowHtml.replace(  `{ icon_${tile.tile_index} }`,
                                     `src="/api/v1/get_asset/tiles/${tile.icon}"`);
