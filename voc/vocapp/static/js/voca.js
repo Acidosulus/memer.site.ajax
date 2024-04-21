@@ -2297,80 +2297,83 @@ function HomePageGoLink(      {
 
 async function FillHomePage() {
   let pattern = `
-<div class="row border-5 page_rows_in_edit_form" id="row_list" style="border: 1px solid #cccccc; border-radius: 15px;" data-row_id="{ row_id }">
+<div class="row page_rows_in_edit_form" id="row_list" style="border: 1px solid #cccccc; border-radius: 15px;" data-row_id="{ row_id }">
   <div class="col-12">
-    <div class="container-fluid mt-1">
+    <div class="container mt-1">
       <div class="row" id="row_container">
+
+
           <div class="col-1" >
             <a onclick="HomePageGoLink({hyperlink:'{ hyperlink_1 }', tile_id:'{ tile_id_1 }'});" >
-              <img { icon_1 }  width="64" height="64" id="img_1">
+              <img { icon_1 }  width="{ icon_size }" height="{ icon_size }" id="img_1">
             </a>
          </div>
 
           <div class="col-1">
           <a onclick="HomePageGoLink({hyperlink:'{ hyperlink_1 }', tile_id:'{ tile_id_1 }'});" >
-            <img { icon_2 }  width="64" height="64" id="img_2">
+            <img { icon_2 }  width="{ icon_size }" height="{ icon_size }" id="img_2">
           </a>
          </div>
 
           <div class="col-1">
           <a onclick="HomePageGoLink({hyperlink:'{ hyperlink_1 }', tile_id:'{ tile_id_1 }'});" >
-            <img { icon_3 }" width="64" height="64" id="img_3">
+            <img { icon_3 }" width="{ icon_size }" height="{ icon_size }" id="img_3">
           </a>
          </div>
 
           <div class="col-1">
           <a onclick="HomePageGoLink({hyperlink:'{ hyperlink_1 }', tile_id:'{ tile_id_1 }'});" >
-            <img { icon_4 }  width="64" height="64" id="img_4">
+            <img { icon_4 }  width="{ icon_size }" height="{ icon_size }" id="img_4">
           </a>
          </div>
 
           <div class="col-1">
           <a onclick="HomePageGoLink({hyperlink:'{ hyperlink_1 }', tile_id:'{ tile_id_1 }'});" >
-            <img { icon_5 }  width="64" height="64" id="img_5">
+            <img { icon_5 }  width="{ icon_size }" height="{ icon_size }" id="img_5">
           </a>
          </div>
 
           <div class="col-1">
           <a onclick="HomePageGoLink({hyperlink:'{ hyperlink_1 }', tile_id:'{ tile_id_1 }'});" >
-            <img { icon_6 }  width="64" height="64" id="img_6">
+            <img { icon_6 }  width="{ icon_size }" height="{ icon_size }" id="img_6">
           </a>
          </div>
 
           <div class="col-1">
           <a onclick="HomePageGoLink({hyperlink:'{ hyperlink_1 }', tile_id:'{ tile_id_1 }'});" >
-            <img { icon_7 }  width="64" height="64" id="img_7">
+            <img { icon_7 }  width="{ icon_size }" height="{ icon_size }" id="img_7">
           </a>
          </div>
 
           <div class="col-1">
           <a onclick="HomePageGoLink({hyperlink:'{ hyperlink_1 }', tile_id:'{ tile_id_1 }'});" >
-            <img { icon_8 }  width="64" height="64" id="img_8">
+            <img { icon_8 }  width="{ icon_size }" height="{ icon_size }" id="img_8">
           </a>
          </div>
 
           <div class="col-1">
           <a onclick="HomePageGoLink({hyperlink:'{ hyperlink_1 }', tile_id:'{ tile_id_1 }'});" >
-            <img { icon_9 }  width="64" height="64" id="img_9">
+            <img { icon_9 }  width="{ icon_size }" height="{ icon_size }" id="img_9">
           </a>
          </div>
 
           <div class="col-1">
           <a onclick="HomePageGoLink({hyperlink:'{ hyperlink_1 }', tile_id:'{ tile_id_1 }'});" >
-            <img { icon_10 } width="64" height="64" id="img_10">
+            <img { icon_10 } width="{ icon_size }" height="{ icon_size }" id="img_10">
           </a>
          </div>
 
           <div class="col-1">
           <a onclick="HomePageGoLink({hyperlink:'{ hyperlink_1 }', tile_id:'{ tile_id_1 }'});" >
-            <img { icon_11 } width="64" height="64" id="img_11">
+            <img { icon_11 } width="{ icon_size }" height="{ icon_size }" id="img_11">
          </div>
          
           <div class="col-1">
           <a onclick="HomePageGoLink({hyperlink:'{ hyperlink_1 }', tile_id:'{ tile_id_1 }'});" >
-            <img { icon_12 } width="64" height="64" id="img_12">
+            <img { icon_12 } width="{ icon_size }" height="{ icon_size }" id="img_12">
           </a>
          </div>
+
 
       </div>
     </div>
@@ -2395,6 +2398,7 @@ async function FillHomePage() {
     for (let row of response.rows){
       rowHtml = pattern.replace('{ name }', row.row_name);
       rowHtml = rowHtml.replaceAll('{ row_id }', row.row_id);
+      rowHtml = rowHtml.replaceAll(`{ icon_size }`,`86`);
       for (let tile of row.tiles){
         rowHtml = rowHtml.replace(  `{ icon_${tile.tile_index} }`,
                                     `src="/api/v1/get_asset/tiles/${tile.icon}"`);
