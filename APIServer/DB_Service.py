@@ -1,4 +1,5 @@
 import sys
+from tkinter import N
 from click import echo, style
 from sqlalchemy import create_engine
 from sqlalchemy import Column, Integer, Table, MetaData, and_, func, text, BigInteger
@@ -717,7 +718,7 @@ class LanguageDB:
 
 
 	def GetTodayReadingParagraphs(self, user_name):
-		return self.session.execute(text(f"""--sql
+		result = self.session.execute(text(f"""--sql
 								   			select sum(diff)
 												from (
 														SELECT id_book, max(id_paragraph) - min(id_paragraph) as diff
@@ -725,6 +726,11 @@ class LanguageDB:
 														WHERE dt >= CURRENT_TIMESTAMP - INTERVAL '1 day' and user_id = {self.GetUserId(user_name)}
 														group by id_book ) as ct
 														;""")).one()[0]
+		if result != None:
+			result = result + 5
+		else:
+			result = 0
+		return result
 
 
 	def SaveTile(self, tile_id, user_name, name, hyperlink, icon, color):
