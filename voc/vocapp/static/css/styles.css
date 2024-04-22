@@ -607,7 +607,7 @@ my_div_save{
 
 
           @keyframes rowborderAnimation {
-            0% {
+0% {
               border-color: red;
             }
             50% {
@@ -654,3 +654,5 @@ my_div_save{
     bottom: 0;
     border: 1px dashed rgba(255, 255, 255, 0.5);
 }
+
+
