@@ -2325,7 +2325,7 @@ async function FillHomePage() {
     response = await asyncRequest(`${APIServer}/Get_Page/`,`POST`, {    command: '',
                                                                         comment: '',
                                                                         data: `${page_id}`});
-    console.log(response);    
+    console.log(response);
     let rows_container = document.querySelector('#page_home_page_data_container');
     rows_container.innerHTML=``;
     for (let row of response.rows){

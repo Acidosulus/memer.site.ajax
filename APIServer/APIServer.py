@@ -306,7 +306,7 @@ async def get_user_count_of_words_proceed_today(rq:SiteRequest):
 	return JSONResponse(response)
 
 @app.post("/Get_Phrases_Count_Repeated_Today/")
-async def get_user_count_of_words_proceed_today(rq:SiteRequest):
+async def Get_Phrases_Count_Repeated_Today(rq:SiteRequest):
 	response = {}
 	printSiteRequest(inspect.currentframe().f_code.co_name, rq)
 	response['data'] = dblang.GetPhrasesCountRepeatedToday(rq.username)

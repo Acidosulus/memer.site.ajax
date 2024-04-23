@@ -2,6 +2,13 @@
 
 const EventsBindener = {
 
+	hp_pages_list_PagesHomePageCopyLink: function(){
+		console.log(`Example text`);
+		alert(`Example text`);
+		navigator.clipboard.writeText(`Example text`);
+		
+	},
+
 	hp_pages_list_PagesHomePageSetAsDefaultButton: function(){
 		SetPageAsDefault($('#id_pages_ul_group').find(':selected').data(`page_id`), $('#id_pages_ul_group').find(':selected').val());
 	},
