@@ -236,9 +236,9 @@ async function Load_Book_Page() {
     for (let sentence of paragrath) {
       let modified_sentence = sentence.sentence;
       for (word of wordlist.words) {
-        if (~sentence.sentence.toLowerCase().indexOf(word.toLowerCase())) {
+        if (~modified_sentence.toLowerCase().indexOf(word.toLowerCase())) {
           // console.log(`${word}: ${sentence.sentence}`);
-          let startindex = sentence.sentence
+          let startindex = modified_sentence
             .toLowerCase()
             .indexOf(word.toLowerCase());
           let endindex = startindex + word.length;
