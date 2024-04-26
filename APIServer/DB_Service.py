@@ -973,6 +973,7 @@ class LanguageDB:
 		else:
 			return []
 		
+		
 	def GetMessagesLast(self, user_name, count):
 		ln_user_id = self.GetUserId(user_name)
 		rows = self.session.query(Message)\
