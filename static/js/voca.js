@@ -420,7 +420,7 @@ function Find_Word(){
     }
 
 
-async  function get_finding(lc_value){
+async  function _get_finding(lc_value){
   let response = await fetch('/api/v1/cross_request/', {
                                                           method: 'POST',
                                                           headers: {
@@ -458,15 +458,83 @@ async  function get_finding(lc_value){
 
 
     return
-    if (lc_value.length>1){
-            let response = await fetch("/api/"+lctype+"/"+lc_value+"/");
-            let commits = await response.text();
-            console.log(commits);
-            document.getElementById("span_search_result").innerHTML = commits;
-    } else {
-        document.getElementById("span_search_result").innerHTML = '';
+}
+
+
+
+
+// Объект для отслеживания запросов и ответов
+const requestMap = {};
+
+async function get_finding(lc_value) {
+  // Генерируем уникальный идентификатор запроса
+  const requestId = generateRequestId();
+
+  // Сохраняем идентификатор запроса для последующего сопоставления с ответом
+  requestMap[requestId] = true;
+
+  try {
+    let response = await fetch('/api/v1/cross_request/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8'
+      },
+      body: JSON.stringify({
+        username: ``,
+        command: `syllables_look_for_word_part`,
+        ready: 0,
+        slice_number: 1,
+        slice_size: 100,
+        word_part: lc_value
+      })
+    });
+
+    let answer = await response.json();
+
+    // Проверяем, принадлежит ли ответ к текущему запросу
+    if (requestMap[requestId]) {
+      // Обновляем интерфейс согласно ответу
+      updateInterface(answer);
     }
-}    
+  } catch (error) {
+    console.error('Ошибка при запросе:', error);
+  } finally {
+    // Удаляем идентификатор запроса после обработки ответа
+    delete requestMap[requestId];
+  }
+}
+
+// Генерация уникального идентификатора запроса
+function generateRequestId() {
+  return Math.random().toString(36).substr(2, 9);
+}
+
+// Обновление интерфейса согласно ответу от сервера
+function updateInterface(answer) {
+  // Ваш код обновления интерфейса согласно полученным данным
+  // Например, добавление результатов к элементу с id "span_search_result"
+  table_content = '';
+  row_pattern =   `<tr id="tr_of_index_words__{{ word.word }}">
+  <td width="7%" style="background:{{ word.word_background_color }}">{{ forloop.counter }}</td>
+  <td with = "24%" style="color:Blue"><a href="./word_in_progress/{{ word.word }}/">{{ word.word }}</a></td>
+  <td width="24%" align = "center" style="color:DarkRed"  onclick="new Audio('/static/sounds/{{ word.word }}.mp3').play(); return false;" >{{ word.transcription }}</td>
+  <td width="7%" align = "center">{{ word.show_count }}</td>
+  <td width="7%" align = "center"><a href="./add_new/{{ word.word }}/"><IMG class ="image_little_button" WIDTH="32" HEIGHT="32"  title = "Редактировать слово {{ word.word }}" src="/static/images/redo.png"></a></td>
+  <td width="7%" align = "center"><a onclick='SetWordStatus("{{ word.word }}", (document.getElementById("index_table_of_syllables").dataset.ready==1?0:1)); document.getElementById("tr_of_index_words__{{ word.word }}").remove(); LoadSimpleData();'><IMG  class ="image_little_button" WIDTH="32" HEIGHT="32"  title = "Слово выученно" src="/static/images/ok.png"></a></td>
+  </tr>`;
+  document.getElementById("span_search_result").innerHTML='';
+  for(let i = 0; i < answer.length; i++) {
+    let row = answer[i];
+    document.getElementById("span_search_result").insertAdjacentHTML('beforeend',row_pattern
+                                          .replaceAll('{{ word.word }}', row.word)
+                                          .replaceAll('{{ forloop.counter }}',i+1)
+                                          .replaceAll('{{ word.transcription }}', row.transcription)
+                                          .replaceAll('{{ word.show_count }}', row.show_count)
+                                          .replaceAll('{{ word.word_background_color }}',GetBackGroundColorByIndex(Number(row.last_view.substring(5,7)))))
+  }
+}
+
+
 
 /*  tsts
   var req = new XMLHttpRequest();
