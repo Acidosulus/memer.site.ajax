@@ -983,7 +983,11 @@ function Find_Word() {
   document.getElementById("text_for_finding").focus();
 }
 
+const requestMap = {};
 async function get_finding(lc_value) {
+  const requestId = generateRequestId();
+  requestMap[requestId] = true;
+
   let response = await fetch("/api/v1/cross_request/", {
     method: "POST",
     headers: {
@@ -999,6 +1003,20 @@ async function get_finding(lc_value) {
     }),
   });
   let answer = await response.json();
+  
+  if (requestMap[requestId]) {
+    updateInterface(answer);
+  }
+
+  return;
+}
+
+
+function generateRequestId() {
+  return Math.random().toString(36).substr(2, 9);
+}
+
+function updateInterface(answer) {
   table_content = "";
   row_pattern = `
       <div class="row mt-1 color_block_blue_green" id="tr_of_index_words__{{ word.word }}">
@@ -1038,9 +1056,9 @@ async function get_finding(lc_value) {
         )
     );
   }
-
-  return;
 }
+
+
 
 function setCookie(name, value, options = {}) {
   options = {
