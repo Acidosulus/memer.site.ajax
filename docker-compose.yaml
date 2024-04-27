@@ -8,3 +8,12 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 321
+  mongodb:
+    image: mongo:4
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+volumes:
+  mongodb_data:
