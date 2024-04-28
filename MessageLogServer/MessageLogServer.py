@@ -43,20 +43,20 @@ app.add_middleware(
 )
 
 
-@app.middleware("http")
-async def log_request(request: Request, call_next):
-	method = request.method
-	url = request.url
-	params = request.query_params
-	current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-	body = await request.body()
-	if not('GetMessagesAfterId' in str(url) or 'GetMessagesLast' in str(url)):
-		echo(	style(text = current_time + ' ', bg = 'blue', fg = 'bright_yellow')+
-			 	style(text = method + ' ', bg = 'blue', fg = 'bright_red')+
-			 	style(text = str(url) + ' ', bg = 'blue', fg = 'bright_green')+
-			 	style(text = str(params) + ' ', bg = 'blue', fg = 'bright_white')+
-				style(text = body.decode(), bg='blue', fg='bright_cyan'))
-	return await call_next(request)
+# @app.middleware("http")
+# async def log_request(request: Request, call_next):
+# 	method = request.method
+# 	url = request.url
+# 	params = request.query_params
+# 	current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+# 	body = await request.body()
+# 	if not('GetMessagesAfterId' in str(url) or 'GetMessagesLast' in str(url)):
+# 		echo(	style(text = current_time + ' ', bg = 'blue', fg = 'bright_yellow')+
+# 			 	style(text = method + ' ', bg = 'blue', fg = 'bright_red')+
+# 			 	style(text = str(url) + ' ', bg = 'blue', fg = 'bright_green')+
+# 			 	style(text = str(params) + ' ', bg = 'blue', fg = 'bright_white')+
+# 				style(text = body.decode(), bg='blue', fg='bright_cyan'))
+# 	return await call_next(request)
 
 
 
@@ -71,18 +71,13 @@ logger.addHandler(handler)
 
 
 
-class SiteRequests(BaseModel):
-	username:str
-	useruuid:str
-	command:str
-	comment:str
-	data:str
-
 class SiteRequest(BaseModel):
 	username:str
 	command:str
 	comment:str
 	data:str
+
+MessangerManager = MessagesManager.MessageManager("mongodb://localhost:27017/", "Memer", "messages")
 
 
 @app.get("/")
@@ -94,4 +89,26 @@ async def main():
 @app.get("/PumpMessages/")
 async def Get_Rows(username):
 	 return MessagesManager.load_data_from_pgsql()
+
+
+
+@app.post("/GetMessagesAfterId/")
+async def GetMessagesAfterId(rq:SiteRequest):
+	result = MessangerManager.get_messages_since_id(username=rq.username, message_id=rq.data)
+	return result
+
+
+@app.post("/GetMessagesLast/")
+async def GetMessagesLast(rq:SiteRequest):
+	result = MessangerManager.get_last_messages(username=rq.username, num_messages=int(rq.data))
+	return result
+
+
+@app.post("/AddMessage/")
+async def AddMessage(rq:SiteRequest):
+	result = MessangerManager.save_message(		username=rq.username,
+												message_text=rq.data,
+												icon_name=rq.comment,
+												hyperlink=rq.command )
+	return result
 
