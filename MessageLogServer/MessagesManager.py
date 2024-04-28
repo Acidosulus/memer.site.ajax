@@ -12,18 +12,18 @@ class MessageManager:
 		self.db = self.client[db_name]
 		self.collection = self.db[collection_name]
 
-	def save_message(self, username, icon_name, message_text, hyperlink):
+	def save_message(self, username, icon_name, message_text, hyperlink, date=datetime.now()):
 		message = {
 			"username": username,
-			"date": datetime.now(),
-			"icon_name": icon_name,
-			"message_text": message_text,
+			"dt": date,
+			"icon": icon_name,
+			"message": message_text,
 			"hyperlink": hyperlink
 		}
 		self.collection.insert_one(message)
 
 	def get_last_messages(self, username, num_messages):
-		messages = self.collection.find({"username": username}).sort("date", -1).limit(num_messages)
+		messages = self.collection.find({"username": username}).sort("dt", -1).limit(num_messages)
 		return list(messages)
 
 	def get_messages_since_id(self, username, message_id):
@@ -31,10 +31,42 @@ class MessageManager:
 		return list(messages)
 
 	def get_messages_since_date(self, username, start_date):
-		messages = self.collection.find({"username": username, "date": {"$gt": start_date}})
+		messages = self.collection.find({"username": username, "dt": {"$gt": start_date}})
 		return list(messages)
 
-# Пример использования
+
+
+
+
+def load_data_from_pgsql():
+	import requests
+	url = "http://127.0.0.1:9001/GetMessagesLast"
+	
+	messages = {
+		"username": "admin",
+		"command": "=============================================",
+		"comment": "|||||||||||||||||||||||||||||||||||||||||||||",
+		"data": "100000"
+	}
+	
+	response = requests.post(url, json=messages)
+	
+	message_manager = MessageManager("mongodb://localhost:27017/", "Memer", "messages")
+	message_manager.collection.delete_many({})
+	for message in response.json():
+		message_manager.save_message(	username='admin',
+							   			icon_name=message['icon'],
+										message_text=message['message'],
+										hyperlink=message['hyperlink'],
+										date=message['dt'])
+		print(message)
+	return response.json()
+
+
+
+
+
+
 if __name__ == "__main__":
 	# Инициализация менеджера сообщений
 	message_manager = MessageManager("mongodb://localhost:27017/", "Memer", "messages")
@@ -52,13 +84,16 @@ if __name__ == "__main__":
 
 	# messages_since_id = message_manager.get_messages_since_date("Test", datetime.now() - timedelta(hours=2))
 	
-	# Получение сообщений пользователя с идентификатором больше заданного
-	since_message_id = ObjectId('662d04a64e01e7a079a8cce1') # Предположим, что это идентификатор сообщения
-	messages_since_id = message_manager.get_messages_since_id("Test", since_message_id)
+	# since_message_id = ObjectId('662d04a64e01e7a079a8cce1')
+	# messages_since_id = message_manager.get_messages_since_id("Test", since_message_id)
+	# for message in messages_since_id:
+	# 	print()
+	# 	print(message)
+	# print()
+	# print({'count':len(messages_since_id)})
+
 	
-	# print("Messages since message ID", since_message_id, ":")
-	for message in messages_since_id:
-		print()
-		print(message)
-	print()
-	print({'count':len(messages_since_id)})
+
+
+
+

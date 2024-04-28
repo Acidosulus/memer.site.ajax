@@ -18,7 +18,9 @@ from settings import Options
 from typing import Dict, Any
 import datetime
 import logging
+import MessagesManager
 # from  notifier_bot import Telegram_Notifier
+from rich import print
 
 printer = pprint.PrettyPrinter(indent=12, width=120)
 prnt = printer.pprint
@@ -57,6 +59,10 @@ async def log_request(request: Request, call_next):
 	return await call_next(request)
 
 
+
+
+
+
 logger = logging.getLogger("uvicorn")
 #logger.setLevel(logging.ERROR)
 logger.setLevel(logging.INFO)
@@ -82,4 +88,10 @@ class SiteRequest(BaseModel):
 @app.get("/")
 async def main():
 	return {"message": "Hello World"}
+
+
+
+@app.get("/PumpMessages/")
+async def Get_Rows(username):
+	 return MessagesManager.load_data_from_pgsql()
 

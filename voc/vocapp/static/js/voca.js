@@ -68,6 +68,7 @@ window.onload = async function (event) {
 
 };
 
+
 async function asyncRequest(uri, method, data, debug = false) {
   data[`username`] = UserName;
   data[`useruuid`] = UserUUID;

@@ -55,8 +55,8 @@ async def log_request(request: Request, call_next):
 	params = request.query_params
 	current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 	body = await request.body()
-	if not('GetMessagesAfterId' in str(url) or 'GetMessagesLast' in str(url)):
-		echo(	style(text = current_time + ' ', bg = 'blue', fg = 'bright_yellow')+
+	# if not('GetMessagesAfterId' in str(url) or 'GetMessagesLast' in str(url)):
+	echo(	style(text = current_time + ' ', bg = 'blue', fg = 'bright_yellow')+
 			 	style(text = method + ' ', bg = 'blue', fg = 'bright_red')+
 			 	style(text = str(url) + ' ', bg = 'blue', fg = 'bright_green')+
 			 	style(text = str(params) + ' ', bg = 'blue', fg = 'bright_white')+

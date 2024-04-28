@@ -978,7 +978,7 @@ class LanguageDB:
 		ln_user_id = self.GetUserId(user_name)
 		rows = self.session.query(Message)\
 							.filter(	Message.user_id==ln_user_id,)\
-											.order_by(desc(Message.id))\
+											.order_by((Message.id))\
 				 							.limit(count)\
 											.all()
 		if rows!=None:
