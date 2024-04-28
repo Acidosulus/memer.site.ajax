@@ -1831,17 +1831,17 @@ catch{
     let response;
     let lastMessageId = getCookie('maxLastMessageId', 0);
     if (lastMessageId > 0){
-                            response = await asyncRequest(`${APIServer}/GetMessagesAfterId/`,`POST`, {  command: ``,
+                            response = await asyncRequest(`${MdAPIServer}/GetMessagesAfterId/`,`POST`, {  command: ``,
                                                                                                         comment: ``,
                                                                                                         data:`${lastMessageId}`  });
                             if (response.length==0 && document.getElementById("messageLogContent").children.length==0){
-                              response = await asyncRequest(`${APIServer}/GetMessagesLast/`,`POST`, {  command: ``,
+                              response = await asyncRequest(`${MdAPIServer}/GetMessagesLast/`,`POST`, {  command: ``,
                                                                                                       comment: ``,
                                                                                                       data: `60`});
                             }
     }
     else {
-                            response = await asyncRequest(`${APIServer}/GetMessagesLast/`,`POST`, {  command: ``,
+                            response = await asyncRequest(`${MdAPIServer}/GetMessagesLast/`,`POST`, {  command: ``,
                                                                                                         comment: ``,
                                                                                                         data: `60`});
     }
@@ -1858,8 +1858,6 @@ catch{
         setCookie('maxLastMessageId', maxId);
       }
     }
-
-
     
     if (response.length>0) {
       // If log is open, display messages
@@ -1925,11 +1923,7 @@ catch{
 
 
 async function AddMessage(message='', icon='', hyperlink=''){
-  let response1;
-  response1 = await asyncRequest(`${MdAPIServer}/AddMessage/`,`POST`, {              command: `${hyperlink}`,
-                                                                                    comment: `${icon}`,
-                                                                                    data: `${message}` });
- let response;
+  let response;
   response = await asyncRequest(`${APIServer}/AddMessage/`,`POST`, {              command: `${hyperlink}`,
                                                                                   comment: `${icon}`,
                                                                                   data: `${message}` });

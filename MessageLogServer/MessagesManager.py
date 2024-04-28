@@ -17,7 +17,6 @@ class MessageManager:
 			if '_id' in element:
 				element['_id']		=	str(element['_id'])
 				element['id']		=	element['_id']
-			print(element)
 		return result
 
 

@@ -988,7 +988,7 @@ class LanguageDB:
 
 	def AddMessage(self, user_name, message='', icon='', hyperlink=''):
 		import requests
-		url = "http://127.0.0.1:9002/AddMessage/"
+		url = "http://127.0.0.1:22366/AddMessage/"
 		messages = {
 			"username": user_name,
 			"command": hyperlink,
