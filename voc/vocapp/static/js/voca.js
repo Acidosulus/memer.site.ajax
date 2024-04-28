@@ -1925,10 +1925,15 @@ catch{
 
 
 async function AddMessage(message='', icon='', hyperlink=''){
-  let response;
+  let response1;
+  response1 = await asyncRequest(`${MdAPIServer}/AddMessage/`,`POST`, {              command: `${hyperlink}`,
+                                                                                    comment: `${icon}`,
+                                                                                    data: `${message}` });
+ let response;
   response = await asyncRequest(`${APIServer}/AddMessage/`,`POST`, {              command: `${hyperlink}`,
                                                                                   comment: `${icon}`,
                                                                                   data: `${message}` });
+
   fetchMessages();
   return response;
 }

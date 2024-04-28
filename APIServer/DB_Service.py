@@ -17,7 +17,7 @@ import datetime
 import inspect
 import decimal
 from settings import Options
-
+from rich import print
 from sqlalchemy.dialects.postgresql import INTERVAL
 from sqlalchemy.sql.functions import concat
 
@@ -987,16 +987,29 @@ class LanguageDB:
 			return []
 
 	def AddMessage(self, user_name, message='', icon='', hyperlink=''):
-		ln_user_id = self.GetUserId(user_name)
-		message_row = 	Message(	user_id = ln_user_id,
-									message = message,
-									icon = icon,
-									hyperlink = hyperlink)
-		print('AddMessage:')
-		prnt(RowToDict(message_row))
-		self.session.add(message_row)
-		self.session.commit()
-		return {"status":"ok - added"}
+		import requests
+		url = "http://127.0.0.1:9002/AddMessage/"
+		messages = {
+			"username": user_name,
+			"command": hyperlink,
+			"comment": icon,
+			"data": message
+		}
+		print('=============================================================================')
+		print('Send request:',messages)
+		print('=============================================================================')
+		requests.post(url, json=messages)
+
+		# ln_user_id = self.GetUserId(user_name)
+		# message_row = 	Message(	user_id = ln_user_id,
+		# 							message = message,
+		# 							icon = icon,
+		# 							hyperlink = hyperlink)
+		# print('AddMessage:')
+		# prnt(RowToDict(message_row))
+		# self.session.add(message_row)
+		# self.session.commit()
+		# return {"status":"ok - added"}
 
 	def GetPhrasesCountRepeatedToday(self, user_name):
 		return self.session.execute(text(f"""--sql
