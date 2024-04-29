@@ -29,8 +29,7 @@ prnt = printer.pprint
 base_storage_path = Path(os.path.abspath(os.curdir)).parent / 'Storage'
 echo(style('Base storage path: ', fg='yellow') + style(base_storage_path, fg='bright_yellow'))
 
-
-options = Options("options.ini")
+options = Options(Path(os.path.abspath(os.curdir)).parent /"options.ini")
 
 
 

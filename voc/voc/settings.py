@@ -11,13 +11,27 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path
-import configparser 
+import configparser
 import sys
+
+
+
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = Path(__file__).resolve().parent.parent
+print(f"BASE_DIR: {BASE_DIR}")
+
+print('===================================================================')
+with open(BASE_DIR.parent / 'options.ini', 'r') as file:
+    file_contents = file.read()
+    print(file_contents)
+print('===================================================================')
+
 
 ASGI_APPLICATION = 'myproject.asgi.application'
 
 config = configparser.ConfigParser()
-config.read("options.ini")
+print(BASE_DIR.parent / 'options.ini')
+config.read(BASE_DIR.parent / 'options.ini')
 SELF_ADRESS = config[sys.platform]["webserver"]
 API_ADRESS = config[sys.platform]["apiserver"]
 # SECURITY WARNING: keep the secret key used in production secret!
@@ -26,9 +40,6 @@ SECRET_KEY = config[sys.platform]["SECRET_KEY"]
 print(f'SELF_ADRESS:{SELF_ADRESS}')
 print(f'API_ADRESS:{API_ADRESS}')
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
-print(f"BASE_DIR: {BASE_DIR}")
 
 
 # Database

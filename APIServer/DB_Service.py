@@ -20,8 +20,11 @@ from settings import Options
 from rich import print
 from sqlalchemy.dialects.postgresql import INTERVAL
 from sqlalchemy.sql.functions import concat
+from pathlib import Path
+import os
 
-options = Options('options.ini')
+
+options = Options(Path(os.path.abspath(os.curdir)).parent / 'options.ini')
 
 #Base = declarative_base()
 mapper_registry = registry()
