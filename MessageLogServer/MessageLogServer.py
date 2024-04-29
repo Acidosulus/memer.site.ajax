@@ -28,7 +28,7 @@ prnt = printer.pprint
 base_storage_path = Path(os.path.abspath(os.curdir)).parent / 'Storage'
 echo(style('Base storage path: ', fg='yellow') + style(base_storage_path, fg='bright_yellow'))
 
-options = Options("options.ini")
+options = Options(Path(os.path.abspath(os.curdir)).parent / "options.ini")
 
 # tnotifier = Telegram_Notifier()
 app = FastAPI()
@@ -77,7 +77,9 @@ class SiteRequest(BaseModel):
 	comment:str
 	data:str
 
-MessangerManager = MessagesManager.MessageManager("mongodb://localhost:27017/", "Memer", "messages")
+MessangerManager = MessagesManager.MessageManager(		options.Messages_databaseUri,
+												  		options.Messages_Database,
+														options.Messages_Collection	)
 
 
 @app.get("/")
