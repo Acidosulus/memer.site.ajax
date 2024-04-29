@@ -206,19 +206,15 @@ class Message(Base):
 
 import psycopg2
 class LanguageDB:
-	# path to sqlite db, autocommit after every update, or manual commint every time you need
 	def __init__(self, path:str, autocommit:bool):
 		self.autocommit = autocommit
 		self.DBparh = path
-		#self.DBuri = "sqlite:///"+self.DBparh #"postgresql+psycopg2://postgres:312@185.112.225.153:35432/language" #"sqlite:///"+self.DBparh
-		self.DBuri = self.DBparh#"postgresql+psycopg2://postgres:321@185.112.225.153:35432/language"
+		self.DBuri = self.DBparh
 		self.Base = Base
 		self.engine = create_engine(self.DBuri, pool_recycle=30,
 							   			pool_pre_ping=True,
 							   			pool_use_lifo=True)
-		#self.meta = MetaData(self.DBuri)
 		self.connection = self.engine.connect()
-		#self.connection = psycopg2.connect("host='localhost' dbname='language' user='postgres' password='321'")
 		self.session = Session(self.engine)
 		self.loop = asyncio.get_event_loop()
 

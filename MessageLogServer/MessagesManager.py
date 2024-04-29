@@ -23,7 +23,7 @@ class MessageManager:
 	def save_message(self, username, icon_name, message_text, hyperlink, date=datetime.now()):
 		message = {
 			"username": username,
-			"dt": date,
+			"dt": date.strftime("%Y-%m-%d %H:%M:%S"),
 			"icon": icon_name,
 			"message": message_text,
 			"hyperlink": hyperlink

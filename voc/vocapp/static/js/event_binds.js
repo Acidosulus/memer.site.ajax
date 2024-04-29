@@ -2,11 +2,10 @@
 
 const EventsBindener = {
 
-	hp_pages_list_PagesHomePageCopyLink: function(){
-		console.log(`Example text`);
-		alert(`Example text`);
-		navigator.clipboard.writeText(`Example text`);
-		
+	hp_pages_list_PagesHomePageOpenPage: function(){
+		console.log(`${window.location.href}/home_page_render/${$("#id_pages_ul_group").find(":selected").data("page_id")}`);
+		HomePageGoLink({hyperlink:`${window.location.href}/home_page_render/${$("#id_pages_ul_group").find(":selected").data("page_id")}`,});
+
 	},
 
 	hp_pages_list_PagesHomePageSetAsDefaultButton: function(){
