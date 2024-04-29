@@ -1890,7 +1890,7 @@ catch{
   // Function to display messages
   function displayMessages(messages) {
     let addFlag = false;
-    messages.sort((a, b) => a.id - b.id);
+    //messages.sort((a, b) => a.id - b.id);
     for (message of messages){
       if (document.querySelector(`[data-id="${message.id}"]`) == null){
               addFlag = true;

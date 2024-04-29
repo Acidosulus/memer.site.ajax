@@ -22,7 +22,8 @@ from sqlalchemy.dialects.postgresql import INTERVAL
 from sqlalchemy.sql.functions import concat
 from pathlib import Path
 import os
-
+import asyncio
+import requests
 
 options = Options(Path(os.path.abspath(os.curdir)).parent / 'options.ini')
 
@@ -219,7 +220,8 @@ class LanguageDB:
 		self.connection = self.engine.connect()
 		#self.connection = psycopg2.connect("host='localhost' dbname='language' user='postgres' password='321'")
 		self.session = Session(self.engine)
-	
+		self.loop = asyncio.get_event_loop()
+
 	def IfCommit(self):
 		if self.autocommit:
 			self.session.commit()
@@ -988,31 +990,23 @@ class LanguageDB:
 			return RowsToDictList(rows)
 		else:
 			return []
+	
+	
+	@staticmethod
+	async def SendRequest(uri, body):
+		requests.post(uri, json=body)
 
 	def AddMessage(self, user_name, message='', icon='', hyperlink=''):
-		import requests
+
 		url = "http://127.0.0.1:22366/AddMessage/"
-		messages = {
+		message = {
 			"username": user_name,
 			"command": hyperlink,
 			"comment": icon,
 			"data": message
 		}
-		print('=============================================================================')
-		print('Send request:',messages)
-		print('=============================================================================')
-		requests.post(url, json=messages)
-
-		# ln_user_id = self.GetUserId(user_name)
-		# message_row = 	Message(	user_id = ln_user_id,
-		# 							message = message,
-		# 							icon = icon,
-		# 							hyperlink = hyperlink)
-		# print('AddMessage:')
-		# prnt(RowToDict(message_row))
-		# self.session.add(message_row)
-		# self.session.commit()
-		# return {"status":"ok - added"}
+		result = self.loop.call_soon_threadsafe(asyncio.ensure_future, self.SendRequest(url, message))
+		return {"status":"ok - added"}
 
 	def GetPhrasesCountRepeatedToday(self, user_name):
 		return self.session.execute(text(f"""--sql
