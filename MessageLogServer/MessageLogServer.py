@@ -21,6 +21,7 @@ import logging
 import MessagesManager
 # from  notifier_bot import Telegram_Notifier
 from rich import print
+from prometheus_fastapi_instrumentator import Instrumentator
 
 printer = pprint.PrettyPrinter(indent=12, width=120)
 prnt = printer.pprint
@@ -33,6 +34,8 @@ options = Options(Path(os.path.abspath(os.curdir)).parent / "options.ini")
 # tnotifier = Telegram_Notifier()
 app = FastAPI()
 #allow_origins=[options.SELF_ADRESS, options.API_ADRESS],
+
+Instrumentator().instrument(app).expose(app)
 
 #allow_credentials=True, 
 app.add_middleware(
