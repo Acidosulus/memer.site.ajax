@@ -201,7 +201,14 @@ class Message(Base):
 	hyperlink = Column(Text, default='', nullable=True)
 	action = Column(Text, default='', nullable=True)
 
+class HPTransition(Base):
+	__tablename__ = 'hp_transitions'
 
+	id = Column(Integer, primary_key=True)
+	user_id = Column(Integer, nullable=True)
+	tile_id = Column(BigInteger, nullable=False)
+	hyperlink = Column(Text, default='', nullable=True)
+	dt = Column(DateTime, nullable=False, server_default='now()')
 
 
 import psycopg2
@@ -1011,9 +1018,22 @@ class LanguageDB:
 													WHERE 	last_view >= NOW() - INTERVAL '1 day' and
 								   							user_id = {self.GetUserId(user_name)}
 														;""")).one()[0]
-	  
+
+
+	def SaveTransition(self, user_name:str, tile_id:int, hyperlink:str):
+		transition = HPTransition(	user_name = self.GetUserId(user_name),
+									tile_id = tile_id,
+									hyperlink = hyperlink)
+		self.session.add(transition)
+		self.session.commit()
+
+
+
 printer = pprint.PrettyPrinter(indent=12, width=180)
 prnt = printer.pprint
+
+
+
 
 
 if True:
