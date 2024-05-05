@@ -2301,9 +2301,9 @@ function HomePageGoLink(      {
                             )
 {
   if (hyperlink.startsWith('http')){
-    window.open(hyperlink, '_black');
+   window.open(hyperlink, '_blank');
   }else{
-    window.open(`https://${hyperlink}`, '_black');
+    window.open(`https://${hyperlink}`, '_blank');
   }
   
 }
@@ -2323,7 +2323,8 @@ async function FillHomePage() {
 
                 <div class="col-1" >
                 <a onclick="HomePageGoLink({hyperlink:'{ hyperlink_${i} }', tile_id:'{ tile_id_${i} }'});" >
-                  <img { icon_${i} }  style="{ img_div_style }" width="{ icon_size }" height="{ icon_size }" id="img_${i}" title="{ hyperlink_${i} }">
+                  <img { icon_${i} }  style="{ img_div_style }" width="{ icon_size }" height="{ icon_size }" id="img_${i}" title="{ hyperlink_${i} }"
+                    class="HomePageTile">
                 </a>
                 </div>
     `;

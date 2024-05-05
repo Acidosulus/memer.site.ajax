@@ -20,6 +20,7 @@ from settings import Options
 from typing import Dict, Any
 import datetime
 import logging
+from prometheus_fastapi_instrumentator import Instrumentator
 # from  notifier_bot import Telegram_Notifier
 
 printer = pprint.PrettyPrinter(indent=12, width=120)
@@ -36,6 +37,9 @@ options = Options(Path(os.path.abspath(os.curdir)).parent /"options.ini")
 db = FileInformationDB.VolumeDB(base_storage_path.parent)
 # tnotifier = Telegram_Notifier()
 app = FastAPI()
+
+Instrumentator().instrument(app).expose(app)
+
 #allow_origins=[options.SELF_ADRESS, options.API_ADRESS],
 
 #allow_credentials=True, 

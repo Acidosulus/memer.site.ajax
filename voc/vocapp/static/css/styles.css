@@ -656,3 +656,11 @@ my_div_save{
 }
 
 
+.HomePageTile{
+    -webkit-transition: all 0.7s ease;
+    transition: all 0.7s ease;
+}
+.HomePageTile:hover{
+            -webkit-filter: brightness(2);
+        }
+
