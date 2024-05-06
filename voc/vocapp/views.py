@@ -301,7 +301,7 @@ def test(request):
 										)
 	requests.post	(	
 						f"{settings.API_ADRESS}/add_new_book/",
-			   			json.dumps(result)
+			   			json.dumps(result, ensure_ascii=False)
 					)
 
 	return JsonResponse(result)

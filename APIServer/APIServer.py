@@ -21,6 +21,11 @@ from typing import Dict, Any
 import datetime
 import logging
 import rich
+
+import nltk
+nltk.download('punkt')
+from nltk.tokenize import sent_tokenize
+
 from prometheus_fastapi_instrumentator import Instrumentator
 # from  notifier_bot import Telegram_Notifier
 
@@ -595,4 +600,10 @@ class Book(BaseModel):
 @app.post('/add_new_book/')
 async def add_new_book(rq:Book):
 	rich.print(rq)
-	...
+	for paragraph in rq.paragraphs:
+		
+		rich.print(paragraph.number, sent_tokenize(text=paragraph.text, language='english'))
+	# book_id = dblang.PutBook(dblang.Book(	book_name = rq.book_name,
+	# 										user_id = dblang.GetUserId(rq.user_name)	))
+	
+	return ''
