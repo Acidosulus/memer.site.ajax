@@ -25,12 +25,22 @@ import os
 import asyncio
 import requests
 
+import rich
+
+import nltk
+nltk.download('punkt')
+from nltk.tokenize import sent_tokenize
+
+
 options = Options(Path(os.path.abspath(os.curdir)).parent / 'options.ini')
 
 #Base = declarative_base()
 mapper_registry = registry()
 Base = mapper_registry.generate_base()
 metadata = Base.metadata
+
+
+
 
 def get_queryresult_header_and_data(query_result):
 	result = []
@@ -214,7 +224,7 @@ class HPTransition(Base):
 import psycopg2
 class LanguageDB:
 	def __init__(self, path:str, autocommit:bool):
-		self.autocommit = autocommit
+		self.autocommit = True
 		self.DBparh = path
 		self.DBuri = self.DBparh
 		self.Base = Base
@@ -229,15 +239,32 @@ class LanguageDB:
 		if self.autocommit:
 			self.session.commit()
 
-	def Drop_all_tables(self):
-		tables = [Book, Sentence, Phrase, Syllable, SyllablesParagraph, UserWordsLog, User, Word]
-		for table in tables:
-			try:
-				print(f'	try to drop table: {table.__tablename__}')
-				table.__table__.drop(self.engine)
-				print('	ok')
-			except Exception as e:	
-				print(f'		error while drop table: {table.__tablename__}  '+'Error on line {}'.format(sys.exc_info()[-1].tb_lineno) +'\n\n' + type(e).__name__ +'\n\n' + e.__str__())
+	def Prepare_Book(self, user_name:str, book_name:str, paragraphs:list):
+		lc_result = ''
+		for lc_paragraph in paragraphs:
+			lc_result = lc_result + lc_paragraph.replace(chr(13), '').replace(chr(10), '').replace(chr(12), '')+chr(13)
+		lc_result = lc_result.replace(chr(13)+chr(13),chr(13)).replace(chr(13)+chr(13),chr(13)).replace(chr(13)+chr(13),chr(13)).replace(chr(13)+chr(13),chr(13)).replace(chr(13)+chr(13),chr(13)).replace(chr(13)+chr(13),chr(13)).replace(chr(13)+chr(13),chr(13)).replace(chr(13)+chr(13),chr(13)).replace(chr(13)+chr(13),chr(13))
+		ll_paragraps = lc_result.split(chr(13))
+
+		source = list()
+		for paragraph in ll_paragraps:
+			source.append(sent_tokenize(text=paragraph, language='english'))
+		rich.print(source)
+		user_id = self.GetUserId(user_name)
+		new_book_id = 	self.PutBook(Book(	book_name = book_name,
+											user_id = user_id))
+		first_paragraph_id = self.session.query(func.max(Sentence.id_paragraph)).scalar() + 1
+		for paragraph in source:
+			max_id_paragraph = self.session.query(func.max(Sentence.id_paragraph)).scalar() + 1
+			for source_sentence in paragraph:
+				current_sentence = Sentence(	id_book = new_book_id,
+												id_paragraph = max_id_paragraph,
+												sentence = source_sentence	)
+				self.PutSentence(current_sentence)
+		book = self.session.query(Book).where(Book.id_book==new_book_id).first()
+		book.current_paragraph = first_paragraph_id
+		self.PutBook(book)
+		return ''
 
 
 	# save book data, return book_id saved record

@@ -22,10 +22,6 @@ import datetime
 import logging
 import rich
 
-import nltk
-nltk.download('punkt')
-from nltk.tokenize import sent_tokenize
-
 from prometheus_fastapi_instrumentator import Instrumentator
 # from  notifier_bot import Telegram_Notifier
 
@@ -587,23 +583,18 @@ async def media_rename_media(item:Items):
 		return JSONResponse({'status':'Error:User not found'})
 	
 
-class Paragraph(BaseModel):
-	number:int
-	text:str
 
-class Book(BaseModel):
+class RaWBook(BaseModel):
 	user_name:str
 	file_name:str
 	book_name:str
-	paragraphs:List[Paragraph]
+	data:List[str]
+
+
+
 
 @app.post('/add_new_book/')
-async def add_new_book(rq:Book):
-	rich.print(rq)
-	for paragraph in rq.paragraphs:
-		
-		rich.print(paragraph.number, sent_tokenize(text=paragraph.text, language='english'))
-	# book_id = dblang.PutBook(dblang.Book(	book_name = rq.book_name,
-	# 										user_id = dblang.GetUserId(rq.user_name)	))
-	
+async def add_new_book(rq:RaWBook):
+	import asyncio
+	await asyncio.get_event_loop().run_in_executor(None, dblang.Prepare_Book, rq.user_name, rq.book_name, rq.data)
 	return ''

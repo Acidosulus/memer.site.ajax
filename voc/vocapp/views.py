@@ -282,26 +282,31 @@ def test(request):
 	pc_file_path = r'/home/acidos/voc/memer.site/1.txt'
 	lc_book_name = 'Terry Goodkind - Soul of the Fire'
 	ll_book = open(pc_file_path, "r", encoding='utf8').readlines()
-	lc_result = ''
-	for lc_paragraph in ll_book:
-		lc_result = lc_result + lc_paragraph.replace(chr(13), '').replace(chr(10), '').replace(chr(12), '')+chr(13)
-	lc_result = lc_result.replace(chr(13)+chr(13),chr(13)).replace(chr(13)+chr(13),chr(13)).replace(chr(13)+chr(13),chr(13)).replace(chr(13)+chr(13),chr(13)).replace(chr(13)+chr(13),chr(13)).replace(chr(13)+chr(13),chr(13)).replace(chr(13)+chr(13),chr(13)).replace(chr(13)+chr(13),chr(13)).replace(chr(13)+chr(13),chr(13))
-	ll_paragraps = lc_result.split(chr(13))
-	result = {		'user_name':request.user.username,
-					'file_name':pc_file_path,
-		 			'book_name':lc_book_name,
-					'paragraphs':[]}
-	for counter, paragraph in enumerate(ll_paragraps):
-		if len(paragraph):
-			result['paragraphs'].append(
-										 	{	
-												'number':counter,
-							  					'text':paragraph
-											}
-										)
+	# lc_result = ''
+	# for lc_paragraph in ll_book:
+	# 	lc_result = lc_result + lc_paragraph.replace(chr(13), '').replace(chr(10), '').replace(chr(12), '')+chr(13)
+	# lc_result = lc_result.replace(chr(13)+chr(13),chr(13)).replace(chr(13)+chr(13),chr(13)).replace(chr(13)+chr(13),chr(13)).replace(chr(13)+chr(13),chr(13)).replace(chr(13)+chr(13),chr(13)).replace(chr(13)+chr(13),chr(13)).replace(chr(13)+chr(13),chr(13)).replace(chr(13)+chr(13),chr(13)).replace(chr(13)+chr(13),chr(13))
+	# ll_paragraps = lc_result.split(chr(13))
+	# result = {		'user_name':request.user.username,
+	# 				'file_name':pc_file_path,
+	# 	 			'book_name':lc_book_name,
+	# 				'paragraphs':[]}
+	# for counter, paragraph in enumerate(ll_paragraps):
+	# 	if len(paragraph):
+	# 		result['paragraphs'].append(
+	# 									 	{	
+	# 											'number':counter,
+	# 						  					'text':paragraph
+	# 										}
+	# 									)
 	requests.post	(	
 						f"{settings.API_ADRESS}/add_new_book/",
-			   			json.dumps(result, ensure_ascii=False)
+			   			json.dumps({
+										'user_name':request.user.username,
+										'file_name':pc_file_path,
+										'book_name':lc_book_name,
+										'data':ll_book
+									})
 					)
 
 	return JsonResponse(result)
