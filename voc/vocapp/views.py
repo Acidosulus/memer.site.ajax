@@ -275,62 +275,6 @@ def rest_response(request,pc_first:str, pc_second:str, pc_third:str):
 	return JsonResponse(data)
 
 
-def json_response(request, pc_type, pc_book_id):
-	
-	if pc_type == 'test':
-		ln = Words.objects.get(word = 'pluck').rowid
-		print(type(ln))
-		print(ln)
-		data = {'test':ln}
-
-	if pc_type == 'word_hint':
-		#####################################################################################################################################################
-		word = Words.objects.get(rowid = int(pc_book_id.replace('hint','')))
-		lc = ''
-		sententces = word.translations.split('\r')
-		for sentence in sententces:
-			lc = lc +"""<p style='color:Khaki;font-size:120%;line-height:70%'>""" + sentence+ '</p>'
-		data = {'word':word.word, 'transcription':word.transcription, 'translations':add_format_for_russian(lc, 'my_class_p_my_class_p_hint_translations_russian').replace(chr(13),'<br>')}
-		return render(request, "hint_response.html", context=data)
-	
-	if pc_type == 'look_for_word':
-		pc_book_id = pc_book_id.strip()
-		syllable = Syllable.objects.filter(word__contains = ""+pc_book_id+"", userid=request.user.id)
-		data = {'words':syllable}
-		return render(request, "finding_index.html", context=data)
-
-	if pc_type == 'book_position':
-		if int(pc_book_id)>0:
-			pc_paragraph = Books.objects.filter(id_book = int(pc_book_id), userid=request.user.id)[0].current_paragraph
-			lo_paragraph_navigation = Paragraphs.objects.filter(id_book=int(pc_book_id), userid=request.user.id).order_by('id_paragraph')[0]
-			ln_start_id = lo_paragraph_navigation.id_paragraph
-			lo_paragraph_navigation = Paragraphs.objects.filter(id_book=int(pc_book_id), userid=request.user.id).latest('id_paragraph')
-			ln_end_id = lo_paragraph_navigation.id_paragraph
-			lc_in_book_position = str(int(pc_paragraph) - ln_start_id) + ' / ' + str(ln_end_id - ln_start_id) + ' &nbsp;&nbsp;&nbsp;' + str(round((int(pc_paragraph) - ln_start_id) * 100 / (ln_end_id - ln_start_id), 2)) + ' %'
-			data = {'book_position':lc_in_book_position}
-
-	if pc_type == 'book_name':
-		if int(pc_book_id)>0:
-			lc_book_name = Books.objects.filter(id_book = int(pc_book_id), userid=request.user.id)[0].book_name
-			data = {'book_name':lc_book_name}
-
-	if pc_type == 'span_number_of_words_to_study':
-		data = {'span_number_of_words_to_study':str(len(Syllable.objects.filter(ready=0, userid=request.user.id).order_by('last_view')))}
-
-	if pc_type == 'link_last_added_word':
-		data = {'link_last_added_word':Syllable.objects.filter(ready=0, userid=request.user.id).filter(show_count=0).order_by('-last_view')[0].word}
-
-	if pc_type == 'number_of_words_learned':
-		data = {'number_of_words_learned':str(len(Syllable.objects.filter(ready=1, userid=request.user.id)))}
-	
-	if pc_type == 'user_view':
-		data = {'user_view':str(request.user)}
-
-	if pc_type == 'span_number_of_words_study_today': # количество проработанных за сегодня слов
-		dataset = Syllable.objects.filter(userid=request.user.id, last_view__year=date.today().year, last_view__month=date.today().month, last_view__day=date.today().day).exclude(show_count=0)
-		data = {'span_number_of_words_study_today':len(dataset)}
-
-	return JsonResponse(data)
 
 def test(request):
 	result = {}
@@ -343,19 +287,23 @@ def test(request):
 		lc_result = lc_result + lc_paragraph.replace(chr(13), '').replace(chr(10), '').replace(chr(12), '')+chr(13)
 	lc_result = lc_result.replace(chr(13)+chr(13),chr(13)).replace(chr(13)+chr(13),chr(13)).replace(chr(13)+chr(13),chr(13)).replace(chr(13)+chr(13),chr(13)).replace(chr(13)+chr(13),chr(13)).replace(chr(13)+chr(13),chr(13)).replace(chr(13)+chr(13),chr(13)).replace(chr(13)+chr(13),chr(13)).replace(chr(13)+chr(13),chr(13))
 	ll_paragraps = lc_result.split(chr(13))
-
-
-	result = {'file_name':pc_file_path,
-		 	'book_name':lc_book_name,
-			'paragraphs':[]}
+	result = {		'user_name':request.user.username,
+					'file_name':pc_file_path,
+		 			'book_name':lc_book_name,
+					'paragraphs':[]}
 	for counter, paragraph in enumerate(ll_paragraps):
 		if len(paragraph):
 			result['paragraphs'].append(
-									 	{	
-											'number':counter,
-						  					'text':paragraph
-										}
+										 	{	
+												'number':counter,
+							  					'text':paragraph
+											}
 										)
+	requests.post	(	
+						f"{settings.API_ADRESS}/add_new_book/",
+			   			json.dumps(result)
+					)
+
 	return JsonResponse(result)
 
 	book = Books(book_name = lc_book_name, current_paragraph = 1, userid=request.user.id)
@@ -460,7 +408,6 @@ def book(request, pc_book:str):
 	return render(request, "book.html", context=data)
 
 def read_last_opened_book(request):
-
 	curl = f"{settings.API_ADRESS}/get_last_opened_book_id/"
 	r = requests.post(curl, json.dumps({"username":request.user.username, "command":"", "comment":"", "data":""}))
 	echo(style(text='cross_request => ', fg='yellow')+' '+

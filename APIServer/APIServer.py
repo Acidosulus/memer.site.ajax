@@ -20,6 +20,7 @@ from settings import Options
 from typing import Dict, Any
 import datetime
 import logging
+import rich
 from prometheus_fastapi_instrumentator import Instrumentator
 # from  notifier_bot import Telegram_Notifier
 
@@ -579,3 +580,19 @@ async def media_rename_media(item:Items):
 	else:
 		echo(style(text=f'os.path.isdir({base_storage_path / item.username})', fg='bright_red'))
 		return JSONResponse({'status':'Error:User not found'})
+	
+
+class Paragraph(BaseModel):
+	number:int
+	text:str
+
+class Book(BaseModel):
+	user_name:str
+	file_name:str
+	book_name:str
+	paragraphs:List[Paragraph]
+
+@app.post('/add_new_book/')
+async def add_new_book(rq:Book):
+	rich.print(rq)
+	...

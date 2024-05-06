@@ -70,8 +70,7 @@ urlpatterns = [
 	path('personal_page/', views.personal_page),
 	path('accounts/', include('django.contrib.auth.urls')),
 	path('accounts', include('django.contrib.auth.urls')),
-	path('api/<str:pc_type>/<str:pc_book_id>/', views.json_response),
-    path('restapi/v1/<str:pc_first>/<str:pc_second>/<str:pc_third>/', views.rest_response),
+	    path('restapi/v1/<str:pc_first>/<str:pc_second>/<str:pc_third>/', views.rest_response),
 	path('sentence/<str:pc_sentence>/', views.get_sentence),# для генерации mp3 по переданному предложению
 	path('edit_tile/<tile_id>', views.edit_tile),
  	path('hp_edit_rows/', views.hp_edit_rows),
