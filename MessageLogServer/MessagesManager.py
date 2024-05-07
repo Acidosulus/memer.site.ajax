@@ -20,10 +20,10 @@ class MessageManager:
 		return result
 
 
-	def save_message(self, username, icon_name, message_text, hyperlink, date=datetime.now()):
+	def save_message(self, username, icon_name, message_text, hyperlink):
 		message = {
 			"username": username,
-			"dt": date.strftime("%Y-%m-%d %H:%M:%S"),
+			"dt": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
 			"icon": icon_name,
 			"message": message_text,
 			"hyperlink": hyperlink
@@ -31,19 +31,14 @@ class MessageManager:
 		self.collection.insert_one(message)
 
 	def get_last_messages(self, username, num_messages):
-		messages = self.collection.find({"username": username}).sort("dt", -1).limit(num_messages)
-		return self.prepare_result(messages)
 
-	def get_messages_since_id(self, username, message_id):
-		print(f'get_messages_since_id(self, "{username}", "{message_id}"):')
-		messages = self.collection.find({"username": username, "_id": {"$gt": ObjectId(message_id)}})
-		print(messages)
-		return self.prepare_result(messages)
+		today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+		yesterday = today - timedelta(days=1)
 
-	def get_messages_since_date(self, username, start_date):
-		messages = self.collection.find({"username": username, "dt": {"$gt": start_date}})
-		return self.prepare_result(messages)
+		messages = self.collection.find({	"username": username,
+    										"dt": {"$gte": yesterday, "$lt": today}}).sort("dt", 1)
 
+		return self.prepare_result(messages)
 
 
 

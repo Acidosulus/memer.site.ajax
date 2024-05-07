@@ -1827,49 +1827,16 @@ catch{
 
 
   // Function to fetch messages from server
-  async function fetchMessages() {
-    let response;
-    let lastMessageId = getCookie('maxLastMessageId', 0);
-    if (lastMessageId > 0){
-                            response = await asyncRequest(`${MdAPIServer}/GetMessagesAfterId/`,`POST`, {  command: ``,
-                                                                                                        comment: ``,
-                                                                                                        data:`${lastMessageId}`  });
-                            if (response.length==0 && document.getElementById("messageLogContent").children.length==0){
-                              response = await asyncRequest(`${MdAPIServer}/GetMessagesLast/`,`POST`, {  command: ``,
-                                                                                                      comment: ``,
-                                                                                                      data: `60`});
-                            }
-    }
-    else {
-                            response = await asyncRequest(`${MdAPIServer}/GetMessagesLast/`,`POST`, {  command: ``,
-                                                                                                        comment: ``,
-                                                                                                        data: `60`});
-    }
-    
-    if (response.length>0){
-      let maxId = lastMessageId ;
-      for (let message of response){
-        if (message.id>maxId){
-              maxId = message.id;
-        }
-      }
-      // console.log(`maxId:${maxId}  lastMessageId:${lastMessageId}`);
-      if (maxId > lastMessageId) {
-        setCookie('maxLastMessageId', maxId);
-      }
-    }
-    
+ async function fetchMessages() {
+    response = await asyncRequest(`${MdAPIServer}/GetMessagesLast/`,`POST`, {   command: ``,
+                                                                                comment: ``,
+                                                                                data: `10`});
     if (response.length>0) {
-      // If log is open, display messages
       displayMessages( response );
       document.getElementById('messageLog').dataset.firstinit='false';
     }
    
  }
-
-
-
-
 
   const messageLog = document.getElementById('messageLog');
   const toggleButton = document.getElementById('toggleButton');
@@ -1890,7 +1857,7 @@ catch{
   // Function to display messages
   function displayMessages(messages) {
     let addFlag = false;
-    //messages.sort((a, b) => a.id - b.id);
+    //messages.sort((a, b) => new Date(b.dt) - new Date(a.dt));
     for (message of messages){
       if (document.querySelector(`[data-id="${message.id}"]`) == null){
               addFlag = true;
