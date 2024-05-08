@@ -1831,30 +1831,24 @@ catch{
     response = await asyncRequest(`${MdAPIServer}/GetMessagesLast/`,`POST`, {   command: ``,
                                                                                 comment: ``,
                                                                                 data: `10`});
-    console.log(response);
     if (response.length>0) {
       displayMessages( response );
       document.getElementById('messageLog').dataset.firstinit='false';
     }
-   
  }
 
   const messageLog = document.getElementById('messageLog');
   const toggleButton = document.getElementById('toggleButton');
   const messageLogContent = document.getElementById('messageLogContent');
   const toggleButtonImage = document.querySelector(`#toggleButtonImage`);
-
   let collapsed = false;
-
+  
   // Function to toggle message log visibility
   function toggleMessageLog() {
     collapsed = !collapsed;
     messageLogContent.style.display = collapsed ? 'none' : 'block';
     toggleButtonImage.src = collapsed ? '/static/images/arrow_up.png' : '/static/images/arrow_down.png'
   }
-
-
-
   // Function to display messages
   function displayMessages(messages) {
     //messages.sort((a, b) => new Date(b.dt) - new Date(a.dt));
@@ -1871,7 +1865,7 @@ catch{
 
               let st = `<div data-id="${message.id}">
                         <img src="/static/images/${message.icon.length==0?'empty_32x32.png':message.icon}" height="24" width="24">
-                        <span class="my_class_date_history">${message.dt.substring(0,16)}</span> 
+                        <span class="my_class_date_history">${message.dt.substring(0,10+9).replace(`T`,` `)}</span> 
                         ${text}</div>`
               messageLogContent.insertAdjacentHTML(`afterbegin`,st);
               if (messageLog.dataset.firstinit!=='true'){
