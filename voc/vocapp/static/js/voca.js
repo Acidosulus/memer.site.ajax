@@ -1831,6 +1831,7 @@ catch{
     response = await asyncRequest(`${MdAPIServer}/GetMessagesLast/`,`POST`, {   command: ``,
                                                                                 comment: ``,
                                                                                 data: `10`});
+    console.log(response);
     if (response.length>0) {
       displayMessages( response );
       document.getElementById('messageLog').dataset.firstinit='false';
@@ -1856,11 +1857,9 @@ catch{
 
   // Function to display messages
   function displayMessages(messages) {
-    let addFlag = false;
     //messages.sort((a, b) => new Date(b.dt) - new Date(a.dt));
     for (message of messages){
       if (document.querySelector(`[data-id="${message.id}"]`) == null){
-              addFlag = true;
               let text = message.message
               if (text.includes('|')){//message include hyperlink
                 var firstStarIndex = text.indexOf('|');
@@ -1881,10 +1880,7 @@ catch{
           
       }
     }
-  
-    if (addFlag) {
-      // If log is collapsed, make the toggle button blink
-    } 
+
 
   }
 

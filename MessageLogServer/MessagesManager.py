@@ -23,7 +23,7 @@ class MessageManager:
 	def save_message(self, username, icon_name, message_text, hyperlink):
 		message = {
 			"username": username,
-			"dt": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+			"dt": datetime.now(),
 			"icon": icon_name,
 			"message": message_text,
 			"hyperlink": hyperlink
@@ -35,13 +35,17 @@ class MessageManager:
 		today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
 		yesterday = today - timedelta(days=1)
 
-		messages = self.collection.find({	"username": username,
-    										"dt": {"$gte": yesterday, "$lt": today}}).sort("dt", 1)
+		messages = self.collection.find({
+		    "$and": [
+		        {"username": username},
+		        {"dt":{"$gt": yesterday}}
+		    ]
+		}).sort("dt", 1)
 
 		return self.prepare_result(messages)
 
 
-
+# list(collection.find(   "$and": [     {"username": username},       {"$or": [       {"dt": yesterday.strftime("%Y-%m-%d %H:%M:%S")},      {"dt": today.strftime("%Y-%m-%d %H:%M:%S")}		        ]}		    ]		}))
 
 if __name__ == "__main__":
 	message_manager = MessageManager("mongodb://localhost:27017/", "Memer", "messages")
