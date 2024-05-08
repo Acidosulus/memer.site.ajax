@@ -45,7 +45,5 @@ class MessageManager:
 		return self.prepare_result(messages)
 
 
-# list(collection.find(   "$and": [     {"username": username},       {"$or": [       {"dt": yesterday.strftime("%Y-%m-%d %H:%M:%S")},      {"dt": today.strftime("%Y-%m-%d %H:%M:%S")}		        ]}		    ]		}))
-
 if __name__ == "__main__":
 	message_manager = MessageManager("mongodb://localhost:27017/", "Memer", "messages")

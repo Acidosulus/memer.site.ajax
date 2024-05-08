@@ -564,8 +564,7 @@ async function Load_Phrase_in_Progress_Data() {
       data: `${
         document.querySelector("#body_phrase_in_progress").dataset.phraseid
       }`,
-    },
-    true
+    }
   );
   document.getElementById("id_class_p_my_class_p_examples").innerHTML =
     answer.phrase +
@@ -1825,6 +1824,26 @@ catch{
 }
 }
 
+const messagesSocket = new WebSocket('ws://memer.site.mooo.com:22367/ws');
+// Функция для обработки входящих сообщений от сервера
+messagesSocket.onmessage = function(event) {
+  const message = JSON.parse(event.data);
+  console.log("Received message from server:", message);
+  // Далее можно обрабатывать полученные сообщения
+};
+
+// Функция для отправки сообщений на сервер
+async function sendMessageSocket({command=``, username=``, comment=``, data=``}) {
+  const message = JSON.stringify({
+      command: command,
+      username: username,
+      comment: comment,
+      data: data
+  });
+  messagesSocket.send(message);
+}
+
+
 
   // Function to fetch messages from server
  async function fetchMessages() {
@@ -1842,7 +1861,7 @@ catch{
   const messageLogContent = document.getElementById('messageLogContent');
   const toggleButtonImage = document.querySelector(`#toggleButtonImage`);
   let collapsed = false;
-  
+
   // Function to toggle message log visibility
   function toggleMessageLog() {
     collapsed = !collapsed;

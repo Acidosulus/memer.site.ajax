@@ -1,5 +1,4 @@
-  File "/home/acidos/voc/memer.site/APIServer/venv/lib/python3.11/site-packages/nltk/tokenize/punkt.py", line 1076, in _dunning_log_likelihood
-    null_hypo = count_ab * math.log(p1) + (count_a - count_ab) * math.log(1.0 - p1)
-                                                                 ^^^^^^^^^^^^^^^^^^
-ValueError: math domain error
-
+WARNING:  Unsupported upgrade request.
+Unsupported upgrade request.
+WARNING:  No supported WebSocket library detected. Please use "pip install 'uvicorn[standard]'", or install 'websockets' or 'wsproto' manually.
+No supported WebSocket library detected. Please use "pip install 'uvicorn[standard]'", or install 'websockets' or 'wsproto' manually.
