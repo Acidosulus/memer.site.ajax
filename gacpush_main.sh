@@ -4,4 +4,4 @@ git status
 
 git commit -m "`date "+%F %T"`"
 
-git push -u origin main
+git push -u --force origin main
