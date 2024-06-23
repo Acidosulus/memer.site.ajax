@@ -1,14 +1,19 @@
-from bson import json_util,ObjectId
+
 from pymongo import MongoClient
 from datetime import datetime, timedelta
 from rich import print
 import json
+import time
 
 class MessageManager:
 	def __init__(self, db_url, db_name, collection_name):
+		print('start init')
 		self.client = MongoClient(db_url)
 		self.db = self.client[db_name]
 		self.collection = self.db[collection_name]
+		print('try to read data from MongoDB')
+		self.get_last_messages('admin', 0)
+		print('end init')
 	
 	@staticmethod
 	def prepare_result(presult):
@@ -28,10 +33,11 @@ class MessageManager:
 			"message": message_text,
 			"hyperlink": hyperlink
 		}
-		self.collection.insert_one(message)
+		return ('saved' 
+				if self.collection.insert_one(message) 
+				else 'error')
 
 	def get_last_messages(self, username, num_messages):
-
 		today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
 		yesterday = today - timedelta(days=1)
 

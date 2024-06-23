@@ -1,3 +1,4 @@
+from shelve import DbfilenameShelf
 from fastapi import FastAPI, Request, Depends
 from fastapi.responses import HTMLResponse
 from typing import Union, List
@@ -21,8 +22,8 @@ from typing import Dict, Any
 import datetime
 import logging
 import rich
+import time
 
-from prometheus_fastapi_instrumentator import Instrumentator
 # from  notifier_bot import Telegram_Notifier
 
 printer = pprint.PrettyPrinter(indent=12, width=120)
@@ -37,10 +38,14 @@ options = Options(Path(os.path.abspath(os.curdir)).parent /"options.ini")
 
 
 db = FileInformationDB.VolumeDB(base_storage_path.parent)
+
+
+
+
+
 # tnotifier = Telegram_Notifier()
 app = FastAPI()
 
-Instrumentator().instrument(app).expose(app)
 
 #allow_origins=[options.SELF_ADRESS, options.API_ADRESS],
 
@@ -70,17 +75,13 @@ async def log_request(request: Request, call_next):
 
 
 logger = logging.getLogger("uvicorn")
-#logger.setLevel(logging.ERROR)
 logger.setLevel(logging.INFO)
 handler = logging.StreamHandler()
 logger.addHandler(handler)
 
 
 
-if sys.platform == 'linux':
-	dblang = options.LANDDBURI
-else:
-	dblang = options.LANDDBURI
+dblang = options.LANDDBURI
 echo(style('datbase:', bg='bright_black', fg='bright_green')+style(dblang, fg='bright_green'))
 dblang = LanguageDB(dblang, autocommit=False )
 
@@ -582,6 +583,11 @@ async def media_rename_media(item:Items):
 		echo(style(text=f'os.path.isdir({base_storage_path / item.username})', fg='bright_red'))
 		return JSONResponse({'status':'Error:User not found'})
 	
+
+@app.post("/home_page_go_to_link_by_tile/")
+async def home_page_go_to_link_by_tile(rq:SiteRequest):
+	dblang.SaveTransition(user_name=rq.username, tile_id=int(rq.data), hyperlink=rq.comment)
+	return ''
 
 
 class RaWBook(BaseModel):

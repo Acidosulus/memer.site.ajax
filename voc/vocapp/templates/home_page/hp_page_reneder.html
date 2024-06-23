@@ -50,22 +50,25 @@
 <html>
 
 
-<div class = "seach"  id = "yandex" onmouseover="Set_Style(this.id,'seach_under_cursor')" onmouseout="Set_Style(this.id,'seach')">
+<div class = "seach"  id = "yandex" onmouseover="Set_Style(this.id,'seach_under_cursor')" onmouseout="Set_Style(this.id,'seach')" onsubmit="HomePageGoLink({hyperlink:document.querySelector(`#yasearch`).value, tile_id:-10})">
   <TABLE >
  <TR>
-   <form action="https://yandex.ru/yandsearch"   method = "GET"   name="look_for_agreement"     target="_blank"  >
- <TD>
-   <INPUT type="image" src="http://yandex.st/lego/_/pDu9OWAQKB0s2J9IojKpiS_Eho.ico" WIDTH="32" HEIGHT="32" >
-   </TD>
- <TD width = "205%" >
-     <input name = "text"
-            type="text"
-            tabindex="1"
-            class = "search_input"
-            id='yasearch'
-            onmouseover="Color_inc(this.id,'#222266')"
-            onmouseout="Color_dec(this.id,'#222233')">
- </TD>
+   <form  action="https://yandex.ru/yandsearch"   method = "GET"   target="_blank"  >
+
+          <TD>
+            <INPUT type="image" src="http://yandex.st/lego/_/pDu9OWAQKB0s2J9IojKpiS_Eho.ico" WIDTH="32" HEIGHT="32" >
+         </TD>
+        
+          <TD width = "205%" >
+             <input name = "text"
+                    type="text"
+                    tabindex="1"
+                    class = "search_input"
+                    id='yasearch'
+                    onmouseover="Color_inc(this.id,'#222266')"
+                    onmouseout="Color_dec(this.id,'#222233')">
+          </TD>
+
    </form>
  </TR>
  </TABLE>
@@ -73,15 +76,21 @@
 
 
 
-<div class = "seach"  id = "Wiki" onmouseover="Set_Style(this.id,'seach_under_cursor')" onmouseout="Set_Style(this.id,'seach')">
+<div class = "seach"  id = "Wiki" onmouseover="Set_Style(this.id,'seach_under_cursor')" onmouseout="Set_Style(this.id,'seach')" onsubmit="HomePageGoLink({hyperlink:document.querySelector(`#wikisearch`).value, tile_id:-20})">
   <TABLE >
  <TR>
-   <form action="https://ru.wikipedia.org/wiki/Служебная:Search"   method = "GET"   name="look_for_agreement"     target="_blank"  >
+   <form action="https://ru.wikipedia.org/wiki/Служебная:Search"   method = "GET"   target="_blank"  >
  <TD>
  <INPUT type="image" src="http://ru.wikipedia.org/static/favicon/wikipedia.ico" WIDTH="32" HEIGHT="32" >
    </TD>
  <TD width = "205%" >
-     <input name = "search" type="text" tabindex="1" class = "search_input" id='wikisearch'  onchange='wiki_change(this.id)' onmouseover="Color_inc(this.id,'#222266')" onmouseout="Color_dec(this.id,'#222233')">
+     <input 
+        type="text"
+        tabindex="2"
+        class = "search_input"
+        id='wikisearch'
+        onmouseover="Color_inc(this.id,'#222266')" onmouseout="Color_dec(this.id,'#222233')"
+     >
  </TD>
  </form>
  </TR>

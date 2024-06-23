@@ -1,4 +1,1 @@
-WARNING:  Unsupported upgrade request.
-Unsupported upgrade request.
-WARNING:  No supported WebSocket library detected. Please use "pip install 'uvicorn[standard]'", or install 'websockets' or 'wsproto' manually.
-No supported WebSocket library detected. Please use "pip install 'uvicorn[standard]'", or install 'websockets' or 'wsproto' manually.
+WARN[0000] /home/acidos/voc/memer.site/docker-compose.yaml: `version` is obsolete

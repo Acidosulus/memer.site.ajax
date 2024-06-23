@@ -13,6 +13,6 @@ class Options:
 		self.Messages_databaseUri = self.config[sys.platform]["messagerserver_databaseUri"]
 		self.LANDDBURI = self.config[sys.platform]["langdb"]
 		self.SECRET_KEY = self.config[sys.platform]["SECRET_KEY"]
-		print(f'SELF_ADRESS:{self.SELF_ADRESS}')
-		print(f'API_ADRESS:{self.API_ADRESS}')
-		print(f'LANDDBURI:{self.LANDDBURI}')
+		# print(f'SELF_ADRESS:{self.SELF_ADRESS}')
+		# print(f'API_ADRESS:{self.API_ADRESS}')
+		# print(f'LANDDBURI:{self.LANDDBURI}')

@@ -34,9 +34,7 @@ import re
 
 def mobile(request):
 	"""Return True if the request comes from a mobile device."""
-
 	MOBILE_AGENT_RE=re.compile(r".*(iphone|mobile|androidtouch)",re.IGNORECASE)
-
 	if MOBILE_AGENT_RE.match(request.META['HTTP_USER_AGENT']):
 		return True
 	else:
@@ -130,9 +128,6 @@ def Create_User_Storage(request):
  
 
 def PageLogIn(request):
-	print("<<<"+">>>>")
-	print(request)
-	print('1------------', request.POST)
 	if 'username' in request.POST and 'password' in request.POST:
 		print('2-----------', request.POST['username'],request.POST['password'])
 		user = authenticate(username=request.POST['username'], password=request.POST['password'])
@@ -311,18 +306,6 @@ def test(request):
 
 	return JsonResponse(result)
 
-	book = Books(book_name = lc_book_name, current_paragraph = 1, userid=request.user.id)
-	book.save()
-
-	for counter, lc_p in enumerate(ll_paragraps):
-		print(f'{counter}/{len(ll_paragraps)}')
-		print(lc_p)
-		if len(lc_p):
-			paragraph = Paragraphs(id_book = book.id_book, paragraph = lc_p, userid=request.user.id)
-			paragraph.save()
-
-	data = {"text":lc_result}
-	return render(request, "test.html", context=data)
 
 @login_required
 def add_new_with_parameter(request, pc_new_word):
@@ -402,8 +385,6 @@ def DownLoadmp3s (sentence):
 
 @login_required
 def books(request):
-	#lo_book = Books.objects.filter(userid=request.user.id).order_by('-dt')
-	#data = { 'books':lo_book }
 	data = {'APIServer':settings.API_ADRESS, 'userUUID':usersDataStorage.FindDataByUserName(request.user.get_username())['uuid'], 'body_id':'id_body_books'}
 	return render(request, "books.html", context=data)
 
@@ -412,6 +393,7 @@ def book(request, pc_book:str):
 	data = {'APIServer':settings.API_ADRESS, 'userUUID':usersDataStorage.FindDataByUserName(request.user.get_username())['uuid'], "id_book":pc_book}
 	return render(request, "book.html", context=data)
 
+@login_required
 def read_last_opened_book(request):
 	curl = f"{settings.API_ADRESS}/get_last_opened_book_id/"
 	r = requests.post(curl, json.dumps({"username":request.user.username, "command":"", "comment":"", "data":""}))

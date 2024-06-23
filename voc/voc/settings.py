@@ -44,28 +44,17 @@ print(f'API_ADRESS:{API_ADRESS}')
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
-databasename = config[sys.platform]["databasename"]
-print(f'databasename:{databasename}')
-databaseusername = config[sys.platform]["databaseusername"]
-print(f'databaseusername:{databaseusername}')
-databasepassword = config[sys.platform]["databasepassword"]
-print(f'databasepassword:{databasepassword}')
-databasehost = config[sys.platform]["databasehost"]
-print(f'databasehost:{databasehost}')
-databaseport = config[sys.platform]["databaseport"]
-print(f'databaseport:{databaseport}')
-
 DATABASES = {
 	'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': databasename,
-        'USER': databaseusername,
-        'PASSWORD': databasepassword,
-        'HOST': databasehost,
-        'PORT': databaseport,
+        'NAME': config[sys.platform]["databasename"],
+        'USER': config[sys.platform]["databaseusername"],
+        'PASSWORD': config[sys.platform]["databasepassword"],
+        'HOST': config[sys.platform]["databasehost"],
+        'PORT': config[sys.platform]["databaseport"],
 	}
 }
-
+print(DATABASES)
 
 
 #REST_API_URL = 'http://localhost:9001'#'http://192.168.0.35:9001'

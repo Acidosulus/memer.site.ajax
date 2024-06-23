@@ -1,5 +1,5 @@
 import sys
-from tkinter import N
+#from tkinter import N
 from click import echo, style
 from sqlalchemy import create_engine
 from sqlalchemy import Column, Integer, Table, MetaData, and_, func, text, BigInteger
@@ -144,8 +144,6 @@ class Syllable(Base):
 	syllable_id = Column(Integer, primary_key=True)
 	user_id = Column(ForeignKey('users.user_id'))
 
-
-
 class SyllablesParagraph(Base):
 	__tablename__ = 'syllables_paragraphs'
 	syllable_id = Column(ForeignKey('syllables.syllable_id'), nullable=False)
@@ -153,7 +151,6 @@ class SyllablesParagraph(Base):
 	translate = Column(Text)
 	sequence = Column(Integer)
 	rowid = Column(Integer, primary_key=True, unique=True)
-
 
 
 class HPTile(Base):
@@ -1048,7 +1045,7 @@ class LanguageDB:
 
 
 	def SaveTransition(self, user_name:str, tile_id:int, hyperlink:str):
-		transition = HPTransition(	user_name = self.GetUserId(user_name),
+		transition = HPTransition(	user_id = self.GetUserId(user_name),
 									tile_id = tile_id,
 									hyperlink = hyperlink)
 		self.session.add(transition)

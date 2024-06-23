@@ -21,7 +21,7 @@ import logging
 import MessagesManager
 # from  notifier_bot import Telegram_Notifier
 from rich import print
-from prometheus_fastapi_instrumentator import Instrumentator
+import time
 
 printer = pprint.PrettyPrinter(indent=12, width=120)
 prnt = printer.pprint
@@ -35,7 +35,7 @@ options = Options(Path(os.path.abspath(os.curdir)).parent / "options.ini")
 app = FastAPI()
 #allow_origins=[options.SELF_ADRESS, options.API_ADRESS],
 
-Instrumentator().instrument(app).expose(app)
+
 
 #allow_credentials=True, 
 app.add_middleware(
@@ -80,20 +80,36 @@ class SiteRequest(BaseModel):
 	comment:str
 	data:str
 
-MessangerManager = MessagesManager.MessageManager(		options.Messages_databaseUri,
-												  		options.Messages_Database,
-														options.Messages_Collection	)
-
+init_without_error = True
+next_try_delay = 5
+try:
+	while init_without_error:
+		try:
+			print('Try to connect to MongoDB')
+			MessangerManager = MessagesManager.MessageManager(      
+													options.Messages_databaseUri,
+													options.Messages_Database,
+													options.Messages_Collection    )
+			init_without_error = False
+		except Exception as e:
+			print(f'MongoDB connect error, pause for next try {next_try_delay} secons\nError {e}')
+			time.sleep(next_try_delay)
+except KeyboardInterrupt:
+	print("Execution stopped by user (Ctrl+C)")
+	exit()
 
 @app.get("/")
 async def main():
 	return {"message": "Hello World"}
 
+@app.get("/stop/")
+async def stop():
+	print('Terminate by command')
+	os._exit(0)
 
-
-@app.get("/PumpMessages/")
-async def Get_Rows(username):
-	 return MessagesManager.load_data_from_pgsql()
+# @app.get("/PumpMessages/")
+# async def Get_Rows(username):
+# 	 return MessagesManager.load_data_from_pgsql()
 
 
 

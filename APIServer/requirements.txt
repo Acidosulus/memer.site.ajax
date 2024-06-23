@@ -1,0 +1,8 @@
+uvicorn
+fastapi
+django
+colorama
+sqlalchemy
+requests
+nltk
+psycopg2-binary

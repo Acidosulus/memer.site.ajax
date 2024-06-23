@@ -984,7 +984,12 @@ function Find_Word() {
 }
 
 const requestMap = {};
-async function get_finding(lc_value) {
+async function get_finding(event, lc_value) {
+
+  if (event.key !== 'Enter') {
+    return;
+  }
+
   const requestId = generateRequestId();
   requestMap[requestId] = true;
 
@@ -1055,6 +1060,22 @@ function updateInterface(answer) {
           GetBackGroundColorByIndex(Number(row.last_view.substring(5, 7)))
         )
     );
+  }
+
+  if (answer.length==0){
+        document.getElementById("span_search_result").insertAdjacentHTML(
+      "beforeend",
+      row_pattern
+        .replaceAll("{{ word.word }}", `Nothing was found`)
+        .replaceAll("{{ forloop.counter }}", ``)
+        .replaceAll("{{ word.transcription }}", ``)
+        .replaceAll("{{ word.show_count }}", ``)
+        .replaceAll(
+          "{{ word.word_background_color }}",
+          GetBackGroundColorByIndex(Number(10))
+        )
+    );
+
   }
 }
 
@@ -2262,31 +2283,42 @@ async function SetPageAsDefault(page_id) {
 
 
 
-
-
-
-
-
-
-
-
-function HomePageGoLink(      {
+async function HomePageGoLink(      {
                                 hyperlink = "",
                                 tile_id = "",
                               }
                             )
+
 {
-  if (hyperlink.startsWith('http')){
-   window.open(hyperlink, '_blank');
-  }else{
-    window.open(`https://${hyperlink}`, '_blank');
+  if (Number(tile_id)>0){ // go link only then it's a tile, not a search-engine history
+        if (hyperlink.startsWith('http')){
+         window.open(hyperlink, '_blank');
+        }else{
+          window.open(`https://${hyperlink}`, '_blank');
+        }
   }
-  
+
+  await asyncRequest(`${APIServer}/home_page_go_to_link_by_tile/`,`POST`, {     command: ``,
+                                                                          comment: `${hyperlink}`,
+                                                                          data: `${tile_id}`
+                                                                    });
 }
 
 
+   function Set_Style(sElemId, cStyle_name)
+     {
+         document.getElementById(sElemId).className = cStyle_name
+     }
 
+     function Color_inc(sElemId, bBackward)
+     {
+         document.getElementById(sElemId).style['background'] = bBackward
+     }
 
+     function Color_dec(sElemId, bBackward)
+     {
+         document.getElementById(sElemId).style['background'] = bBackward     
+     }
 
 // 
 async function FillHomePage() {

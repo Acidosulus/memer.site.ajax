@@ -1,3 +1,8 @@
+MongoDBData
+postgresData
+posgreeData
+RabbitMQData
+kafkaData
 .git
 .idea
 .vscode
