@@ -18,15 +18,16 @@ services:
       - /home/acidos/voc/memer.site/MongoDBData:/data/db
     depends_on:
       - postgres
-  postgrest:
-    image: postgrest/postgrest:latest
-    depends_on:
-      - postgres
-    environment:
-      PGRST_DB_URI: postgres://postgres:321@192.168.0.112:5432/demo
-      PGRST_DB_SCHEMA: bookings
-      PGRST_DB_ANON_ROLE: web_anon
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
     ports:
-      - "3000:3000"
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: password
+    volumes:
+      - /home/acidos/voc/memer.site/RabbitMQData:/var/lib/rabbitmq
 volumes:
   mongodb_data:
